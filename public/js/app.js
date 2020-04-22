@@ -1951,11 +1951,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'users-component',
+  props: ['userListRoute'],
   mounted: function mounted() {
     var _this = this;
 
     console.log('Component mounted.');
-    axios.get('/users/list').then(function (res) {
+    axios.get(this.userListRoute).then(function (res) {
       _this.items = res.data.data.users;
     })["catch"](function (err) {
       console.log(err);
@@ -1963,23 +1964,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      items: [{
-        age: 40,
-        first_name: 'Dickerson',
-        last_name: 'Macdonald'
-      }, {
-        age: 21,
-        first_name: 'Larsen',
-        last_name: 'Shaw'
-      }, {
-        age: 89,
-        first_name: 'Geneva',
-        last_name: 'Wilson'
-      }, {
-        age: 38,
-        first_name: 'Jami',
-        last_name: 'Carney'
-      }]
+      items: []
     };
   }
 });
