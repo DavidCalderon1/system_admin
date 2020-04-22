@@ -1,32 +1,28 @@
 @extends('layouts.app')
+@section('title', 'Crear usuario')
 
 @section('content')
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">USER CREATE VIEW</div>
 
-                    <div class="card-body">
-                        @if (session('status'))
-                            <div class="alert alert-success" role="alert">
-                                {{ session('status') }}
-                            </div>
-                        @endif
-                        @role('super-admin')
-                        Hello super admin
-                        @endrole
-                        <form action="{{route('user.store')}}" METHOD="POST">
-                            @csrf
-                            <input type="text" name="name" required>
-                            <input type="email" name="email" required>
-                            <input type="password" name="password" required>
-                            <input type="password" name="password_confirmation" required >
-                            <input type="submit" value="create">
-                        </form>
-                    </div>
-                </div>
+        @if (session('status'))
+            <div class="alert alert-success" role="alert">
+                {{ session('status') }}
             </div>
-        </div>
+        @endif
+        <form action="{{route('user.store')}}" METHOD="POST">
+            @csrf
+            <label for="">Nombre</label>
+            <input type="text" name="name" required>
+            <label for="">Email</label>
+
+            <input type="email" name="email" required>
+            <label for="">password</label>
+
+            <input type="password" name="password" required>
+            <label for="">confirmation</label>
+
+            <input type="password" name="password_confirmation" required>
+            <input type="submit" value="Crear">
+        </form>
     </div>
 @endsection
