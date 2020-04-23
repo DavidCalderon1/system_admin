@@ -5,8 +5,8 @@ namespace App\Http\Controllers\User;
 use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
-use App\Models\Permission;
-use App\Models\Role;
+use App\Repositories\Interfaces\PermissionRepositoryInterface;
+use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\View\View;
 
@@ -22,14 +22,31 @@ class UserCreateController extends Controller
     protected $userRepository;
 
     /**
-     * UserListController constructor.
-     * @param UserRepositoryInterface $userRepository
+     * @var PermissionRepositoryInterface
      */
-    public function __construct(UserRepositoryInterface $userRepository)
+    protected $permissionRepository;
+
+    /**
+     * @var RoleRepositoryInterface
+     */
+    protected $roleRepository;
+
+    /**
+     * UserCreateController constructor.
+     * @param UserRepositoryInterface $userRepository
+     * @param RoleRepositoryInterface $roleRepository
+     * @param PermissionRepositoryInterface $permissionRepository
+     */
+    public function __construct(
+        UserRepositoryInterface $userRepository,
+        RoleRepositoryInterface $roleRepository,
+        PermissionRepositoryInterface $permissionRepository
+    )
     {
         $this->middleware('auth');
-
         $this->userRepository = $userRepository;
+        $this->roleRepository = $roleRepository;
+        $this->permissionRepository = $permissionRepository;
     }
 
     /**
@@ -41,33 +58,46 @@ class UserCreateController extends Controller
             abort(404);
         }
 
-        $permissions = Permission::all();
-        $roles = Role::all();
+        $roles = $this->roleRepository->getAll();
+        $permissions = $this->permissionRepository->getAll();
 
         return view('users.create', compact('roles', 'permissions'));
     }
 
+    /**
+     * @param StoreUserRequest $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(StoreUserRequest $request)
     {
         try {
             if (!$this->hasPermission(PermissionsConstants::USER_CREATE)) {
-                return $this->response(401);
+                abort(404);
             }
 
-            $user = $this->userRepository->store($request->validated());
+            $data = $request->validated();
 
-            if (!empty($request->validated()['roles'])) {
-                $roles = Role::whereIn('id', $request->validated()['roles'])->get();
-                foreach ($roles as $role) {
-                    $user->roles()->attach($role);
-                }
+            $user = $this->userRepository->store($data);
+
+            if (empty($user)) {
+                return redirect()->back()->withInput()->withErrors([__('users.error_create')]);
+            }
+
+            if (!empty($data['roles'])) {
+                $roles = $this->roleRepository->getByListIds($data['roles']);
+                $this->userRepository->addRoles($user, $roles);
+            }
+
+            if (!empty($data['permissions'])) {
+                $permissions = $this->permissionRepository->getByListIds($data['permissions']);
+                $this->userRepository->addPermissions($user, $permissions);
             }
 
             return redirect(route('users.index'))
-                ->with('message', 'Usuario creado satisfactoriamente.');
+                ->with('message', __('users.success_create'));
 
         } catch (\Exception $exception) {
-            return $this->response(500, $exception->getMessage());
+            return redirect()->back()->withErrors([$exception->getMessage()]);
         }
     }
 }

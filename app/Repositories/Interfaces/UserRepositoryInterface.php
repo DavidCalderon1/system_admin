@@ -42,4 +42,42 @@ interface UserRepositoryInterface
      * @return mixed
      */
     public function destroy(int $id);
+
+    /**
+     * @param User $user
+     * @param array $rolesIds
+     */
+    public function addRoles(User $user, array $rolesIds): void;
+
+    /**
+     * @param User $user
+     * @param array $permissionsIds
+     */
+    public function addPermissions(User $user, array $permissionsIds): void;
+
+    /**
+     * @param User $user
+     * @param array $roles
+     * @return array
+     */
+    public function updateRoles(User $user, array $roles): array;
+
+    /**
+     * @param User $user
+     * @return array
+     */
+    public function cleanRoles(User $user): array;
+
+    /**
+     * @param User $user
+     * @param array $permissionsIds
+     * @return array
+     */
+    public function updatePermissions(User $user, array $permissionsIds): array;
+
+    /**
+     * @param User $user
+     * @return array
+     */
+    public function cleanPermissions(User $user): array;
 }

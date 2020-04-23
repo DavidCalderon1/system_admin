@@ -27,7 +27,6 @@ class UserListController extends Controller
     public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->middleware('auth');
-
         $this->userRepository = $userRepository;
     }
 
@@ -40,7 +39,17 @@ class UserListController extends Controller
             abort(404);
         }
 
-        return view('users.index');
+        $userSessionCanList = $this->hasPermission(PermissionsConstants::USER_LIST);
+        $userSessionCanCreate = $this->hasPermission(PermissionsConstants::USER_CREATE);
+        $userSessionCanUpdate = $this->hasPermission(PermissionsConstants::USER_UPDATE);
+        $userSessionCanDelete = $this->hasPermission(PermissionsConstants::USER_DELETE);
+
+        return view('users.index', compact(
+            'userSessionCanList',
+            'userSessionCanCreate',
+            'userSessionCanUpdate',
+            'userSessionCanDelete'
+        ));
     }
 
     /**
@@ -58,12 +67,28 @@ class UserListController extends Controller
             'email' => 'string',
         ]);
 
-        $response = $this->userRepository->getPagination(5, $filer);
+        $users = $this->userRepository->getPagination(5, $filer);
 
-        if (empty($response)) {
-            return $this->response(404, 'Users not found');
+        if (empty($users)) {
+            return $this->response(404, __('users.users_not_found'));
         }
 
-        return $this->response(200, 'Users found', $response);
+        $response = [
+            'users' => $users['data'],
+            'pagination' => [
+                'current_page' => $users['current_page'],
+                'first_page_url' => $users['first_page_url'],
+                'from' => $users['from'],
+                'last_page' => $users['last_page'],
+                'last_page_url' => $users['last_page_url'],
+                'next_page_url' => $users['next_page_url'],
+                'per_page' => $users['per_page'],
+                'prev_page_url' => $users['prev_page_url'],
+                'to' => $users['to'],
+                'total' => $users['total']
+            ],
+        ];
+
+        return $this->response(200, __('users.users_found'), $response);
     }
 }

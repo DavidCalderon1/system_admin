@@ -5,9 +5,10 @@ namespace App\Http\Controllers\User;
 use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
-use App\Models\Role;
+use App\Models\User;
+use App\Repositories\Interfaces\PermissionRepositoryInterface;
+use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
-use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
 
 /**
@@ -22,14 +23,31 @@ class UserUpdateController extends Controller
     protected $userRepository;
 
     /**
-     * UserListController constructor.
-     * @param UserRepositoryInterface $userRepository
+     * @var RoleRepositoryInterface
      */
-    public function __construct(UserRepositoryInterface $userRepository)
+    protected $roleRepository;
+
+    /**
+     * @var PermissionRepositoryInterface
+     */
+    protected $permissionRepository;
+
+    /**
+     * UserUpdateController constructor.
+     * @param UserRepositoryInterface $userRepository
+     * @param RoleRepositoryInterface $roleRepository
+     * @param PermissionRepositoryInterface $permissionRepository
+     */
+    public function __construct(
+        UserRepositoryInterface $userRepository,
+        RoleRepositoryInterface $roleRepository,
+        PermissionRepositoryInterface $permissionRepository
+    )
     {
         $this->middleware('auth');
-
         $this->userRepository = $userRepository;
+        $this->roleRepository = $roleRepository;
+        $this->permissionRepository = $permissionRepository;
     }
 
     /**
@@ -43,42 +61,78 @@ class UserUpdateController extends Controller
         }
 
         $user = $this->userRepository->get($userId);
-        $roles = Role::all();
+        $roles = $this->roleRepository->getAll();
+        $permissions = $this->permissionRepository->getAll();
 
-        return view('users.edit', compact('user', 'roles'));
+        return view('users.edit', compact('user', 'roles', 'permissions'));
     }
 
     /**
      * @param StoreUserRequest $request
-     * @return JsonResponse|\Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update(StoreUserRequest $request)
     {
         try {
             if (!$this->hasPermission(PermissionsConstants::USER_UPDATE)) {
-                return $this->response(401);
+                return redirect()->back()->withErrors([__('permissions.unauthorized')]);
             }
 
-            $saved = $this->userRepository->update($request->get('id'), $request->validated());
+            $data = $request->validated();
+            $data['roles'] = (!empty($data['roles'])) ? $data['roles'] : [];
+            $data['permissions'] = (!empty($data['permissions'])) ? $data['permissions'] : [];
+
+            $saved = $this->userRepository->update($request->get('id'), $data);
 
             if (!$saved) {
-                return redirect()->back()->withErrors(
-                    ['Ha ocurrido un error actualizando el usuario, por favor intente de nuevo o comuniquese con el administrador.']
-                );
+                return redirect()->back()->withErrors([__('users.error_update')]);
             }
 
             $user = $this->userRepository->get($request->get('id'));
+            $this->updateRoles($user, $data['roles']);
+            $this->updatePermissions($user, $data['permissions']);
 
-            if (!empty($request->validated()['roles'])) {
-                $roles = Role::whereIn('id', $request->validated()['roles'])->get('id')->pluck('id')->toArray();
-                $user->roles()->sync($roles);
-            }
-
-            return redirect(route('users.index'))
-                ->with('message', 'Usuario actualizado satisfactoriamente.');
+            return redirect(route('users.index'))->with('message', __('users.success_update'));
 
         } catch (\Exception $exception) {
-            return $this->response(500, $exception->getMessage());
+            return redirect()->back()->withErrors([$exception->getMessage()]);
         }
+    }
+
+    /**
+     * @param User $user
+     * @param array $rolesIds
+     */
+    private function updateRoles(User $user, array $rolesIds): void
+    {
+        if (!empty($rolesIds)) {
+            $roles = $this->roleRepository->getByListIds($rolesIds);
+            $this->userRepository->updateRoles($user, $roles);
+        } elseif (!$this->isUserAdmin($user)) {
+            $this->userRepository->cleanRoles($user);
+        }
+    }
+
+    /**
+     * @param User $user
+     * @param array $permissionsIds
+     */
+    private function updatePermissions(User $user, array $permissionsIds): void
+    {
+        if (!empty($permissionsIds)) {
+            $permissions = $this->permissionRepository->getByListIds($permissionsIds);
+            $this->userRepository->updatePermissions($user, $permissions);
+        } elseif (!$this->isUserAdmin($user)) {
+            $this->userRepository->cleanPermissions($user);
+        }
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     */
+    private function isUserAdmin(User $user): bool
+    {
+        return $user->id == PermissionsConstants::ROLE_ADMIN_ID;
     }
 }

@@ -15,8 +15,8 @@
                     </button>
                 </div>
             </div>
-            <div class="col-md-6">
-                <a v-bind:href="userCreateRoute" class="btn btn-success btn-md">
+            <div class="col-md-6" v-if="userCanCreate == 1">
+                <a v-bind:href="userCreateRoute" class="btn btn-success btn-md pull-right">
                     <i class="fa fa-plus">Nuevo</i>
                 </a>
             </div>
@@ -30,22 +30,25 @@
                     <th>Roles</th>
                     <th>Acciones</th>
                 </tr>
-                <tr v-for="user in data.users">
+                <tr v-for="user in data">
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
                     <td><label class="badge badge-success" v-for="role in user.roles"> {{ role.name }}</label>
                     </td>
                     <td>
-                        <a v-bind:href="getRouteWithUserId(userEditRoute, user.id)" class="btn btn-warning btn-md">
+                        <a v-if="userCanUpdate == 1" v-bind:href="getRouteWithUserId(userEditRoute, user.id)"
+                           class="btn btn-warning btn-md">
                             <i class="fa fa-pencil"></i>
                         </a>
-                        <a href="javascript:;" v-on:click="destroyUser(user.id)" class="btn btn-danger btn-md">
+                        <a v-if="userCanDelete == 1 && user.id != userAdminId" href="javascript:;"
+                           v-on:click="destroyUser(user.id)"
+                           class="btn btn-danger btn-md">
                             <i class="fa fa-trash"></i>
                         </a>
                     </td>
                 </tr>
                 <br>
-                <pagination-component :pagination="data" @paginate="getUsers()" :offset="1">
+                <pagination-component :pagination="pagination" @paginate="getUsers()" :offset="1">
                 </pagination-component>
             </table>
         </div>
@@ -60,17 +63,12 @@
             'userCreateRoute',
             'userEditRoute',
             'userDestroyRoute',
-            'userCanList',
             'userCanCreate',
             'userCanUpdate',
             'userCanDelete',
+            'userAdminId',
         ],
         mounted() {
-            console.log(this.userCanList);
-            console.log(this.userCanCreate);
-            console.log(this.userCanUpdate);
-            console.log(this.userCanDelete);
-            console.log(this.userEditRoute)
             this.getUsers();
         },
         data() {
@@ -82,7 +80,7 @@
                     {key: 'actions', label: 'Acciones'}
                 ],
                 data: {},
-                dataFilter: {},
+                pagination: {},
                 filter: 'name',
                 search: ''
             }
@@ -95,22 +93,23 @@
                     pathFilter = `&${this.filter}=${this.search}`
                 }
 
-                let url = `${this.userListRoute}?page=${this.data.current_page}` + pathFilter
+                let url = `${this.userListRoute}?page=${this.pagination.current_page}` + pathFilter
 
                 axios.get(url)
                     .then((response) => {
-                        this.data = response.data.data;
+                        this.data = response.data.data.users;
+                        this.pagination = response.data.data.pagination;
                     })
                     .catch((error) => {
                         if (error.response.status === 404) {
-                            if (this.data.current_page > 1) {
-                                this.data.current_page = 1;
+                            if (this.pagination.current_page > 1) {
+                                this.pagination.current_page = 1;
                                 this.getUsers();
                                 return false;
                             }
                             this.data = {};
                         } else {
-                            console.log('handle server error from here');
+                            alert('handle server error from here');
                         }
                     });
             },
@@ -123,7 +122,7 @@
                             this.getUsers();
                         })
                         .catch(error => {
-                            alert(error.data)
+                            alert(error.response.data.message);
                         })
                 }
             },

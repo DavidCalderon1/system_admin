@@ -13,16 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-//Route::get('/', function () {
-//    return redirect('/login');
-//});
 Route::get('/', function () {
-    return view('home');
+    return redirect('/login');
 });
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');//->middleware(['middleware' => 'role:developer']);
+Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 
 Route::group(['prefix' => 'admin'], function () {
     Route::get('/users', 'User\UserListController@index')->name('users.index');
@@ -33,6 +30,3 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('/users/update/{user}', 'User\UserUpdateController@update')->name('user.update');
     Route::delete('/users/destroy/{user}', 'User\UserDeleteController')->name('user.destroy');
 });
-
-//Route::group(['middleware' => 'role:super-admin'], function () {
-//});

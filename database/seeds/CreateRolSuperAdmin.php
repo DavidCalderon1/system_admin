@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Permission;
 use App\Models\Role;
 
 /**
@@ -17,8 +16,8 @@ class CreateRolSuperAdmin extends Seeder
     public function run()
     {
         $role = new Role();
-        $role->slug = 'super-admin';
-        $role->name = 'Super Admin';
+        $role->slug = 'admin';
+        $role->name = 'Admin';
         $role->save();
     }
 }

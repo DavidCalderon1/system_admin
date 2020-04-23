@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Constants\PermissionsConstants;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,9 +15,8 @@ class StoreUserRequest extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->can('all-actions')
-            || Auth::user()->can('user-create')
-            || Auth::user()->can('user-update');
+        return Auth::user()->can(PermissionsConstants::USER_CREATE)
+            || Auth::user()->can(PermissionsConstants::USER_UPDATE);
     }
 
     /**
@@ -38,6 +38,7 @@ class StoreUserRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255', $unique],
             'password' => $passwordRule,
             'roles' => ['array'],
+            'permissions' => ['array'],
         ];
     }
 }

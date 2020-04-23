@@ -2073,15 +2073,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'users-component',
-  props: ['userListRoute', 'userCreateRoute', 'userEditRoute', 'userDestroyRoute', 'userCanList', 'userCanCreate', 'userCanUpdate', 'userCanDelete'],
+  props: ['userListRoute', 'userCreateRoute', 'userEditRoute', 'userDestroyRoute', 'userCanCreate', 'userCanUpdate', 'userCanDelete', 'userAdminId'],
   mounted: function mounted() {
-    console.log(this.userCanList);
-    console.log(this.userCanCreate);
-    console.log(this.userCanUpdate);
-    console.log(this.userCanDelete);
-    console.log(this.userEditRoute);
     this.getUsers();
   },
   data: function data() {
@@ -2100,7 +2098,7 @@ __webpack_require__.r(__webpack_exports__);
         label: 'Acciones'
       }],
       data: {},
-      dataFilter: {},
+      pagination: {},
       filter: 'name',
       search: ''
     };
@@ -2115,13 +2113,14 @@ __webpack_require__.r(__webpack_exports__);
         pathFilter = "&".concat(this.filter, "=").concat(this.search);
       }
 
-      var url = "".concat(this.userListRoute, "?page=").concat(this.data.current_page) + pathFilter;
+      var url = "".concat(this.userListRoute, "?page=").concat(this.pagination.current_page) + pathFilter;
       axios.get(url).then(function (response) {
-        _this.data = response.data.data;
+        _this.data = response.data.data.users;
+        _this.pagination = response.data.data.pagination;
       })["catch"](function (error) {
         if (error.response.status === 404) {
-          if (_this.data.current_page > 1) {
-            _this.data.current_page = 1;
+          if (_this.pagination.current_page > 1) {
+            _this.pagination.current_page = 1;
 
             _this.getUsers();
 
@@ -2130,7 +2129,7 @@ __webpack_require__.r(__webpack_exports__);
 
           _this.data = {};
         } else {
-          console.log('handle server error from here');
+          alert('handle server error from here');
         }
       });
     },
@@ -2144,7 +2143,7 @@ __webpack_require__.r(__webpack_exports__);
 
           _this2.getUsers();
         })["catch"](function (error) {
-          alert(error.data);
+          alert(error.response.data.message);
         });
       }
     },
@@ -80158,16 +80157,18 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _c("div", { staticClass: "col-md-6" }, [
-        _c(
-          "a",
-          {
-            staticClass: "btn btn-success btn-md",
-            attrs: { href: _vm.userCreateRoute }
-          },
-          [_c("i", { staticClass: "fa fa-plus" }, [_vm._v("Nuevo")])]
-        )
-      ])
+      _vm.userCanCreate == 1
+        ? _c("div", { staticClass: "col-md-6" }, [
+            _c(
+              "a",
+              {
+                staticClass: "btn btn-success btn-md pull-right",
+                attrs: { href: _vm.userCreateRoute }
+              },
+              [_c("i", { staticClass: "fa fa-plus" }, [_vm._v("Nuevo")])]
+            )
+          ])
+        : _vm._e()
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "table-responsive" }, [
@@ -80177,7 +80178,7 @@ var render = function() {
         [
           _vm._m(0),
           _vm._v(" "),
-          _vm._l(_vm.data.users, function(user) {
+          _vm._l(_vm.data, function(user) {
             return _c("tr", [
               _c("td", [_vm._v(_vm._s(user.name))]),
               _vm._v(" "),
@@ -80194,30 +80195,37 @@ var render = function() {
               ),
               _vm._v(" "),
               _c("td", [
-                _c(
-                  "a",
-                  {
-                    staticClass: "btn btn-warning btn-md",
-                    attrs: {
-                      href: _vm.getRouteWithUserId(_vm.userEditRoute, user.id)
-                    }
-                  },
-                  [_c("i", { staticClass: "fa fa-pencil" })]
-                ),
+                _vm.userCanUpdate == 1
+                  ? _c(
+                      "a",
+                      {
+                        staticClass: "btn btn-warning btn-md",
+                        attrs: {
+                          href: _vm.getRouteWithUserId(
+                            _vm.userEditRoute,
+                            user.id
+                          )
+                        }
+                      },
+                      [_c("i", { staticClass: "fa fa-pencil" })]
+                    )
+                  : _vm._e(),
                 _vm._v(" "),
-                _c(
-                  "a",
-                  {
-                    staticClass: "btn btn-danger btn-md",
-                    attrs: { href: "javascript:;" },
-                    on: {
-                      click: function($event) {
-                        return _vm.destroyUser(user.id)
-                      }
-                    }
-                  },
-                  [_c("i", { staticClass: "fa fa-trash" })]
-                )
+                _vm.userCanDelete == 1 && user.id != _vm.userAdminId
+                  ? _c(
+                      "a",
+                      {
+                        staticClass: "btn btn-danger btn-md",
+                        attrs: { href: "javascript:;" },
+                        on: {
+                          click: function($event) {
+                            return _vm.destroyUser(user.id)
+                          }
+                        }
+                      },
+                      [_c("i", { staticClass: "fa fa-trash" })]
+                    )
+                  : _vm._e()
               ])
             ])
           }),
@@ -80225,7 +80233,7 @@ var render = function() {
           _c("br"),
           _vm._v(" "),
           _c("pagination-component", {
-            attrs: { pagination: _vm.data, offset: 1 },
+            attrs: { pagination: _vm.pagination, offset: 1 },
             on: {
               paginate: function($event) {
                 return _vm.getUsers()

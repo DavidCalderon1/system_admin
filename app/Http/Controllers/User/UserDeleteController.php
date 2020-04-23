@@ -40,13 +40,17 @@ class UserDeleteController extends Controller
         }
 
         try {
+            if ($id == PermissionsConstants::ROLE_ADMIN_ID) {
+                throw new \Exception(__('users.no_can_delete_super_admin'));
+            }
+
             $response = $this->userRepository->destroy($id);
 
             if (empty($response)) {
-                throw new \Exception('Registro no encontrado.');
+                throw new \Exception(__('users.register_found'));
             }
 
-            return $this->response(200, 'Usuario eliminado satisfactoriamente.');
+            return $this->response(200, __('users.success_delete'));
         } catch (\Exception $exception) {
             return $this->response(500, $exception->getMessage());
         }

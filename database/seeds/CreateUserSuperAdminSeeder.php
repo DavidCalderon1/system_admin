@@ -1,14 +1,14 @@
 <?php
 
-use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use App\Constants\PermissionsConstants;
 
 /**
  * Class UserAdminSeeder
  */
-class UserAdminSeeder extends Seeder
+class CreateUserSuperAdminSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -17,12 +17,12 @@ class UserAdminSeeder extends Seeder
      */
     public function run()
     {
-        $adminRole = Role::where('slug', 'super-admin')->first();
+        $adminRole = Role::where('slug', PermissionsConstants::ROLE_ADMIN)->first();
 
         $manager = new User();
-        $manager->name = 'Super Admin';
-        $manager->email = 'super@admin.com';
-        $manager->password = bcrypt('superadmin');
+        $manager->name = 'Admin';
+        $manager->email = 'admin@admin.com';
+        $manager->password = bcrypt('admin');
         $manager->save();
         $manager->roles()->attach($adminRole);
     }

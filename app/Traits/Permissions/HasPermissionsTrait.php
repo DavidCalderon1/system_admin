@@ -2,6 +2,7 @@
 
 namespace App\Traits\Permissions;
 
+use App\Constants\PermissionsConstants;
 use App\Models\Permission;
 use App\Models\Role;
 
@@ -13,7 +14,7 @@ trait HasPermissionsTrait
      */
     public function givePermissionsTo(...$permissions)
     {
-        try{
+        try {
             $permissions = $this->getAllPermissions($permissions);
 
             if (empty($permissions->toArray())) {
@@ -23,7 +24,7 @@ trait HasPermissionsTrait
             $this->permissions()->saveMany($permissions);
 
             return true;
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             return false;
         }
     }
@@ -55,7 +56,9 @@ trait HasPermissionsTrait
      */
     public function hasPermissionTo($permission): bool
     {
-        return $this->hasPermissionThroughRole($permission) || $this->hasPermission($permission);
+        return $this->hasPermissionThroughRole($permission)
+            || $this->hasPermission($permission)
+            || $this->hasRole(PermissionsConstants::ROLE_ADMIN);
     }
 
     /**
@@ -106,9 +109,11 @@ trait HasPermissionsTrait
      * @param $permission
      * @return bool
      */
-    protected function hasPermission($permission)
+    public function hasPermission($permission)
     {
-        return (bool)$this->permissions->where('slug', $permission->slug)->count();
+        $permissionSlug = (is_array($permission)) ? $permission['slug'] : $permission->slug;
+
+        return (bool)$this->permissions->where('slug', $permissionSlug)->count();
     }
 
     /**
