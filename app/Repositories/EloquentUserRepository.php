@@ -28,11 +28,20 @@ class EloquentUserRepository implements UserRepositoryInterface
 
     /**
      * @param int $perPage
+     * @param array $filter
      * @return array
      */
-    public function getPagination(int $perPage): array
+    public function getPagination(int $perPage, array $filter = []): array
     {
-        $users = $this->user->paginate($perPage)->toArray();
+        $users = $this->user->select('id', 'name', 'email')->with(['roles']);
+
+        if (!empty($filter['name'])) {
+            $users->where('name', 'like', "%{$filter['name']}%");
+        } elseif (!empty($filter['email'])) {
+            $users->where('email', 'like', "%{$filter['email']}%");
+        }
+
+        $users = $users->orderBy('id', 'asc')->paginate($perPage)->toArray();
 
         if (empty($users['data'])) {
             return [];
@@ -51,6 +60,30 @@ class EloquentUserRepository implements UserRepositoryInterface
             'to' => $users['to'],
             'total' => $users['total'],
         ];
+    }
+
+    /**
+     * @param $userId
+     * @return User
+     */
+    public function get($userId): User
+    {
+        return $this->user->with('roles')->where('id', $userId)->first();
+    }
+
+
+    /**
+     * @param array $roles
+     * @return string
+     */
+    private function getRolesStr(array $roles): string
+    {
+        $rolesStr = '';
+        array_walk($roles, function ($role) use (&$rolesStr) {
+            $rolesStr .= $role['name'] . ', ';
+        });
+
+        return trim($rolesStr, ', ');
     }
 
     /**
@@ -73,11 +106,16 @@ class EloquentUserRepository implements UserRepositoryInterface
      */
     public function update(int $id, array $data)
     {
-        return $this->user->where('id', $id)->update([
+        $userData = [
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        ];
+
+        if (!empty($data['password'])) {
+            $userData['password'] = Hash::make($data['password']);
+        }
+
+        return $this->user->where('id', $id)->update($userData);
     }
 
     /**

@@ -53,6 +53,6 @@ class Controller extends BaseController
      */
     public function hasPermission(string $slug): bool
     {
-        return Auth::user()->can($slug) || Auth::user()->can(self::ALL_ACTIONS);
+        return Auth::user()->can($slug) || Auth::user()->hasRole('super-admin');
     }
 }

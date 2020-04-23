@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\JsonResponse;
@@ -16,11 +17,6 @@ class UserDeleteController extends Controller
      * @var UserRepositoryInterface
      */
     protected $userRepository;
-
-    /**
-     * define el slug del permiso User Create
-     */
-    public const USER_DELETE = 'user-delete';
 
     /**
      * UserListController constructor.
@@ -39,7 +35,7 @@ class UserDeleteController extends Controller
      */
     public function __invoke(int $id): JsonResponse
     {
-        if (!$this->hasPermission(self::USER_DELETE)) {
+        if (!$this->hasPermission(PermissionsConstants::USER_DELETE)) {
             return $this->response(401);
         }
 
@@ -50,7 +46,7 @@ class UserDeleteController extends Controller
                 throw new \Exception('Registro no encontrado.');
             }
 
-            return $this->response(200, 'Deleted');
+            return $this->response(200, 'Usuario eliminado satisfactoriamente.');
         } catch (\Exception $exception) {
             return $this->response(500, $exception->getMessage());
         }

@@ -28,10 +28,16 @@ class StoreUserRequest extends FormRequest
     {
         $unique = (!empty($this->id)) ? 'unique:users,id,' . $this->id : 'unique:users';
 
+        $passwordRule = ((!empty($this->id) && !empty($this->password))
+            || (empty($this->id) && !empty($this->password)))
+            ? ['required', 'string', 'min:8', 'confirmed']
+            : [];
+
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', $unique],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => $passwordRule,
+            'roles' => ['array'],
         ];
     }
 }

@@ -16,12 +16,9 @@ class CreateRolSuperAdmin extends Seeder
      */
     public function run()
     {
-        $permission = Permission::where('slug', 'all-actions')->first();
-
         $role = new Role();
         $role->slug = 'super-admin';
         $role->name = 'Super Admin';
         $role->save();
-        $role->permissions()->attach($permission);
     }
 }

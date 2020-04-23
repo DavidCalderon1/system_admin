@@ -2,6 +2,8 @@
 
 namespace App\Repositories\Interfaces;
 
+use App\Models\User;
+
 /**
  * Interface UserRepositoryInterface
  * @package App\Repositories\Interfaces
@@ -10,9 +12,17 @@ interface UserRepositoryInterface
 {
     /**
      * @param int $perPage
+     * @param array $filer
      * @return array
      */
-    public function getPagination(int $perPage): array;
+    public function getPagination(int $perPage, array $filer = []): array;
+
+
+    /**
+     * @param $userId
+     * @return User
+     */
+    public function get($userId): User;
 
     /**
      * @param $data

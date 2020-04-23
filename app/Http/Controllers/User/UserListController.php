@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
@@ -17,11 +19,6 @@ class UserListController extends Controller
      * @var UserRepositoryInterface
      */
     protected $userRepository;
-
-    /**
-     * define el slug del permiso User List
-     */
-    public const USER_LIST = 'user-list';
 
     /**
      * UserListController constructor.
@@ -39,7 +36,7 @@ class UserListController extends Controller
      */
     public function index(): View
     {
-        if (!$this->hasPermission(self::USER_LIST)) {
+        if (!$this->hasPermission(PermissionsConstants::USER_LIST)) {
             abort(404);
         }
 
@@ -47,15 +44,21 @@ class UserListController extends Controller
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
-    public function list(): JsonResponse
+    public function list(Request $request): JsonResponse
     {
-        if (!$this->hasPermission(self::USER_LIST)) {
+        if (!$this->hasPermission(PermissionsConstants::USER_LIST)) {
             return $this->response(401);
         }
 
-        $response = $this->userRepository->getPagination(15);
+        $filer = $request->validate([
+            'name' => 'string',
+            'email' => 'string',
+        ]);
+
+        $response = $this->userRepository->getPagination(5, $filer);
 
         if (empty($response)) {
             return $this->response(404, 'Users not found');

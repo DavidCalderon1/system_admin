@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
+use App\Models\Permission;
+use App\Models\Role;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\View\View;
 
@@ -17,11 +20,6 @@ class UserCreateController extends Controller
      * @var UserRepositoryInterface
      */
     protected $userRepository;
-
-    /**
-     * define el slug del permiso User Create
-     */
-    public const USER_CREATE = 'user-create';
 
     /**
      * UserListController constructor.
@@ -39,23 +37,34 @@ class UserCreateController extends Controller
      */
     public function create(): View
     {
-        if (!$this->hasPermission(self::USER_CREATE)) {
+        if (!$this->hasPermission(PermissionsConstants::USER_CREATE)) {
             abort(404);
         }
 
-        return view('users.create');
+        $permissions = Permission::all();
+        $roles = Role::all();
+
+        return view('users.create', compact('roles', 'permissions'));
     }
 
     public function store(StoreUserRequest $request)
     {
         try {
-            if (!$this->hasPermission(self::USER_CREATE)) {
+            if (!$this->hasPermission(PermissionsConstants::USER_CREATE)) {
                 return $this->response(401);
             }
 
-            $this->userRepository->store($request->validated());
+            $user = $this->userRepository->store($request->validated());
 
-            return $this->response(201, 'Created');
+            if (!empty($request->validated()['roles'])) {
+                $roles = Role::whereIn('id', $request->validated()['roles'])->get();
+                foreach ($roles as $role) {
+                    $user->roles()->attach($role);
+                }
+            }
+
+            return redirect(route('users.index'))
+                ->with('message', 'Usuario creado satisfactoriamente.');
 
         } catch (\Exception $exception) {
             return $this->response(500, $exception->getMessage());
