@@ -17,8 +17,6 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public const ALL_ACTIONS = 'all-actions';
-
     /**
      * @param array $data
      * @param string $message
@@ -53,6 +51,6 @@ class Controller extends BaseController
      */
     public function hasPermission(string $slug): bool
     {
-        return Auth::user()->can($slug) || Auth::user()->can(self::ALL_ACTIONS);
+        return Auth::user()->can($slug);
     }
 }

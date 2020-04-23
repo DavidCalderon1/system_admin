@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 /**
@@ -19,18 +21,12 @@ class UserListController extends Controller
     protected $userRepository;
 
     /**
-     * define el slug del permiso User List
-     */
-    public const USER_LIST = 'user-list';
-
-    /**
      * UserListController constructor.
      * @param UserRepositoryInterface $userRepository
      */
     public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->middleware('auth');
-
         $this->userRepository = $userRepository;
     }
 
@@ -39,28 +35,60 @@ class UserListController extends Controller
      */
     public function index(): View
     {
-        if (!$this->hasPermission(self::USER_LIST)) {
+        if (!$this->hasPermission(PermissionsConstants::USER_LIST)) {
             abort(404);
         }
 
-        return view('users.index');
+        $userSessionCanList = $this->hasPermission(PermissionsConstants::USER_LIST);
+        $userSessionCanCreate = $this->hasPermission(PermissionsConstants::USER_CREATE);
+        $userSessionCanUpdate = $this->hasPermission(PermissionsConstants::USER_UPDATE);
+        $userSessionCanDelete = $this->hasPermission(PermissionsConstants::USER_DELETE);
+
+        return view('users.index', compact(
+            'userSessionCanList',
+            'userSessionCanCreate',
+            'userSessionCanUpdate',
+            'userSessionCanDelete'
+        ));
     }
 
     /**
+     * @param Request $request
      * @return JsonResponse
      */
-    public function list(): JsonResponse
+    public function list(Request $request): JsonResponse
     {
-        if (!$this->hasPermission(self::USER_LIST)) {
+        if (!$this->hasPermission(PermissionsConstants::USER_LIST)) {
             return $this->response(401);
         }
 
-        $response = $this->userRepository->getPagination(15);
+        $filer = $request->validate([
+            'name' => 'string',
+            'email' => 'string',
+        ]);
 
-        if (empty($response)) {
-            return $this->response(404, 'Users not found');
+        $users = $this->userRepository->getPagination(5, $filer);
+
+        if (empty($users)) {
+            return $this->response(404, __('users.users_not_found'));
         }
 
-        return $this->response(200, 'Users found', $response);
+        $response = [
+            'users' => $users['data'],
+            'pagination' => [
+                'current_page' => $users['current_page'],
+                'first_page_url' => $users['first_page_url'],
+                'from' => $users['from'],
+                'last_page' => $users['last_page'],
+                'last_page_url' => $users['last_page_url'],
+                'next_page_url' => $users['next_page_url'],
+                'per_page' => $users['per_page'],
+                'prev_page_url' => $users['prev_page_url'],
+                'to' => $users['to'],
+                'total' => $users['total']
+            ],
+        ];
+
+        return $this->response(200, __('users.users_found'), $response);
     }
 }

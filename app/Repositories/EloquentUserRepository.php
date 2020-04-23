@@ -28,29 +28,31 @@ class EloquentUserRepository implements UserRepositoryInterface
 
     /**
      * @param int $perPage
+     * @param array $filter
      * @return array
      */
-    public function getPagination(int $perPage): array
+    public function getPagination(int $perPage, array $filter = []): array
     {
-        $users = $this->user->paginate($perPage)->toArray();
+        $users = $this->user->select('id', 'name', 'email')->with(['roles']);
 
-        if (empty($users['data'])) {
-            return [];
+        if (!empty($filter['name'])) {
+            $users->where('name', 'like', "%{$filter['name']}%");
+        } elseif (!empty($filter['email'])) {
+            $users->where('email', 'like', "%{$filter['email']}%");
         }
 
-        return [
-            'users' => $users['data'],
-            'current_page' => $users['current_page'],
-            'first_page_url' => $users['first_page_url'],
-            'from' => $users['from'],
-            'last_page' => $users['last_page'],
-            'last_page_url' => $users['last_page_url'],
-            'next_page_url' => $users['next_page_url'],
-            'per_page' => $users['per_page'],
-            'prev_page_url' => $users['prev_page_url'],
-            'to' => $users['to'],
-            'total' => $users['total'],
-        ];
+        $users = $users->orderBy('id', 'asc')->paginate($perPage)->toArray();
+
+        return (!empty($users['data'])) ? $users : [];
+    }
+
+    /**
+     * @param $userId
+     * @return User
+     */
+    public function get($userId): User
+    {
+        return $this->user->with('roles')->where('id', $userId)->first();
     }
 
     /**
@@ -60,8 +62,8 @@ class EloquentUserRepository implements UserRepositoryInterface
     public function store($data)
     {
         return $this->user->create([
-            'name' => $data['name'],
-            'email' => $data['email'],
+            'name' => ucwords(strtolower($data['name'])),
+            'email' => strtolower($data['email']),
             'password' => Hash::make($data['password']),
         ]);
     }
@@ -73,11 +75,16 @@ class EloquentUserRepository implements UserRepositoryInterface
      */
     public function update(int $id, array $data)
     {
-        return $this->user->where('id', $id)->update([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        $userData = [
+            'name' => ucwords(strtolower($data['name'])),
+            'email' => strtolower($data['email']),
+        ];
+
+        if (!empty($data['password'])) {
+            $userData['password'] = Hash::make($data['password']);
+        }
+
+        return $this->user->where('id', $id)->update($userData);
     }
 
     /**
@@ -88,4 +95,61 @@ class EloquentUserRepository implements UserRepositoryInterface
     {
         return $this->user->where('id', $id)->delete();
     }
+
+    /**
+     * @param User $user
+     * @param array $rolesIds
+     */
+    public function addRoles(User $user, array $rolesIds): void
+    {
+        $user->roles()->attach($rolesIds);
+    }
+
+    /**
+     * @param User $user
+     * @param array $permissionsIds
+     */
+    public function addPermissions(User $user, array $permissionsIds): void
+    {
+        $user->permissions()->attach($permissionsIds);
+    }
+
+    /**
+     * @param User $user
+     * @param array $roles
+     * @return array
+     */
+    public function updateRoles(User $user, array $roles): array
+    {
+        return $user->roles()->sync($roles);
+    }
+
+    /**
+     * @param User $user
+     * @return array
+     */
+    public function cleanRoles(User $user): array
+    {
+        return $this->updateRoles($user, []);
+    }
+
+    /**
+     * @param User $user
+     * @param array $permissionsIds
+     * @return array
+     */
+    public function updatePermissions(User $user, array $permissionsIds): array
+    {
+        return $user->permissions()->sync($permissionsIds);
+    }
+
+    /**
+     * @param User $user
+     * @return array
+     */
+    public function cleanPermissions(User $user): array
+    {
+        return $this->updatePermissions($user, []);
+    }
+
 }

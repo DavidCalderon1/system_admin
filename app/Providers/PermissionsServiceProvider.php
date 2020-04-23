@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Constants\PermissionsConstants;
 use App\Models\Permission;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
@@ -36,14 +37,16 @@ class PermissionsServiceProvider extends ServiceProvider
             report($e);
             return false;
         }
+        $superAdminRole = PermissionsConstants::ROLE_ADMIN;
 
         //Blade directives
-        Blade::directive('role', function ($role) {
-            return "<?php if(auth()->check() && auth()->user()->hasRole({$role})) : ?>"; //return this if statement inside php tag
+        Blade::directive('sessionHasPermission', function ($permission) use ($superAdminRole) {
+            return "<?php if( (auth()->check() && auth()->user()->can({$permission}))
+            || (auth()->check() && auth()->user()->hasRole({$superAdminRole}))) : ?>";
         });
 
-        Blade::directive('endrole', function ($role) {
-            return "<?php endif; ?>"; //return this endif statement inside php tag
+        Blade::directive('endsessionHasPermission', function () {
+            return "<?php endif; ?>";
         });
     }
 }

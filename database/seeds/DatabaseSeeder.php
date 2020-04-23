@@ -12,9 +12,8 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         //El orden de ejecucion es importante
-        $this->call(AllActionsPermissionSeeder::class);
-        $this->call(UserActionPermissionsSeeder::class);
         $this->call(CreateRolSuperAdmin::class);
-        $this->call(UserAdminSeeder::class);
+        $this->call(CreateUserSuperAdminSeeder::class);
+        $this->call(CreatePermissionsUsersModuleSeeder::class);
     }
 }
