@@ -15,6 +15,11 @@ class DatabaseSeeder extends Seeder
         $this->call(CreateRolSuperAdmin::class);
         $this->call(CreateUserSuperAdminSeeder::class);
 
+        //Agregar Paises, Estados y Ciudades
+        $this->call(CountriesTableSeeder::class);
+        $this->call(StatesTableSeeder::class);
+        $this->call(CitiesTableSeeder::class);
+
         //Permisos de cada modulo crud
         $this->call(CreatePermissionsUsersModuleSeeder::class);
         $this->call(CreatePermissionsRolesModuleSeeder::class);
