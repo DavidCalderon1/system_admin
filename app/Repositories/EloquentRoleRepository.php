@@ -105,10 +105,7 @@ class EloquentRoleRepository implements RoleRepositoryInterface
 
     public function destroy(int $id)
     {
-        $role = $this->get($id);
-        $this->cleanPermissions($role);
-
-        return $role->delete();
+        return $this->role->where('id', $id)->delete();
     }
 
     /**
