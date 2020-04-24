@@ -9,7 +9,6 @@
         @endif
         <div class="row justify-content-center">
             <div class="col-md-12">
-                @sessionHasPermission(\App\Constants\PermissionsConstants::USER_LIST)
                 <users-component user-list-route="{{route('user.list')}}"
                                  user-edit-route="{{route('user.edit',['userId' => '__userId__'])}}"
                                  user-create-route="{{route('user.create')}}"
@@ -19,7 +18,6 @@
                                  user-can-delete="{{$userSessionCanDelete}}"
                                  user-admin-id="{{\App\Constants\PermissionsConstants::ROLE_ADMIN_ID}}"
                 ></users-component>
-                @endsessionHasPermission
             </div>
         </div>
     </div>

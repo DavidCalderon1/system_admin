@@ -20,22 +20,6 @@ class UserCreateControllerTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
-    }
-
-    public function testStoreUser()
-    {
-        $user = User::where('email', 'super@admin.com')->first();
-
-       $response = $this->actingAs($user)->post(route('user-create'), [
-            "name" => "Juan Camilo",
-            "email" => "juanca1158@hotmail.com",
-            "password" => "123456789",
-            "password_confirmation" => "123456789",
-        ], [
-            'Accept' => 'application/json'
-        ]);
-
-       dd($response->getContent());
+        $response->assertStatus(302);
     }
 }
