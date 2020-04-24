@@ -39,6 +39,12 @@
 
                 <!-- Right navbar links -->
                 <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item">
+                        <a id="navbarDropdown" class="nav-link" href="#" role="button" data-toggle="dropdown">
+                            {{ Auth::user()->name }} |
+                        </a>
+                    </li>
                     <!-- Notifications Dropdown Menu -->
                     <li class="nav-item">
                         <a class="nav-link text-danger"
