@@ -5,7 +5,7 @@
  */
 
 require('./bootstrap');
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
+import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -26,8 +26,10 @@ Vue.use(IconsPlugin)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
-Vue.component('users-component', require('./components/UsersComponent.vue').default);
 Vue.component('pagination-component', require('./components/PaginationComponent').default);
+Vue.component('users-component', require('./components/UsersComponent.vue').default);
+Vue.component('roles-component', require('./components/RolesComponent.vue').default);
+Vue.component('grid-component', require('./components/GridComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

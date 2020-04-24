@@ -22,4 +22,12 @@ class PermissionsConstants
     public const USER_CREATE = 'user-create';
     public const USER_UPDATE = 'user-update';
     public const USER_DELETE = 'user-delete';
+
+    /**
+     * Permisos crud modulo de roles
+     */
+    public const ROLE_LIST =   'role-list';
+    public const ROLE_CREATE = 'role-create';
+    public const ROLE_UPDATE = 'role-update';
+    public const ROLE_DELETE = 'role-delete';
 }

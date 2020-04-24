@@ -6,5 +6,9 @@ return [
         'user-create' => 'Create users',
         'user-update' => 'Update users',
         'user-delete' => 'Delete users',
+        'role-list' => 'List roles',
+        'role-create' => 'Create roles',
+        'role-update' => 'Update roles',
+        'role-delete' => 'Delete roles',
     ]
 ];

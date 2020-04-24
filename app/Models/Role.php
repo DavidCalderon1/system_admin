@@ -12,6 +12,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Role extends Model
 {
     /**
+     * @var string[]
+     */
+    protected $fillable = [
+        'name',
+        'slug'
+    ];
+
+    /**
      * @return BelongsToMany
      */
     public function permissions(): BelongsToMany
@@ -25,5 +33,16 @@ class Role extends Model
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'users_roles');
+    }
+
+    /**
+     * @param $permission
+     * @return bool
+     */
+    public function hasPermission($permission)
+    {
+        $permissionSlug = (is_array($permission)) ? $permission['slug'] : $permission->slug;
+
+        return (bool)$this->permissions->where('slug', $permissionSlug)->count();
     }
 }

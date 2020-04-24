@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="{{ asset('css/adminlte.css') }}">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ mix('js/app.js') }}" defer></script>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -143,22 +143,34 @@
                                     <p>Reportes</p>
                                 </a>
                             </li>
-                            <li class="nav-item has-treeview">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fa fa-plus-square-o"></i>
-                                    <p>Configuracion<i class="right fa fa-angle-left"></i></p>
-                                </a>
-                                @sessionHasPermission(\App\Constants\PermissionsConstants::USER_LIST)
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="{{route('users.index')}}" class="nav-link">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>Usuarios</p>
-                                        </a>
-                                    </li>
-                                </ul>
-                                @endsessionHasPermission
-                            </li>
+                            @if(auth()->user()->can(\App\Constants\PermissionsConstants::USER_LIST) || auth()->user()->can(\App\Constants\PermissionsConstants::ROLE_LIST))
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fa fa-plus-square-o"></i>
+                                        <p>Configuracion<i class="right fa fa-angle-left"></i></p>
+                                    </a>
+                                    @sessionHasPermission(\App\Constants\PermissionsConstants::USER_LIST)
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="{{route('users.index')}}" class="nav-link">
+                                                <i class="fa fa-circle-o nav-icon"></i>
+                                                <p>Usuarios</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    @endsessionHasPermission
+                                    @sessionHasPermission(\App\Constants\PermissionsConstants::ROLE_LIST)
+                                    <ul class="nav nav-treeview">
+                                        <li class="nav-item">
+                                            <a href="{{route('roles.index')}}" class="nav-link">
+                                                <i class="fa fa-circle-o nav-icon"></i>
+                                                <p>Roles</p>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    @endsessionHasPermission
+                                </li>
+                            @endif
                         </ul>
                     </nav>
                     <!-- /.sidebar-menu -->
