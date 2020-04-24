@@ -11,9 +11,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        //El orden de ejecucion es importante
+        //Crear rol Admin y usuario Administrador
         $this->call(CreateRolSuperAdmin::class);
         $this->call(CreateUserSuperAdminSeeder::class);
+
+        //Permisos de cada modulo crud
         $this->call(CreatePermissionsUsersModuleSeeder::class);
+        $this->call(CreatePermissionsRolesModuleSeeder::class);
+
     }
 }
