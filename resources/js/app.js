@@ -30,6 +30,7 @@ Vue.component('pagination-component', require('./components/PaginationComponent'
 Vue.component('users-component', require('./components/UsersComponent.vue').default);
 Vue.component('roles-component', require('./components/RolesComponent.vue').default);
 Vue.component('grid-component', require('./components/GridComponent').default);
+Vue.component('form-create-third-component', require('./components/FormCreateThirdComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

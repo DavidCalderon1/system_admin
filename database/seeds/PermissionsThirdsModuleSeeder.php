@@ -4,9 +4,9 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Class CreatePermissionsRolesModuleSeeder
+ * Class PermissionsThirdsModuleSeeder
  */
-class CreatePermissionsRolesModuleSeeder extends Seeder
+class PermissionsThirdsModuleSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -25,20 +25,20 @@ class CreatePermissionsRolesModuleSeeder extends Seeder
     {
         return [
             [
-                'name' => 'Role List',
-                'slug' => 'role-list',
+                'name' => 'Thirds List',
+                'slug' => 'third-list',
             ],
             [
-                'name' => 'Role Create',
-                'slug' => 'role-create',
+                'name' => 'Thirds Create',
+                'slug' => 'third-create',
             ],
             [
-                'name' => 'Role Update',
-                'slug' => 'role-update',
+                'name' => 'Thirds Update',
+                'slug' => 'third-update',
             ],
             [
-                'name' => 'Role Delete',
-                'slug' => 'role-delete',
+                'name' => 'Thirds Delete',
+                'slug' => 'third-delete',
             ],
         ];
     }

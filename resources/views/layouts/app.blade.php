@@ -17,8 +17,7 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('css/adminlte.css') }}">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-
-    <script src="{{ mix('js/app.js') }}" defer></script>
+    <script src="{{ mix('/js/app.js') }}" defer></script>
 </head>
 
 <body class="hold-transition sidebar-mini">
