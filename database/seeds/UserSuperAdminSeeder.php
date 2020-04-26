@@ -8,7 +8,7 @@ use App\Constants\PermissionsConstants;
 /**
  * Class UserAdminSeeder
  */
-class CreateUserSuperAdminSeeder extends Seeder
+class UserSuperAdminSeeder extends Seeder
 {
     /**
      * Run the database seeds.

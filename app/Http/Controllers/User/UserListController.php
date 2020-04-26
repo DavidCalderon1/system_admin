@@ -64,7 +64,7 @@ class UserListController extends Controller
 
         $filer = $request->validate([
             'name' => 'string',
-            'email' => 'string',
+            'email' => 'email',
         ]);
 
         $users = $this->userRepository->getPagination(5, $filer);

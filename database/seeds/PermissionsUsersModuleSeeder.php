@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\DB;
 /**
  * Class UserActionPermissionsSeeder
  */
-class CreatePermissionsUsersModuleSeeder extends Seeder
+class PermissionsUsersModuleSeeder extends Seeder
 {
     /**
      * Run the database seeds.

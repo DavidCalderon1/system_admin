@@ -2,6 +2,9 @@
 
 use Illuminate\Database\Seeder;
 
+/**
+ * Class DatabaseSeeder
+ */
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -13,11 +16,17 @@ class DatabaseSeeder extends Seeder
     {
         //Crear rol Admin y usuario Administrador
         $this->call(CreateRolSuperAdmin::class);
-        $this->call(CreateUserSuperAdminSeeder::class);
+        $this->call(UserSuperAdminSeeder::class);
+
+        //Agregar Paises, Estados y Ciudades
+        $this->call(CountriesTableSeeder::class);
+        $this->call(StatesTableSeeder::class);
+        $this->call(CitiesTableSeeder::class);
 
         //Permisos de cada modulo crud
-        $this->call(CreatePermissionsUsersModuleSeeder::class);
-        $this->call(CreatePermissionsRolesModuleSeeder::class);
+        $this->call(PermissionsUsersModuleSeeder::class);
+        $this->call(PermissionsRolesModuleSeeder::class);
+        $this->call(PermissionsThirdsModuleSeeder::class);
 
     }
 }

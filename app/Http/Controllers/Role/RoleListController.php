@@ -26,6 +26,7 @@ class RoleListController extends Controller
      */
     public function __construct(EloquentRoleRepository $roleRepository)
     {
+        $this->middleware('auth');
         $this->roleRepository = $roleRepository;
     }
 

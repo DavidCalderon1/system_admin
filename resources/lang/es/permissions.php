@@ -1,14 +1,21 @@
 <?php
+
+use App\Constants\PermissionsConstants;
+
 return [
     'unauthorized' => 'No tienes permisos para realizar esta acción.',
     'slug' => [
-        'user-list' => 'Listar usuarios',
-        'user-create' => 'Crear usuarios',
-        'user-update' => 'Actualizar usuarios',
-        'user-delete' => 'Eliminar usuarios',
-        'role-list' => 'Listar roles',
-        'role-create' => 'Crear roles',
-        'role-update' => 'Actualizar roles',
-        'role-delete' => 'Eliminar roles',
+        PermissionsConstants::USER_LIST => 'Listar usuarios',
+        PermissionsConstants::USER_CREATE => 'Crear usuarios',
+        PermissionsConstants::USER_UPDATE => 'Actualizar usuarios',
+        PermissionsConstants::USER_DELETE => 'Eliminar usuarios',
+        PermissionsConstants::ROLE_LIST => 'Listar roles',
+        PermissionsConstants::ROLE_CREATE => 'Crear roles',
+        PermissionsConstants::ROLE_UPDATE => 'Actualizar roles',
+        PermissionsConstants::ROLE_DELETE => 'Eliminar roles',
+        PermissionsConstants::THIRD_LIST => 'Listar Terceros',
+        PermissionsConstants::THIRD_CREATE => 'Crear Terceros',
+        PermissionsConstants::THIRD_UPDATE => 'Actualizar Terceros',
+        PermissionsConstants::THIRD_DELETE => 'Eliminar Terceros',
     ]
 ];

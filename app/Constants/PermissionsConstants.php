@@ -26,8 +26,16 @@ class PermissionsConstants
     /**
      * Permisos crud modulo de roles
      */
-    public const ROLE_LIST =   'role-list';
+    public const ROLE_LIST = 'role-list';
     public const ROLE_CREATE = 'role-create';
     public const ROLE_UPDATE = 'role-update';
     public const ROLE_DELETE = 'role-delete';
+
+    /**
+     * Permisos crud modulo de Terceros
+     */
+    public const THIRD_LIST = 'third-list';
+    public const THIRD_CREATE = 'third-create';
+    public const THIRD_UPDATE = 'third-update';
+    public const THIRD_DELETE = 'third-delete';
 }

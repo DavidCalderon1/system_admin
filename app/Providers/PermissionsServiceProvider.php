@@ -41,8 +41,8 @@ class PermissionsServiceProvider extends ServiceProvider
 
         //Blade directives
         Blade::directive('sessionHasPermission', function ($permission) use ($superAdminRole) {
-            return "<?php if( (auth()->check() && auth()->user()->can({$permission}))
-            || (auth()->check() && auth()->user()->hasRole({$superAdminRole}))) : ?>";
+            return "<?php if( (auth()->check() && auth()->user()->can('{$permission}'))
+            || (auth()->check() && auth()->user()->hasRole('{$superAdminRole}'))) : ?>";
         });
 
         Blade::directive('endsessionHasPermission', function () {

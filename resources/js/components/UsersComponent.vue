@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" id="users-table">
         <div class="form-group row">
             <div class="col-md-6">
                 <div class="input-group">
@@ -23,13 +23,16 @@
         </div>
         <div class="table-responsive">
 
-            <table class="table table-bordered">
+            <table class="table table-bordered table-sm">
+                <thead class="thead-light">
                 <tr>
                     <th>Nombre</th>
                     <th>Correo</th>
                     <th>Roles</th>
                     <th>Acciones</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr v-for="user in data">
                     <td>{{ user.name }}</td>
                     <td>{{ user.email }}</td>
@@ -37,20 +40,20 @@
                     </td>
                     <td>
                         <a v-if="userCanUpdate == 1" v-bind:href="getRouteWithUserId(userEditRoute, user.id)"
-                           class="btn btn-warning btn-md">
+                           class="btn btn-warning btn-sm">
                             <i class="fa fa-pencil"></i>
                         </a>
                         <a v-if="userCanDelete == 1 && user.id != userAdminId" href="javascript:;"
                            v-on:click="destroyUser(user.id)"
-                           class="btn btn-danger btn-md">
+                           class="btn btn-danger btn-sm">
                             <i class="fa fa-trash"></i>
                         </a>
                     </td>
                 </tr>
-                <br>
-                <pagination-component :pagination="pagination" @paginate="getUsers()" :offset="1">
-                </pagination-component>
+                </tbody>
             </table>
+            <pagination-component :pagination="pagination" @paginate="getUsers()" :offset="1">
+            </pagination-component>
         </div>
     </div>
 </template>
@@ -132,3 +135,8 @@
         },
     }
 </script>
+<style>
+    #users-table table > tbody {
+        font-size: 14px;
+    }
+</style>

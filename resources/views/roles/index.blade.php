@@ -8,7 +8,6 @@
     @endif
     <div class="row justify-content-center">
         <div class="col-md-12">
-            @sessionHasPermission(\App\Constants\PermissionsConstants::ROLE_LIST)
             <roles-component
                 role-list-route="{{route('roles.list')}}"
                 role-create-route="{{route('roles.create')}}"
@@ -19,7 +18,6 @@
                 user-can-delete="{{$userSessionCanDelete}}"
                 role-admin-id="{{\App\Constants\PermissionsConstants::ROLE_ADMIN_ID}}"
             ></roles-component>
-            @endsessionHasPermission
         </div>
     </div>
 @endsection
