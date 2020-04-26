@@ -49,7 +49,7 @@ class Controller extends BaseController
      * @param $request
      * @return bool
      */
-    public function hasPermission(string $slug): bool
+    public function hasPermission(string $slug)
     {
         return Auth::user()->can($slug);
     }

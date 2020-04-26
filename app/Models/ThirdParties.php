@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -12,26 +13,46 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class ThirdParties extends Model
 {
     /**
-     * @return HasOne
+     * @var string[]
      */
-    public function country(): HasOne
+    protected $fillable = [
+        'identity_type',
+        'identity_number',
+        'type_person',
+        'type',
+        'name',
+        'last_name',
+        'address',
+        'country_id',
+        'state_id',
+        'city_id',
+        'phone_number',
+        'phone_extension',
+        'email',
+        'description',
+    ];
+
+    /**
+     * @return BelongsTo
+     */
+    public function country():BelongsTo
     {
-        return $this->hasOne(Country::class);
+        return $this->belongsTo(Country::class);
     }
 
     /**
-     * @return HasOne
+     * @return BelongsTo
      */
-    public function state(): HasOne
+    public function state(): BelongsTo
     {
-        return $this->hasOne(State::class);
+        return $this->belongsTo(State::class);
     }
 
     /**
-     * @return HasOne
+     * @return BelongsTo
      */
-    public function city(): HasOne
+    public function city(): BelongsTo
     {
-        return $this->hasOne(City::class);
+        return $this->belongsTo(City::class);
     }
 }

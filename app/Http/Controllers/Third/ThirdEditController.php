@@ -7,15 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ThirdRequest;
 use App\Repositories\Interfaces\CountryRepositoryInterface;
 use App\Repositories\Interfaces\ThirdPartiesRepositoryInterface;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Session\Store as SessionStore;
-use Illuminate\View\View;
 
 /**
- * Class ThirdCreateController
+ * Class ThirdEditController
  * @package App\Http\Controllers\Third
  */
-class ThirdCreateController extends Controller
+class ThirdEditController extends Controller
 {
     /**
      * @var ThirdPartiesRepositoryInterface
@@ -28,12 +26,12 @@ class ThirdCreateController extends Controller
     protected $countryRepository;
 
     /**
-     * @var SessionStore
+     * @var
      */
     protected $session;
 
     /**
-     * ThirdCreateController constructor.
+     * ThirdEditController constructor.
      * @param ThirdPartiesRepositoryInterface $thirdPartiesRepository
      * @param CountryRepositoryInterface $countryRepository
      * @param SessionStore $session
@@ -52,29 +50,35 @@ class ThirdCreateController extends Controller
     }
 
     /**
-     * @return View
+     * @param int $thirdId
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(): View
+    public function edit(int $thirdId)
     {
-        if (!$this->hasPermission(PermissionsConstants::THIRD_CREATE)) {
+        if (!$this->hasPermission(PermissionsConstants::THIRD_UPDATE)) {
             abort(404);
         }
 
-        return view('thirds.create');
+        $third = $this->thirdPartiesRepository->get($thirdId);
+
+        return view('thirds.edit', compact('third'));
     }
 
     /**
      * @param ThirdRequest $request
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(ThirdRequest $request): JsonResponse
+    public function update(ThirdRequest $request)
     {
-        if (!$this->hasPermission(PermissionsConstants::THIRD_CREATE)) {
+        if (!$this->hasPermission(PermissionsConstants::THIRD_UPDATE)) {
             return $this->response(401);
         }
 
         try {
+            $id = $request->get('id');
+
             $request = $request->validated();
+
             $request['description'] = (!empty($request['description'])) ? $request['description'] : '';
             $request['last_name'] = (!empty($request['last_name'])) ? $request['last_name'] : '';
             $request['phone_extension'] = (!empty($request['phone_extension'])) ? $request['phone_extension'] : '';
@@ -83,17 +87,18 @@ class ThirdCreateController extends Controller
 
             $request['country_id'] = $country['id'];
 
-            $saved = $this->thirdPartiesRepository->store($request);
+            $saved = $this->thirdPartiesRepository->update($id, $request);
 
             if (!$saved) {
                 throw new \Exception(__('thirds.an_error_has_occurred'), 500);
             }
 
-            $this->session->flash('message', __('thirds.save_success'));
+            $this->session->flash('message', __('thirds.update_success'));
 
             return $this->response(201);
         } catch (\Exception $exception) {
             return $this->response($exception->getCode(), $exception->getMessage());
         }
+
     }
 }

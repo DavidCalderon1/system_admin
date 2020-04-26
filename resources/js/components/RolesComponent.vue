@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container" id="roles-table">
         <div class="form-group row">
             <div class="col-md-6">
                 <div class="input-group">
@@ -22,34 +22,36 @@
             </div>
         </div>
         <div class="table-responsive">
-
-            <table class="table table-bordered">
+            <table class="table table-bordered table-sm">
+                <thead class="thead-light">
                 <tr>
                     <th>Nombre</th>
                     <th>Alias</th>
                     <th>Acciones</th>
                 </tr>
+                </thead>
+                <tbody>
                 <tr v-for="roles in data">
                     <td>{{ roles.name }}</td>
                     <td>{{ roles.slug }}</td>
                     <td>
                         <a v-if="userCanUpdate == 1 && roles.id != roleAdminId"
                            v-bind:href="getRouteWithId(roleEditRoute, roles.id)"
-                           class="btn btn-warning btn-md">
+                           class="btn btn-warning btn-sm">
                             <i class="fa fa-pencil"></i>
                         </a>
 
                         <a v-if="userCanDelete == 1 && roles.id != roleAdminId" href="javascript:;"
                            v-on:click="destroy(roles.id)"
-                           class="btn btn-danger btn-md">
+                           class="btn btn-danger btn-sm">
                             <i class="fa fa-trash"></i>
                         </a>
                     </td>
                 </tr>
-                <br>
-                <pagination-component :pagination="pagination" @paginate="getRoles()" :offset="1">
-                </pagination-component>
+                </tbody>
             </table>
+            <pagination-component :pagination="pagination" @paginate="getRoles()" :offset="1">
+            </pagination-component>
         </div>
     </div>
 </template>
@@ -132,3 +134,8 @@
         },
     }
 </script>
+<style>
+    #roles-table table > tbody {
+        font-size: 14px;
+    }
+</style>

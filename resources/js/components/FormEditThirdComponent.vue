@@ -1,5 +1,5 @@
 <template>
-    <div id="create-third">
+    <div id="edit-third">
         <form v-on:submit.prevent="sendRequest">
             <div class="form-row">
                 <div class="form-group col-md-2">
@@ -194,8 +194,6 @@
             <button class="btn btn-success btn-sm">Crear</button>
         </form>
         <button class="btn btn-danger ml-1 btn-sm" @click="back">Cancelar</button>
-        <button class="btn btn-info btn-sm" @click="clearRequest">Limpiar</button>
-
     </div>
 </template>
 
@@ -203,12 +201,12 @@
     export default {
         name: "FormCreateThirdComponent",
         props: {
-            routeStoreThird: String,
+            routeUpdateThird: String,
             routeIndexThird: String,
+            thirdToEditData: String,
             routeAllCountries: String,
             routeStatesByCountryCode: String,
             routeCitiesByStateId: String,
-            countryCodeSelectedDefault: String,
         },
         data() {
             return {
@@ -246,14 +244,33 @@
                     email: '',
                     description: '',
                 },
-                errors: {}
+                errors: {},
+                thirdToEdit: {}
             }
         },
         mounted() {
-            this.request.country_code = this.countryCodeSelectedDefault;
+            this.thirdToEdit = JSON.parse(this.thirdToEditData);
+
+            this.request.id = this.thirdToEdit.id;
+            this.request.identity_type = this.thirdToEdit.identity_type;
+            this.request.identity_number = this.thirdToEdit.identity_number;
+            this.request.type_person = this.thirdToEdit.type_person;
+            this.request.type = this.thirdToEdit.type;
+            this.request.name = this.thirdToEdit.name;
+            this.request.last_name = this.thirdToEdit.last_name;
+            this.request.address = this.thirdToEdit.address;
+            this.request.phone_number = this.thirdToEdit.phone_number;
+            this.request.phone_extension = this.thirdToEdit.phone_extension;
+            this.request.email = this.thirdToEdit.email;
+            this.request.description = this.thirdToEdit.description;
+
             axios.get(this.routeAllCountries)
                 .then((response) => {
                     this.countries = response.data;
+                    this.request.country_code = this.thirdToEdit.country.code;
+                    this.request.state_id = this.thirdToEdit.state_id
+                    this.request.city_id = this.thirdToEdit.city_id
+
                     this.getStatesByCountryCode()
                 })
                 .catch((error) => {
@@ -263,7 +280,13 @@
         computed: {},
         methods: {
             getStatesByCountryCode() {
-                this.request.city_id = 0;
+
+                if (this.request.country_code === this.thirdToEdit.country.code) {
+                    this.request.city_id = this.thirdToEdit.city_id;
+                } else {
+                    this.request.city_id = 0;
+                }
+
                 this.cities = [];
 
                 let url = this.getRouteWithId(this.routeStatesByCountryCode, this.request.country_code);
@@ -271,6 +294,7 @@
                 axios.get(url)
                     .then((response) => {
                         this.states = response.data;
+                        this.getCityByStateId();
                     })
                     .catch((error) => {
                         console.log('error country.');
@@ -287,16 +311,17 @@
                         console.log('error state.');
                     });
             },
-            getRouteWithId: function (route, roleId) {
-                return route.replace('__ID__', roleId);
+            getRouteWithId: function (route, id) {
+                return route.replace('__ID__', id);
             },
             sendRequest() {
-                axios.post(this.routeStoreThird, this.request)
+                console.log(this.thirdToEditData)
+                let url = this.getRouteWithId(this.routeUpdateThird, this.thirdToEdit.id);
+                axios.post(url, this.request)
                     .then((response) => {
                         window.location.href = this.routeIndexThird;
                     })
                     .catch((error) => {
-                        console.log(error.response.data.message)
                         if (error.response.status == 422) {
                             this.errors = error.response.data.errors;
                         } else if (typeof error.response.data.message != 'undefined') {
@@ -309,24 +334,6 @@
             validate(input) {
                 return typeof this.errors[input] != 'undefined';
             },
-            clearRequest() {
-                this.request = {
-                    identity_type: 'CC',
-                    identity_number: '',
-                    type_person: 'natural',
-                    type: 'client',
-                    name: '',
-                    address: '',
-                    country_code: 'CO',
-                    state_id: 0,
-                    city_id: 0,
-                    phone_number: '',
-                    phone_extension: '',
-                    email: '',
-                    description: '',
-                }
-                this.errors = {}
-            },
             back() {
                 window.location.href = this.routeIndexThird
             },
@@ -334,11 +341,11 @@
     }
 </script>
 <style>
-    #create-third label {
+    #edit-third label {
         font-size: 12px;
     }
 
-    #create-third .btn-success {
+    #edit-third .btn-success {
         float: left;
     }
 </style>

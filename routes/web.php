@@ -46,9 +46,13 @@ Route::group(['prefix' => 'admin'], function () {
 
     //Terceros CRUD
     Route::group(['prefix' => 'thirds'], function () {
+        Route::get('/', 'Third\ThirdListController@index')->name('thirds.index');
+        Route::get('/list', 'Third\ThirdListController@list')->name('thirds.list');
         Route::get('/create', 'Third\ThirdCreateController@create')->name('thirds.create');
         Route::post('/store', 'Third\ThirdCreateController@store')->name('thirds.store');
-
+        Route::get('/edit/{thirdId}', 'Third\ThirdEditController@edit')->name('thirds.edit');
+        Route::post('/update/{third}', 'Third\ThirdEditController@update')->name('thirds.update');
+        Route::delete('/destroy/{third}', 'Third\ThirdDeleteController')->name('thirds.destroy');
     });
 
     //Location

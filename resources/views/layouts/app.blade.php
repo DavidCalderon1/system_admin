@@ -97,6 +97,14 @@
                                     <p>Indicadores</p>
                                 </a>
                             </li>
+                            @if(auth()->user()->can(\App\Constants\PermissionsConstants::THIRD_LIST))
+                                <li class="nav-item">
+                                    <a href="{{route('thirds.index')}}" class="nav-link">
+                                        <i class="nav-icon fa fa-male"></i>
+                                        <p>Terceros</p>
+                                    </a>
+                                </li>
+                            @endif
                             <li class="nav-item has-treeview">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon fa fa-pie-chart"></i>
@@ -154,26 +162,26 @@
                                         <i class="nav-icon fa fa-plus-square-o"></i>
                                         <p>Configuracion<i class="right fa fa-angle-left"></i></p>
                                     </a>
-                                    @sessionHasPermission(\App\Constants\PermissionsConstants::USER_LIST)
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{route('users.index')}}" class="nav-link">
-                                                <i class="fa fa-circle-o nav-icon"></i>
-                                                <p>Usuarios</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    @endsessionHasPermission
-                                    @sessionHasPermission(\App\Constants\PermissionsConstants::ROLE_LIST)
-                                    <ul class="nav nav-treeview">
-                                        <li class="nav-item">
-                                            <a href="{{route('roles.index')}}" class="nav-link">
-                                                <i class="fa fa-circle-o nav-icon"></i>
-                                                <p>Roles</p>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                    @endsessionHasPermission
+                                    @if(auth()->user()->can(\App\Constants\PermissionsConstants::USER_LIST))
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{route('users.index')}}" class="nav-link">
+                                                    <i class="fa fa-circle-o nav-icon"></i>
+                                                    <p>Usuarios</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endif
+                                    @if(auth()->user()->can(\App\Constants\PermissionsConstants::ROLE_LIST))
+                                        <ul class="nav nav-treeview">
+                                            <li class="nav-item">
+                                                <a href="{{route('roles.index')}}" class="nav-link">
+                                                    <i class="fa fa-circle-o nav-icon"></i>
+                                                    <p>Roles</p>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    @endif
                                 </li>
                             @endif
                         </ul>
@@ -230,5 +238,7 @@
 <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('js/adminlte.js') }}"></script>
+@yield('scripts')
+
 </body>
 </html>

@@ -16,6 +16,10 @@ class EloquentCountryRepository implements CountryRepositoryInterface
      */
     protected $country;
 
+    /**
+     * EloquentCountryRepository constructor.
+     * @param Country $country
+     */
     public function __construct(Country $country)
     {
         $this->country = $country;
@@ -29,6 +33,10 @@ class EloquentCountryRepository implements CountryRepositoryInterface
         return $this->country->all()->toArray();
     }
 
+    /**
+     * @param string $countryCode
+     * @return array
+     */
     public function getCountryByCode(string $countryCode): array
     {
         return $this->country->where('code', $countryCode)->first()->toArray();

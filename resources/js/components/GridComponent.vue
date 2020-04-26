@@ -1,11 +1,12 @@
 <template>
-    <div class="container">
+    <div class="container" id="grid">
         <div class="form-group row">
             <div class="col-md-6">
                 <div class="input-group">
                     <select class="form-control col-md-3" id="opcion" name="opcion" v-model="filter" @change="getData">
-                        <option value="name">Nombre</option>
-                        <option value="slug">Alias</option>
+                        <option v-for="field in fields"
+                                v-bind:value="field.key">{{field.label}}
+                        </option>
                     </select>
                     <input type="text" id="texto" name="texto" class="form-control" v-model="search"
                            v-on:keyup.enter="getData"
@@ -16,38 +17,43 @@
                 </div>
             </div>
             <div class="col-md-6" v-if="userCanCreate == 1">
-                <a v-bind:href="roleCreateRoute" class="btn btn-success btn-md pull-right">
+                <a v-bind:href="createRoute" class="btn btn-success btn-md pull-right">
                     <i class="fa fa-plus">Nuevo</i>
                 </a>
             </div>
         </div>
         <div class="table-responsive">
 
-            <table class="table table-bordered">
+            <table class="table table-bordered table-sm" ref="table">
+                <thead class="thead-light">
                 <tr>
-                    <th>Nombre</th>
-                    <th>Alias</th>
+                    <th v-for="field in fields">{{field.label}}</th>
                     <th>Acciones</th>
                 </tr>
-                <tr v-for="roles in data">
-                    <td>{{ roles.name }}</td>
-                    <td>{{ roles.slug }}</td>
+                </thead>
+                <tbody>
+                <tr v-for="(body) in data">
+                    <td> {{body.name}} {{body.last_name}}</td>
+                    <td> {{body.identity_type}}</td>
+                    <td> {{body.identity_number}}</td>
+                    <td> {{body.email}}</td>
+                    <td> {{body.phone_number}}</td>
                     <td>
-                        <a v-if="userCanUpdate == 1" v-bind:href="getRouteWithId(roleEditRoute, roles.id)"
-                           class="btn btn-warning btn-md">
+                        <a v-if="userCanUpdate == 1" v-bind:href="getRouteWithId(editRoute, body.id)"
+                           class="btn btn-warning btn-sm">
                             <i class="fa fa-pencil"></i>
                         </a>
                         <a v-if="userCanDelete == 1" href="javascript:;"
-                           v-on:click="destroy(roles.id)"
-                           class="btn btn-danger btn-md">
+                           v-on:click="destroy(body.id)"
+                           class="btn btn-danger btn-sm">
                             <i class="fa fa-trash"></i>
                         </a>
                     </td>
                 </tr>
-                <br>
-                <pagination-component :pagination="pagination" @paginate="getData()" :offset="1">
-                </pagination-component>
+                </tbody>
             </table>
+            <pagination-component :pagination="pagination" @paginate="getData()" :offset="1">
+            </pagination-component>
         </div>
     </div>
 </template>
@@ -55,32 +61,56 @@
 <script>
     export default {
         name: 'grid-component',
-        props: [
-            'fields',
-            'key',
-            'listRoute',
-            'createRoute',
-            'editRoute',
-            'destroyRoute',
-            'userCanCreate',
-            'userCanUpdate',
-            'userCanDelete',
-        ],
-        mounted() {
-            this.getData();
+        props: {
+            listRoute: {
+                type: String,
+                required: true
+            },
+            createRoute: {
+                type: String,
+                required: true
+            },
+            editRoute: {
+                type: String,
+                required: true
+            },
+            destroyRoute: {
+                type: String,
+                required: true
+            },
+            userCanCreate: {
+                type: String,
+                required: true
+            },
+            userCanUpdate: {
+                type: String,
+                required: true
+            },
+            userCanDelete: {
+                type: String,
+                required: true
+            },
         },
         data() {
             return {
                 fields: [
                     {key: 'name', label: 'Nombre'},
-                    {key: 'slug', label: 'Alias'},
-                    {key: 'actions', label: 'Acciones'}
+                    {key: 'identity_type', label: 'Tipo'},
+                    {key: 'identity_number', label: 'Documento'},
+                    {key: 'email', label: 'Correo'},
+                    {key: 'phone_number', label: 'Teléfono'}
                 ],
                 data: {},
-                pagination: {},
+                pagination: {
+                    current_page: 1
+                },
                 filter: 'name',
                 search: ''
             }
+        },
+        mounted() {
+            console.log(this.userCanCreate)
+            this.getData()
         },
         methods: {
             getData() {
@@ -94,8 +124,9 @@
 
                 axios.get(url)
                     .then((response) => {
-                        this.data = response.data.data.roles;
-                        this.pagination = response.data.data.pagination;
+                        this.data = response.data.data;
+                        this.pagination = response.data.pagination;
+                        this.$forceUpdate();
                     })
                     .catch((error) => {
                         if (error.response.status === 404) {
@@ -129,3 +160,8 @@
         },
     }
 </script>
+<style>
+    #grid table > tbody {
+        font-size: 12px;
+    }
+</style>
