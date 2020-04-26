@@ -32,9 +32,11 @@ class ThirdRequest extends FormRequest
         $typePersonIn = $this->getIn(ThirdsConstants::VALUES_TYPE_PERSON);
         $typeRegisterIn = $this->getIn(ThirdsConstants::VALUES_TYPE_REGISTER);
 
+        $unique = (!empty($this->id)) ? 'unique:third_parties,identity_number,' . $this->id : 'unique:third_parties';
+
         return [
             "identity_type" => ['required', $identityTypeIn],
-            "identity_number" => ['required', 'integer'],
+            "identity_number" => ['required', 'integer', $unique],
             "type_person" => ['required', $typePersonIn],
             "type" => ['required', $typeRegisterIn],
             "name" => ['required'],
