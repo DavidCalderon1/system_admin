@@ -21,8 +21,9 @@ Auth::routes();
 
 Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 
-Route::group(['prefix' => 'admin'], function () {
-    //Users CRUD
+Route::group(['prefix' => 'config'], function () {
+
+//Users CRUD
     Route::group(['prefix' => 'users'], function () {
         Route::get('/', 'User\UserListController@index')->name('users.index');
         Route::get('/list', 'User\UserListController@list')->name('user.list');
@@ -43,25 +44,49 @@ Route::group(['prefix' => 'admin'], function () {
         Route::post('/update/{role}', 'Role\RoleUpdateController@update')->name('roles.update');
         Route::delete('/destroy/{role}', 'Role\RoleDeleteController')->name('roles.destroy');
     });
+});
 
-    //Terceros CRUD
-    Route::group(['prefix' => 'thirds'], function () {
-        Route::get('/', 'Third\ThirdListController@index')->name('thirds.index');
-        Route::get('/list', 'Third\ThirdListController@list')->name('thirds.list');
-        Route::get('/create', 'Third\ThirdCreateController@create')->name('thirds.create');
-        Route::post('/store', 'Third\ThirdCreateController@store')->name('thirds.store');
-        Route::get('/edit/{thirdId}', 'Third\ThirdEditController@edit')->name('thirds.edit');
-        Route::post('/update/{third}', 'Third\ThirdEditController@update')->name('thirds.update');
-        Route::delete('/destroy/{third}', 'Third\ThirdDeleteController')->name('thirds.destroy');
-    });
+//Terceros CRUD
+Route::group(['prefix' => 'thirds'], function () {
+    Route::get('/', 'Third\ThirdListController@index')->name('thirds.index');
+    Route::get('/list', 'Third\ThirdListController@list')->name('thirds.list');
+    Route::get('/create', 'Third\ThirdCreateController@create')->name('thirds.create');
+    Route::post('/store', 'Third\ThirdCreateController@store')->name('thirds.store');
+    Route::get('/edit/{thirdId}', 'Third\ThirdEditController@edit')->name('thirds.edit');
+    Route::post('/update/{third}', 'Third\ThirdEditController@update')->name('thirds.update');
+    Route::delete('/destroy/{third}', 'Third\ThirdDeleteController')->name('thirds.destroy');
+});
 
-    //Location
-    Route::group(['prefix' => 'location'], function () {
-        Route::get('/countries', 'Location\LocationController@getAllCountries')
-            ->name('countries.all');
-        Route::get('/statesByCountryCode/{country_code}', 'Location\LocationController@getStatesByCountryCode')
-            ->name('states.statesByCountryCode');
-        Route::get('/citiesByStateId/{state_id}', 'Location\LocationController@getCitiesByStateId')
-            ->name('cities.citiesByStateId');
+//Location
+Route::group(['prefix' => 'location'], function () {
+    Route::get('/countries', 'Location\LocationController@getAllCountries')
+        ->name('countries.all');
+    Route::get('/statesByCountryCode/{country_code}', 'Location\LocationController@getStatesByCountryCode')
+        ->name('states.statesByCountryCode');
+    Route::get('/citiesByStateId/{state_id}', 'Location\LocationController@getCitiesByStateId')
+        ->name('cities.citiesByStateId');
+});
+
+//Inventory
+Route::group(['prefix' => 'inventory'], function () {
+    //Products Category
+    Route::group(['prefix' => 'categories'], function () {
+        Route::get('/', 'Inventory\Category\CategoryListController@index')->name('inventory.category.index');
+        Route::get('/list', 'Inventory\Category\CategoryListController@list')->name('inventory.category.list');
+        Route::get('/create', 'Inventory\Category\CategoryCreateController@create')->name('inventory.category.create');
+        Route::post('/store', 'Inventory\Category\CategoryCreateController@store')->name('inventory.category.store');
+        Route::get('/edit/{id}', 'Inventory\Category\CategoryEditController@edit')->name('inventory.category.edit');
+        Route::post('/update/{category}', 'Inventory\Category\CategoryEditController@update')->name('inventory.category.update');
+        Route::delete('/destroy/{id}', 'Inventory\Category\CategoryDeleteController')->name('inventory.category.destroy');
     });
+});
+
+Route::group(['prefix' => 'warehouses'], function () {
+    Route::get('/', 'Warehouse\WarehouseListController@index')->name('warehouses.index');
+    Route::get('/list', 'Warehouse\WarehouseListController@list')->name('warehouses.list');
+//    Route::get('/create', 'Warehouse\WarehouseCreateController@create')->name('warehouses.create');
+//    Route::post('/store', 'Warehouse\WarehouseCreateController@store')->name('warehouses.store');
+//    Route::get('/edit/{id}', 'Warehouse\WarehouseEditController@edit')->name('warehouses.edit');
+//    Route::post('/update/{category}', 'Warehouse\WarehouseEditController@update')->name('warehouses.update');
+//    Route::delete('/destroy/{id}', 'Warehouse\WarehouseDeleteController')->name('warehouses.destroy');
 });

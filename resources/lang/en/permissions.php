@@ -17,5 +17,9 @@ return [
         PermissionsConstants::THIRD_CREATE => 'Create Third Parties',
         PermissionsConstants::THIRD_UPDATE => 'Update Third Parties',
         PermissionsConstants::THIRD_DELETE => 'Delete Third Parties',
+        PermissionsConstants::INVENTORY_CATEGORY_LIST => 'List Category Products',
+        PermissionsConstants::INVENTORY_CATEGORY_CREATE => 'Create Category Products',
+        PermissionsConstants::INVENTORY_CATEGORY_UPDATE => 'Update Category Products',
+        PermissionsConstants::INVENTORY_CATEGORY_DELETE => 'Delete Category Products',
     ]
 ];

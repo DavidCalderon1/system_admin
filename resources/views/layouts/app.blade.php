@@ -16,7 +16,9 @@
     <link rel="stylesheet" href="{{ asset('css/ionicons.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('css/adminlte.css') }}">
+
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
     <script src="{{ mix('/js/app.js') }}" defer></script>
 </head>
 
@@ -105,6 +107,35 @@
                                     </a>
                                 </li>
                             @endif
+
+
+                            <li class="nav-item has-treeview">
+                                <a href="#" class="nav-link">
+                                    <i class="nav-icon fas fa-sitemap"></i>
+                                    <p>Inventario<i class="right fa fa-angle-left"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="pages/charts/chartjs.html" class="nav-link">
+                                            <i class="fa fa-circle-o nav-icon"></i>
+                                            <p>Productos</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{route('inventory.category.index')}}" class="nav-link">
+                                            <i class="fa fa-circle-o nav-icon"></i>
+                                            <p>Categorias</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="pages/charts/flot.html" class="nav-link">
+                                            <i class="fa fa-circle-o nav-icon"></i>
+                                            <p>Bodegas</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+
                             <li class="nav-item has-treeview">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon fa fa-pie-chart"></i>

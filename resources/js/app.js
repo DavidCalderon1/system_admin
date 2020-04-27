@@ -32,6 +32,8 @@ Vue.component('roles-component', require('./components/RolesComponent.vue').defa
 Vue.component('grid-component', require('./components/GridComponent').default);
 Vue.component('form-create-third-component', require('./components/FormCreateThirdComponent').default);
 Vue.component('form-edit-third-component', require('./components/FormEditThirdComponent').default);
+Vue.component('inventory-categories-component', require('./components/InventoryCategoriesComponent').default);
+Vue.component('warehouses-component', require('./components/WarehousesComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

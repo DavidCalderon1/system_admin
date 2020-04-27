@@ -4,18 +4,22 @@ namespace App\Providers;
 
 use App\Repositories\EloquentCityRepository;
 use App\Repositories\EloquentCountryRepository;
+use App\Repositories\EloquentInventoryCategoryRepository;
 use App\Repositories\EloquentPermissionRepository;
 use App\Repositories\EloquentRoleRepository;
 use App\Repositories\EloquentStateRepository;
 use App\Repositories\EloquentThirdPartiesRepository;
 use App\Repositories\EloquentUserRepository;
+use App\Repositories\EloquentWarehousesRepository;
 use App\Repositories\Interfaces\CityRepositoryInterface;
 use App\Repositories\Interfaces\CountryRepositoryInterface;
+use App\Repositories\Interfaces\InventoryCategoryRepositoryInterface;
 use App\Repositories\Interfaces\PermissionRepositoryInterface;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Repositories\Interfaces\StateRepositoryInterface;
 use App\Repositories\Interfaces\ThirdPartiesRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Repositories\Interfaces\WarehousesRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -36,6 +40,8 @@ class AppServiceProvider extends ServiceProvider
         StateRepositoryInterface::class => EloquentStateRepository::class,
         CityRepositoryInterface::class => EloquentCityRepository::class,
         ThirdPartiesRepositoryInterface::class => EloquentThirdPartiesRepository::class,
+        InventoryCategoryRepositoryInterface::class => EloquentInventoryCategoryRepository::class,
+        WarehousesRepositoryInterface::class => EloquentWarehousesRepository::class,
     ];
 
     /**

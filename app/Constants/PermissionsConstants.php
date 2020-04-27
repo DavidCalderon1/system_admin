@@ -38,4 +38,21 @@ class PermissionsConstants
     public const THIRD_CREATE = 'third-create';
     public const THIRD_UPDATE = 'third-update';
     public const THIRD_DELETE = 'third-delete';
+
+
+    /**
+     * Permisos crud modulo de Categorias de productos
+     */
+    public const INVENTORY_CATEGORY_LIST = 'inventory-category-list';
+    public const INVENTORY_CATEGORY_CREATE = 'inventory-category-create';
+    public const INVENTORY_CATEGORY_UPDATE = 'inventory-category-update';
+    public const INVENTORY_CATEGORY_DELETE = 'inventory-category-delete';
+
+    /**
+     * Permisos crud modulo de bodegas
+     */
+    public const WAREHOUSE_LIST = 'warehouse-list';
+    public const WAREHOUSE_CREATE = 'warehouse-create';
+    public const WAREHOUSE_UPDATE = 'warehouse-update';
+    public const WAREHOUSE_DELETE = 'warehouse-delete';
 }

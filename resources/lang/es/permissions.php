@@ -17,5 +17,9 @@ return [
         PermissionsConstants::THIRD_CREATE => 'Crear Terceros',
         PermissionsConstants::THIRD_UPDATE => 'Actualizar Terceros',
         PermissionsConstants::THIRD_DELETE => 'Eliminar Terceros',
+        PermissionsConstants::INVENTORY_CATEGORY_LIST => 'Listar Categorias de Productos',
+        PermissionsConstants::INVENTORY_CATEGORY_CREATE => 'Crear Categorias de Productos',
+        PermissionsConstants::INVENTORY_CATEGORY_UPDATE => 'Actualizar Categorias de Productos',
+        PermissionsConstants::INVENTORY_CATEGORY_DELETE => 'Eliminar Categorias de Productos',
     ]
 ];
