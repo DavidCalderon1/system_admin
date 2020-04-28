@@ -66,8 +66,8 @@ class EloquentInventoryCategoryRepository implements InventoryCategoryRepository
     public function update(int $id, $data)
     {
         return $this->inventoryCategory->where('id', $id)->update([
-            'name' => $data['name'],
-            'description' => $data['description']
+            'name' => strtoupper($data['name']),
+            'description' => strtoupper($data['description']),
         ]);
     }
 

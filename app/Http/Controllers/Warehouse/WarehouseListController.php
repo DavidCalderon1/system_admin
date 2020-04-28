@@ -52,12 +52,10 @@ class WarehouseListController extends Controller
         }
 
         $filer = $request->validate([
-            'name' => 'string',
-            'country' => 'string',
-            'state' => 'string',
-            'city' => 'string',
-            'address' => 'string',
-            'phone_number' => 'string',
+            'name' => 'string|nullable',
+            'country' => 'string|nullable',
+            'address' => 'string|nullable',
+            'phone_number' => 'string|nullable',
         ]);
 
         $warehouses = $this->warehousesRepository->getPagination(10, $filer);

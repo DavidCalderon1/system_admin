@@ -11,9 +11,9 @@
             <div class="col-md-12">
                 <warehouses-component
                     list-route="{{route('warehouses.list')}}"
-                    create-route="{{route('thirds.create')}}"
-                    edit-route="{{route('thirds.edit','__ID__')}}"
-                    destroy-route="{{route('thirds.destroy','__ID__')}}"
+                    create-route="{{route('warehouses.create')}}"
+                    edit-route="{{route('warehouses.edit','__ID__')}}"
+                    destroy-route="{{route('warehouses.destroy','__ID__')}}"
                     user-can-create="{{$userSessionCanCreate}}"
                     user-can-update="{{$userSessionCanUpdate}}"
                     user-can-delete="{{$userSessionCanDelete}}"

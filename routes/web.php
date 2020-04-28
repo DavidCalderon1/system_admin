@@ -84,9 +84,9 @@ Route::group(['prefix' => 'inventory'], function () {
 Route::group(['prefix' => 'warehouses'], function () {
     Route::get('/', 'Warehouse\WarehouseListController@index')->name('warehouses.index');
     Route::get('/list', 'Warehouse\WarehouseListController@list')->name('warehouses.list');
-//    Route::get('/create', 'Warehouse\WarehouseCreateController@create')->name('warehouses.create');
-//    Route::post('/store', 'Warehouse\WarehouseCreateController@store')->name('warehouses.store');
-//    Route::get('/edit/{id}', 'Warehouse\WarehouseEditController@edit')->name('warehouses.edit');
-//    Route::post('/update/{category}', 'Warehouse\WarehouseEditController@update')->name('warehouses.update');
-//    Route::delete('/destroy/{id}', 'Warehouse\WarehouseDeleteController')->name('warehouses.destroy');
+    Route::get('/create', 'Warehouse\WarehouseCreateController@create')->name('warehouses.create');
+    Route::post('/store', 'Warehouse\WarehouseCreateController@store')->name('warehouses.store');
+    Route::get('/edit/{id}', 'Warehouse\WarehouseEditController@edit')->name('warehouses.edit');
+    Route::post('/update/{category}', 'Warehouse\WarehouseEditController@update')->name('warehouses.update');
+    Route::delete('/destroy/{id}', 'Warehouse\WarehouseDeleteController')->name('warehouses.destroy');
 });

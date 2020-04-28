@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Warehouse extends Model
 {
+    protected $fillable = [
+        'name',
+        'address',
+        'phone_number',
+        'country_id',
+        'state_id',
+        'city_id',
+    ];
+
     /**
      * @return BelongsTo
      */

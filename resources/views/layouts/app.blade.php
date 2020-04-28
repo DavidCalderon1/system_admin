@@ -121,18 +121,22 @@
                                             <p>Productos</p>
                                         </a>
                                     </li>
-                                    <li class="nav-item">
-                                        <a href="{{route('inventory.category.index')}}" class="nav-link">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>Categorias</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="pages/charts/flot.html" class="nav-link">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>Bodegas</p>
-                                        </a>
-                                    </li>
+                                    @if(auth()->user()->can(\App\Constants\PermissionsConstants::INVENTORY_CATEGORY_LIST))
+                                        <li class="nav-item">
+                                            <a href="{{route('inventory.category.index')}}" class="nav-link">
+                                                <i class="fa fa-circle-o nav-icon"></i>
+                                                <p>Categorias</p>
+                                            </a>
+                                        </li>
+                                    @endif
+                                    @if(auth()->user()->can(\App\Constants\PermissionsConstants::WAREHOUSE_LIST))
+                                        <li class="nav-item">
+                                            <a href="{{route('warehouses.index')}}" class="nav-link">
+                                                <i class="fa fa-circle-o nav-icon"></i>
+                                                <p>Bodegas</p>
+                                            </a>
+                                        </li>
+                                    @endif
                                 </ul>
                             </li>
 

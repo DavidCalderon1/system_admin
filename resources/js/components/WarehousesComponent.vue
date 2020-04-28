@@ -1,27 +1,36 @@
 <template>
     <div class="container" id="grid">
-        <div class="form-group row">
-            <div class="col-md-6">
-                <div class="input-group">
-                    <select class="form-control col-md-3" name="opcion" v-model="filter" @change="getData">
-                        <option v-for="field in fields"
-                                v-bind:value="field.key">{{field.label}}
-                        </option>
-                    </select>
-                    <input type="text" class="form-control" v-model="search" ref="search"
-                           v-on:keyup.enter="getData"
-                           placeholder="Buscar">
-                    <button type="button" class="btn btn-primary" @click="getData"><i
-                        class="fa fa-search"></i>
+        <form v-on:submit.prevent>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input type="text" class="form-control form-control-sm" v-model="filters.name"
+                               placeholder="Nombre">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <label>Dirección</label>
+                    <input type="text" class="form-control form-control-sm" v-model="filters.address"
+                           placeholder="Dirrección">
+                </div>
+                <div class="col-md-3">
+                    <label>Teléfono</label>
+                    <input type="text" class="form-control form-control-sm" v-model="filters.phone_number"
+                           placeholder="Teléfono">
+                </div>
+                <div class="col-md-3">
+                    <br>
+                    <button class="btn btn-primary btn-sm mt-2" @click="getData">
+                        <i class="fa fa-search">Buscar</i>
                     </button>
+                    <a v-bind:href="createRoute" class="btn btn-success btn-sm pull-right mt-2"
+                       v-if="userCanCreate == 1">
+                        <i class="fa fa-plus">Nuevo</i>
+                    </a>
                 </div>
             </div>
-            <div class="col-md-6" v-if="userCanCreate == 1">
-                <a v-bind:href="createRoute" class="btn btn-success btn-md pull-right">
-                    <i class="fa fa-plus">Nuevo</i>
-                </a>
-            </div>
-        </div>
+        </form>
         <div class="table-responsive">
 
             <table class="table table-bordered table-sm" ref="table">
@@ -34,9 +43,6 @@
                 <tbody>
                 <tr v-for="(body) in data">
                     <td> {{body.name}}</td>
-                    <td> {{body.country.name}}</td>
-                    <td> {{body.state.name}}</td>
-                    <td> {{body.city.name}}</td>
                     <td> {{body.address}}</td>
                     <td> {{body.phone_number}}</td>
                     <td>
@@ -96,9 +102,6 @@
             return {
                 fields: [
                     {key: 'name', label: 'Nombre'},
-                    {key: 'country', label: 'País'},
-                    {key: 'state', label: 'Departamento'},
-                    {key: 'city', label: 'Ciudad'},
                     {key: 'address', label: 'Dirección'},
                     {key: 'phone_number', label: 'Teléfono'},
                 ],
@@ -106,25 +109,24 @@
                 pagination: {
                     current_page: 1
                 },
-                filter: 'name',
-                search: ''
+                filters: {
+                    name: '',
+                    address: '',
+                    phone_number: '',
+                },
             }
         },
         mounted() {
-            this.$refs.search.focus()
             this.getData()
         },
         methods: {
-            getData() {
-                let pathFilter = '';
-
-                if (this.search !== '') {
-                    pathFilter = `&${this.filter}=${this.search}`
-                }
-
+            getUrl() {
+                let pathFilter = `&name=${this.filters.name}&address=${this.filters.address}&phone_number=${this.filters.phone_number}`;
                 let url = `${this.listRoute}?page=${this.pagination.current_page}` + pathFilter
-
-                axios.get(url)
+                return url;
+            },
+            getData() {
+                axios.get(this.getUrl())
                     .then((response) => {
                         this.data = response.data.data;
                         this.pagination = response.data.pagination;
@@ -159,6 +161,7 @@
             getRouteWithId: function (route, id) {
                 return route.replace('__ID__', id);
             },
+
         },
     }
 </script>
