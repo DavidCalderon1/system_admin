@@ -25,6 +25,11 @@ class EloquentInventoryCategoryRepository implements InventoryCategoryRepository
         $this->inventoryCategory = $inventoryCategory;
     }
 
+    public function getAll(): array
+    {
+        return $this->inventoryCategory->all()->toArray();
+    }
+
     /**
      * @param int $perPage
      * @param array $filers

@@ -107,38 +107,42 @@
                                     </a>
                                 </li>
                             @endif
-
-
-                            <li class="nav-item has-treeview">
-                                <a href="#" class="nav-link">
-                                    <i class="nav-icon fas fa-sitemap"></i>
-                                    <p>Inventario<i class="right fa fa-angle-left"></i></p>
-                                </a>
-                                <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="pages/charts/chartjs.html" class="nav-link">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>Productos</p>
-                                        </a>
-                                    </li>
-                                    @if(auth()->user()->can(\App\Constants\PermissionsConstants::INVENTORY_CATEGORY_LIST))
-                                        <li class="nav-item">
-                                            <a href="{{route('inventory.category.index')}}" class="nav-link">
-                                                <i class="fa fa-circle-o nav-icon"></i>
-                                                <p>Categorias</p>
-                                            </a>
-                                        </li>
-                                    @endif
-                                    @if(auth()->user()->can(\App\Constants\PermissionsConstants::WAREHOUSE_LIST))
-                                        <li class="nav-item">
-                                            <a href="{{route('warehouses.index')}}" class="nav-link">
-                                                <i class="fa fa-circle-o nav-icon"></i>
-                                                <p>Bodegas</p>
-                                            </a>
-                                        </li>
-                                    @endif
-                                </ul>
-                            </li>
+                            @if(auth()->user()->can(\App\Constants\PermissionsConstants::PRODUCT_LIST)
+                                || auth()->user()->can(\App\Constants\PermissionsConstants::INVENTORY_CATEGORY_LIST)
+                                || auth()->user()->can(\App\Constants\PermissionsConstants::WAREHOUSE_LIST))
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-sitemap"></i>
+                                        <p>Inventario<i class="right fa fa-angle-left"></i></p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        @if(auth()->user()->can(\App\Constants\PermissionsConstants::PRODUCT_LIST))
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link">
+                                                    <i class="fa fa-circle-o nav-icon"></i>
+                                                    <p>Productos</p>
+                                                </a>
+                                            </li>
+                                        @endif
+                                        @if(auth()->user()->can(\App\Constants\PermissionsConstants::INVENTORY_CATEGORY_LIST))
+                                            <li class="nav-item">
+                                                <a href="{{route('inventory.category.index')}}" class="nav-link">
+                                                    <i class="fa fa-circle-o nav-icon"></i>
+                                                    <p>Categorias</p>
+                                                </a>
+                                            </li>
+                                        @endif
+                                        @if(auth()->user()->can(\App\Constants\PermissionsConstants::WAREHOUSE_LIST))
+                                            <li class="nav-item">
+                                                <a href="{{route('warehouses.index')}}" class="nav-link">
+                                                    <i class="fa fa-circle-o nav-icon"></i>
+                                                    <p>Bodegas</p>
+                                                </a>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                </li>
+                            @endif
 
                             <li class="nav-item has-treeview">
                                 <a href="#" class="nav-link">

@@ -73,11 +73,23 @@ Route::group(['prefix' => 'inventory'], function () {
     Route::group(['prefix' => 'categories'], function () {
         Route::get('/', 'Inventory\Category\CategoryListController@index')->name('inventory.category.index');
         Route::get('/list', 'Inventory\Category\CategoryListController@list')->name('inventory.category.list');
+        Route::get('/all', 'Inventory\Category\CategoryListController@getAllCategories')->name('inventory.category.all');
         Route::get('/create', 'Inventory\Category\CategoryCreateController@create')->name('inventory.category.create');
         Route::post('/store', 'Inventory\Category\CategoryCreateController@store')->name('inventory.category.store');
         Route::get('/edit/{id}', 'Inventory\Category\CategoryEditController@edit')->name('inventory.category.edit');
         Route::post('/update/{category}', 'Inventory\Category\CategoryEditController@update')->name('inventory.category.update');
         Route::delete('/destroy/{id}', 'Inventory\Category\CategoryDeleteController')->name('inventory.category.destroy');
+    });
+
+    //Products
+    Route::group(['prefix' => 'products'], function () {
+//        Route::get('/', 'Inventory\Products\ProductsListController@index')->name('products.index');
+//        Route::get('/list', 'Inventory\Products\ProductsListController@list')->name('products.list');
+        Route::get('/create', 'Inventory\Product\ProductCreateController@create')->name('inventory.products.create');
+        Route::post('/store', 'Inventory\Product\ProductCreateController@store')->name('inventory.products.store');
+//        Route::get('/edit/{id}', 'Inventory\Products\ProductsEditController@edit')->name('products.edit');
+//        Route::post('/update/{category}', 'Inventory\Products\ProductsEditController@update')->name('products.update');
+//        Route::delete('/destroy/{id}', 'Inventory\Products\ProductsDeleteController')->name('products.destroy');
     });
 });
 

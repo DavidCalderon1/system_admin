@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Inventory\Category;
 use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\InventoryCategoryRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class CategoryListController extends Controller
@@ -80,7 +81,14 @@ class CategoryListController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
 
+    /**
+     * @return JsonResponse
+     */
+    public function getAllCategories(): JsonResponse
+    {
+        return response()->json($this->inventoryCategory->getAll());
     }
 }
 

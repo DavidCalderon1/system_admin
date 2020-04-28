@@ -6,6 +6,7 @@ use App\Repositories\EloquentCityRepository;
 use App\Repositories\EloquentCountryRepository;
 use App\Repositories\EloquentInventoryCategoryRepository;
 use App\Repositories\EloquentPermissionRepository;
+use App\Repositories\EloquentProductRepository;
 use App\Repositories\EloquentRoleRepository;
 use App\Repositories\EloquentStateRepository;
 use App\Repositories\EloquentThirdPartiesRepository;
@@ -15,6 +16,7 @@ use App\Repositories\Interfaces\CityRepositoryInterface;
 use App\Repositories\Interfaces\CountryRepositoryInterface;
 use App\Repositories\Interfaces\InventoryCategoryRepositoryInterface;
 use App\Repositories\Interfaces\PermissionRepositoryInterface;
+use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Repositories\Interfaces\StateRepositoryInterface;
 use App\Repositories\Interfaces\ThirdPartiesRepositoryInterface;
@@ -42,6 +44,7 @@ class AppServiceProvider extends ServiceProvider
         ThirdPartiesRepositoryInterface::class => EloquentThirdPartiesRepository::class,
         InventoryCategoryRepositoryInterface::class => EloquentInventoryCategoryRepository::class,
         WarehousesRepositoryInterface::class => EloquentWarehousesRepository::class,
+        ProductRepositoryInterface::class => EloquentProductRepository::class,
     ];
 
     /**

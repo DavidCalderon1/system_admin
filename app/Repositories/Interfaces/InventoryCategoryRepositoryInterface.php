@@ -9,6 +9,11 @@ namespace App\Repositories\Interfaces;
 interface InventoryCategoryRepositoryInterface
 {
     /**
+     * @return mixed
+     */
+    public function getAll(): array;
+
+    /**
      * @param int $perPage
      * @param array $filer
      * @return array

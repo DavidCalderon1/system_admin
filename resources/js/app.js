@@ -35,6 +35,7 @@ Vue.component('form-edit-third-component', require('./components/FormEditThirdCo
 Vue.component('inventory-categories-component', require('./components/InventoryCategoriesComponent').default);
 Vue.component('warehouses-component', require('./components/WarehousesComponent').default);
 Vue.component('form-create-warehouse-component', require('./components/FormCreateWarehouseComponent').default);
+Vue.component('form-create-product-component', require('./components/FormCreateProductComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

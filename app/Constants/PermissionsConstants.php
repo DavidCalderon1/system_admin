@@ -55,4 +55,12 @@ class PermissionsConstants
     public const WAREHOUSE_CREATE = 'warehouse-create';
     public const WAREHOUSE_UPDATE = 'warehouse-update';
     public const WAREHOUSE_DELETE = 'warehouse-delete';
+
+    /**
+     * Permisos crud modulo de productos
+     */
+    public const PRODUCT_LIST = 'products-list';
+    public const PRODUCT_CREATE = 'products-create';
+    public const PRODUCT_UPDATE = 'products-update';
+    public const PRODUCT_DELETE = 'products-delete';
 }

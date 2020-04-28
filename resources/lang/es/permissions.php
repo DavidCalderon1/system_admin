@@ -21,5 +21,13 @@ return [
         PermissionsConstants::INVENTORY_CATEGORY_CREATE => 'Crear Categorias de Productos',
         PermissionsConstants::INVENTORY_CATEGORY_UPDATE => 'Actualizar Categorias de Productos',
         PermissionsConstants::INVENTORY_CATEGORY_DELETE => 'Eliminar Categorias de Productos',
+        PermissionsConstants::WAREHOUSE_LIST => 'Listar Bodegas',
+        PermissionsConstants::WAREHOUSE_CREATE => 'Crear Bodegas',
+        PermissionsConstants::WAREHOUSE_UPDATE => 'Actualizar Bodegas',
+        PermissionsConstants::WAREHOUSE_DELETE => 'Eliminar Bodegas',
+        PermissionsConstants::PRODUCT_LIST => 'Listar Productos',
+        PermissionsConstants::PRODUCT_CREATE => 'Crear Productos',
+        PermissionsConstants::PRODUCT_UPDATE => 'Actualizar Productos',
+        PermissionsConstants::PRODUCT_DELETE => 'Eliminar Productos',
     ]
 ];
