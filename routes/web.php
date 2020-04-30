@@ -89,7 +89,7 @@ Route::group(['prefix' => 'inventory'], function () {
         Route::post('/store', 'Inventory\Product\ProductCreateController@store')->name('inventory.products.store');
         Route::get('/edit/{id}', 'Inventory\Product\ProductEditController@edit')->name('inventory.products.edit');
         Route::post('/update/{category}', 'Inventory\Product\ProductEditController@update')->name('inventory.products.update');
-//        Route::delete('/destroy/{id}', 'Inventory\Product\ProductDeleteController')->name('products.destroy');
+        Route::delete('/destroy/{id}', 'Inventory\Product\ProductDeleteController')->name('inventory.products.destroy');
     });
 });
 

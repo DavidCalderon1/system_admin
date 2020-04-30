@@ -94,7 +94,7 @@
                             <li class="nav-item">
                                 <a href="pages/widgets.html" class="nav-link">
                                     <i class="nav-icon fa fa-th"></i>
-                                    <p>Indicadores</p>
+                                    <p>Dashboard</p>
                                 </a>
                             </li>
                             @if(auth()->user()->can(\App\Constants\PermissionsConstants::THIRD_LIST))

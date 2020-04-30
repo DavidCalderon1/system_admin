@@ -150,4 +150,15 @@ class EloquentProductRepository implements ProductRepositoryInterface
     {
         return (bool)$this->product->where('category_id', $categoryId)->get()->count();
     }
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function destroy(int $id): bool
+    {
+        $product = $this->product->where('id', $id)->first();
+        Storage::delete([$product->image]);
+        return $product->delete();
+    }
 }

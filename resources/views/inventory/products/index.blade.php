@@ -13,7 +13,7 @@
                     list-route="{{route('inventory.products.list')}}"
                     create-route="{{route('inventory.products.create')}}"
                     edit-route="{{route('inventory.products.edit','__ID__')}}"
-                    destroy-route="{{route('warehouses.destroy','__ID__')}}"
+                    destroy-route="{{route('inventory.products.destroy','__ID__')}}"
                     user-can-create="{{$userSessionCanCreate}}"
                     user-can-update="{{$userSessionCanUpdate}}"
                     user-can-delete="{{$userSessionCanDelete}}"

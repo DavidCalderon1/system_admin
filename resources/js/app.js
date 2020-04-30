@@ -6,6 +6,8 @@
 
 require('./bootstrap');
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
+import VueAlertify from 'vue-alertify';
+
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -13,6 +15,24 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 window.Vue = require('vue');
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
+Vue.use(VueAlertify,{
+    notifier: {
+        // auto-dismiss wait time (in seconds)
+        delay: 5,
+        // default position
+        position: 'top-right',
+        // adds a close button to notifier messages
+        closeButton: false,
+    },
+    glossary: {
+        // dialogs default title
+        title: '',
+        // ok button text
+        ok: 'Aceptar',
+        // cancel button text
+        cancel: 'Cancelar',
+    },
+});
 
 /**
  * The following block of code may be used to automatically register your

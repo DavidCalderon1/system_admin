@@ -1,31 +1,24 @@
 <template>
-    <div class="container" id="grid">
+    <div class="container" id="grid-products">
         <form v-on:submit.prevent>
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label>Código</label>
-                        <input type="text" class="form-control form-control-sm" v-model="filters.code"
-                               placeholder="Código">
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <select class="form-control col-md-3" id="opcion" name="opcion" v-model="filter" @change="getData">
+                            <option value="code">Código</option>
+                            <option value="reference">Referencia</option>
+                            <option value="category">Categoría</option>
+                        </select>
+                        <input type="text" id="texto" name="texto" class="form-control" v-model="search"
+                               v-on:keyup.enter="getData"
+                               placeholder="Buscar">
+                        <button type="button" class="btn btn-primary" @click="getData"><i
+                            class="fa fa-search"></i>
+                        </button>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <label>Referencia</label>
-                    <input type="text" class="form-control form-control-sm" v-model="filters.reference"
-                           placeholder="Referencia">
-                </div>
-                <div class="col-md-3">
-                    <label>Categoria</label>
-                    <input type="text" class="form-control form-control-sm" v-model="filters.category"
-                           placeholder="Categoría">
-                </div>
-                <div class="col-md-3">
-                    <br>
-                    <button class="btn btn-primary btn-sm mt-2" @click="getData">
-                        <i class="fa fa-search">Buscar</i>
-                    </button>
-                    <a v-bind:href="createRoute" class="btn btn-success btn-sm pull-right mt-2"
-                       v-if="userCanCreate == 1">
+                <div class="col-md-6" v-if="userCanCreate == 1">
+                    <a v-bind:href="createRoute" class="btn btn-success btn-md pull-right">
                         <i class="fa fa-plus">Nuevo</i>
                     </a>
                 </div>
@@ -33,16 +26,16 @@
         </form>
         <div class="table-responsive">
 
-            <table class="table table-striped table-hover table-sm" ref="table">
+            <table class="table table-striped table-hover table-bordered table-sm" ref="table">
                 <thead class="thead-light">
-                <tr>
+                <tr class="text-center">
                     <th v-for="field in fields">{{field.label}}</th>
                     <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(body) in data">
-                    <td><img v-bind:src="body.image" alt="" width="100px" height="100px"></td>
+                <tr v-for="(body) in data" class="text-center">
+                    <td><img v-bind:src="body.image" alt="" width="50px" height="50px"></td>
                     <td> {{body.code}}</td>
                     <td> {{body.reference}}</td>
                     <td> ${{formatPrice(body.base_price)}}</td>
@@ -116,11 +109,8 @@
                 pagination: {
                     current_page: 1
                 },
-                filters: {
-                    code: '',
-                    reference: '',
-                    category: '',
-                },
+                filter: 'code',
+                search: ''
             }
         },
         mounted() {
@@ -128,7 +118,7 @@
         },
         methods: {
             getUrl() {
-                let pathFilter = `&code=${this.filters.code}&reference=${this.filters.reference}&category=${this.filters.category}`;
+                let pathFilter = `&${this.filter}=${this.search}`;
                 let url = `${this.listRoute}?page=${this.pagination.current_page}` + pathFilter
                 return url;
             },
@@ -153,17 +143,21 @@
                     });
             },
             destroy(roleId) {
-                if (confirm("Estas seguro que deseas borrar el registro?")) {
-                    let url = this.getRouteWithId(this.destroyRoute, roleId);
-                    axios.delete(url)
-                        .then(resp => {
-                            alert(resp.data.message);
-                            this.getData();
-                        })
-                        .catch(error => {
-                            alert(error.response.data.message);
-                        })
-                }
+                this.$alertify.confirm(
+                    'Estas seguro que deseas borrar el registro?',
+                    () => {
+                        let url = this.getRouteWithId(this.destroyRoute, roleId);
+                        axios.delete(url)
+                            .then(resp => {
+                                this.$alertify.success(resp.data.message);
+                                this.getData();
+                            })
+                            .catch(error => {
+                                this.$alertify.error(error.response.data.message);
+                            })
+                    },
+
+                );
             },
             getRouteWithId: function (route, id) {
                 return route.replace('__ID__', id);
@@ -177,7 +171,7 @@
     }
 </script>
 <style>
-    #grid table > tbody {
+    #grid-products table > tbody {
         font-size: 12px;
     }
 </style>

@@ -34,4 +34,9 @@ interface ProductRepositoryInterface
      */
     public function existWithCategoryId(int $categoryId): bool;
 
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function destroy(int $id): bool ;
 }
