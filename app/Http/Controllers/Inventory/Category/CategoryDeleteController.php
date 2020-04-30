@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Inventory\Category;
 use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\InventoryCategoryRepositoryInterface;
+use App\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Http\Request;
 
 class CategoryDeleteController extends Controller
@@ -15,13 +16,20 @@ class CategoryDeleteController extends Controller
     protected $inventoryCategory;
 
     /**
+     * @var ProductRepositoryInterface
+     */
+    protected $productRepository;
+
+    /**
      * CategoryDeleteController constructor.
      * @param InventoryCategoryRepositoryInterface $inventoryCategory
+     * @param ProductRepositoryInterface $productRepository
      */
-    public function __construct(InventoryCategoryRepositoryInterface $inventoryCategory)
+    public function __construct(InventoryCategoryRepositoryInterface $inventoryCategory, ProductRepositoryInterface $productRepository)
     {
         $this->middleware('auth');
         $this->inventoryCategory = $inventoryCategory;
+        $this->productRepository = $productRepository;
     }
 
     public function __invoke(int $id)
@@ -31,6 +39,10 @@ class CategoryDeleteController extends Controller
         }
 
         try {
+            if($this->productRepository->existWithCategoryId($id)){
+                throw new \Exception('Hay productos asociados a esta categoria', 500);
+            }
+
             $response = $this->inventoryCategory->delete($id);
 
             if (empty($response)) {

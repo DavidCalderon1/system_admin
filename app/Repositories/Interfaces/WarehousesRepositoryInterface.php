@@ -16,6 +16,11 @@ interface WarehousesRepositoryInterface
     public function getPagination(int $perPage, array $filters = []): array;
 
     /**
+     * @return array
+     */
+    public function getAll(): array;
+
+    /**
      * @param int $warehouseId
      * @return array
      */

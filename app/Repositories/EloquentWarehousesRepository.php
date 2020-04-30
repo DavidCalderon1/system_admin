@@ -69,6 +69,14 @@ class EloquentWarehousesRepository implements WarehousesRepositoryInterface
     }
 
     /**
+     * @return array
+     */
+    public function getAll(): array
+    {
+        return $this->warehouse->all()->toArray();
+    }
+
+    /**
      * @param int $warehouseId
      * @return array
      */
@@ -120,5 +128,11 @@ class EloquentWarehousesRepository implements WarehousesRepositoryInterface
     public function delete(int $id): bool
     {
         return $this->warehouse->where('id', $id)->delete();
+    }
+
+    public function hasProducts()
+    {
+        dd($this->warehouse->with('products')->count());
+        return $this->warehouse->with('products')->count();
     }
 }

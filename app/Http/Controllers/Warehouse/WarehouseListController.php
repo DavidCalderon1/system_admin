@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Warehouse;
 use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\WarehousesRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 /**
@@ -81,6 +82,13 @@ class WarehouseListController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
 
+    /**
+     * @return JsonResponse
+     */
+    public function getAllWarehouses(): JsonResponse
+    {
+        return response()->json($this->warehousesRepository->getAll());
     }
 }

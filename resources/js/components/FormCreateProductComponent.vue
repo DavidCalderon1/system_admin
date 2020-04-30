@@ -3,10 +3,24 @@
         <form v-on:submit.prevent="sendRequest">
             <div class="form-row">
                 <div class="form-group col-md-3">
+                    <label>Cargar imagen*</label>
+                    <div id="preview">
+                        <img v-if="url" :src="url"/>
+                    </div>
+                    <input type="file" class="form-control form-control-sm"
+                           v-on:change="handleFileUpload()"
+                           ref="file"
+                           v-bind:class="{'is-invalid': validate('image')}"
+                           accept="image/*">
+                    <small class="form-text text-danger"
+                           v-if="validate('image')">{{errors.image[0]}}</small>
+                </div>
+                <div class="form-group col-md-3">
                     <label>Código*</label>
                     <input type="number" min="1" minlength="6" maxlength="6" class="form-control form-control-sm"
                            onkeyup="javascript:this.value=this.value.toUpperCase();"
                            v-model="request.code"
+                           v-bind:class="{'is-invalid': validate('code')}"
                            placeholder="Codigo de 6 digitos...">
                     <small class="form-text text-danger"
                            v-if="validate('code')">{{errors.code[0]}}</small>
@@ -16,7 +30,7 @@
                     <input type="text" class="form-control form-control-sm"
                            v-bind:class="{'is-invalid': validate('reference') }"
                            onkeyup="javascript:this.value=this.value.toUpperCase();"
-                           v-model="request.name"
+                           v-model="request.reference"
                            placeholder="Referencia...">
                     <small class="form-text text-danger"
                            v-if="validate('reference')">{{errors.reference[0]}}</small>
@@ -34,34 +48,29 @@
                     </select>
                     <small class="form-text text-danger"
                            v-if="validate('category_id')">{{errors.category_id[0]}}</small>
-                </div>
-                <div class="form-group col-md-3">
-                    <label>Cargar imagen*</label>
-
-                    <input type="file" class="form-control form-control-sm" v-on:change="handleFileUpload()"
-                           accept="image/*">
-
                     <small class="form-text text-danger"
-                           v-if="validate('image')">{{errors.image[0]}}</small>
+                           v-if="categories.length === 0">Debes crear categorias.</small>
                 </div>
             </div>
+            <hr>
+            <h5>Información Precio de compra:</h5>
             <div class="form-row">
+
                 <div class="form-group col-md-2">
                     <label>Costo unitario:</label>
-                    <input type="number" min="1" class="form-control form-control-sm"
+                    <input type="number" min="0" class="form-control form-control-sm"
                            onkeyup="javascript:this.value=this.value.toUpperCase();"
                            v-model="request.base_price"
-                           @keypress="calculateTotalCostPurchase"
+                           v-bind:class="{'is-invalid': validate('base_price')}"
                            placeholder="$">
                     <small class="form-text text-danger"
                            v-if="validate('base_price')">{{errors.base_price[0]}}</small>
                 </div>
-                <div class="form-group col-md-2">
+                <div class="form-group col-md-1">
                     <label>% iva:</label>
                     <select class="form-control"
                             v-bind:class="{'is-invalid': validate('vat')}"
                             size="sm"
-                            @change="calculateTotalCostPurchase"
                             v-model="request.vat">
                         <option v-for="vatPercentage in vatPercentages"
                                 v-bind:value="vatPercentage.value">
@@ -69,19 +78,93 @@
                         </option>
                     </select>
                 </div>
-                <div class="form-group col-md-2">
-                    <label>Total compra:</label>
-                    <div>{{totalCostPurchase}}</div>
-                </div>
-                <div class="form-group col-md-2">
-
+                <div class="form-group col-md-2 text-center">
+                    <label class="totals">Total compra:</label>
+                    <div>$ {{calculateTotalCostPurchase}}</div>
                 </div>
             </div>
             <hr>
+            <h5>Información Precio de venta:</h5>
+            <div class="form-row">
+                <div class="form-group col-md-2">
+                    <label>Valor unitario:</label>
+                    <input type="number" min="0" class="form-control form-control-sm"
+                           v-model="request.price"
+                           v-bind:class="{'is-invalid': validate('price')}"
+                           placeholder="$">
+                    <small class="form-text text-danger"
+                           v-if="validate('price')">{{errors.price[0]}}</small>
+                </div>
+                <div class="form-group col-md-1">
+                    <label>% iva:</label>
+                    <select class="form-control"
+                            v-bind:class="{'is-invalid': validate('vat')}"
+                            size="sm"
+                            v-model="request.vat">
+                        <option v-for="vatPercentage in vatPercentages"
+                                v-bind:value="vatPercentage.value">
+                            {{vatPercentage.label}}
+                        </option>
+                    </select>
+                </div>
+                <div class="form-group col-md-2 text-center">
+                    <label class="totals">Total venta:</label>
+                    <div>{{totalPrice}}</div>
+                </div>
+                <div class="form-group col-md-2 text-center">
+                    <label class="totals">Total utilidad:</label>
+                    <div>{{calculateTotalUtility}}</div>
+                </div>
+                <div class="form-group col-md-2 text-center">
+                    <label class="totals">% Utilidad:</label>
+                    <div>{{percentageUtility}} %</div>
+                </div>
+            </div>
+            <hr>
+            <h5>Cantidad en Bodega:</h5>
+            <div class="form-row">
+
+                <small class="form-text text-danger"
+                       v-if="request.warehouses_quantity.length === 0">
+                    Debe crear alguna bodega para poder almacenar el producto.
+                </small>
+
+                <div class="form-group col-md-2" v-for="(warehouse, index) in warehouses">
+                    <label>{{warehouse.name}} </label>
+
+                    <input type="text" class="form-control form-control-sm"
+                           v-model="request.warehouses_quantity[index].quantity"
+                           v-bind:class="{'is-invalid': validate('warehouses_quantity.'+warehouse.id+'.quantity')}"
+                    >
+                    <small class="form-text text-danger"
+                           v-if="validate('warehouses_quantity.'+index+'.quantity')">
+                        {{errors['warehouses_quantity.'+warehouse.id+'.quantity'][0]}}
+                    </small>
+                </div>
+            </div>
+            <div class="form-group col-md-2 text-center">
+                <label class="totals">Total Cantidades:</label>
+                <div>{{totalQuantityWarehouses}}</div>
+            </div>
+            <hr>
+            <h5>Descripción:</h5>
+            <div class="form-row">
+                <textarea class="form-control form-control-sm"
+                          onkeyup="javascript:this.value=this.value.toUpperCase();"
+                          v-bind:class="{'is-invalid': validate('description')}"
+                          v-model="request.description"
+                ></textarea>
+                <small class="form-text text-danger"
+                       v-if="validate('description')">
+                    {{errors['description'][0]}}
+                </small>
+            </div>
+            <hr>
+
             <button class="btn btn-success btn-sm" v-bind:disabled="isDisabled">Crear</button>
         </form>
         <button class="btn btn-danger ml-1 btn-sm" @click="back">Cancelar</button>
-        <button class="btn btn-info btn-sm" @click="clearRequest" v-if="typeof ProductToEdit == 'undefined'">
+        <button class="btn btn-info btn-sm" @click="clearRequest" v-if="typeof productToEdit == 'undefined'">
             Limpiar
         </button>
     </div>
@@ -94,15 +177,17 @@
             routeStore: String,
             routeIndex: String,
             routeAllCategories: String,
-            ProductToEdit: String,
+            routeAllWarehouses: String,
+            productToEdit: String,
         },
         data() {
             return {
                 categories: [],
+                warehouses: [],
                 vatPercentages: [
                     {value: 0, label: '0'},
                     {value: 5, label: '5'},
-                    {value: 9, label: '19'},
+                    {value: 19, label: '19'},
                 ],
                 request: {
                     id: 0,
@@ -113,9 +198,14 @@
                     vat: 0,
                     price: 0,
                     image: '',
+                    description: '',
+                    warehouses_quantity: []
                 },
                 errors: {},
+                totalValueSale: 0.0,
                 totalCostPurchase: 0.0,
+                totalUtility: 0.0,
+                url: null,
             }
         },
         mounted() {
@@ -125,47 +215,149 @@
             }).catch((error) => {
                 alert('handle server error from here');
             });
+
+            axios.get(this.routeAllWarehouses).then((response) => {
+                this.warehouses = response.data;
+                this.setRequestWarehousesQuantity();
+
+                if (this.productToEdit !== undefined) {
+                    this.setRequest();
+                }
+
+            }).catch((error) => {
+                alert('handle server error from here');
+            });
+
         },
         computed: {
             isDisabled() {
-                return false;
-                return this.request.name === ''
-                    || this.request.address === ''
-                    || this.request.state_id === 0
-                    || this.request.city_id === 0
+
+                if (this.request.warehouses_quantity.length === 0) {
+                    return true;
+                }
+
+                for (let i in this.request.warehouses_quantity) {
+                    if (this.request.warehouses_quantity[i].quantity === '') {
+                        return true;
+                    }
+                }
+
+                return (this.request.category_id === 0 || typeof this.request.category_id === undefined)
+                    || this.request.reference === ''
+                    || this.request.base_price === '' || isNaN(this.request.base_price)
+                    || this.request.price === '' || isNaN(this.request.price)
                     || this.request.phone_number === ''
             },
+            calculateTotalCostPurchase() {
+                this.request.base_price = parseFloat(this.request.base_price);
+                this.request.vat = parseFloat(this.request.vat);
+                this.totalCostPurchase = parseFloat(this.request.base_price + (this.request.base_price * (this.request.vat / 100)));
+                return this.formatPrice(this.totalCostPurchase);
+            },
+            totalPrice() {
+                this.request.price = parseFloat(this.request.price);
+                this.request.vat = parseFloat(this.request.vat);
+                this.totalValueSale = parseFloat(this.request.price + (this.request.price * (this.request.vat / 100)));
+                return this.formatPrice(this.totalValueSale);
+            },
+            calculateTotalUtility() {
+                this.request.price = parseFloat(this.request.price);
+                this.request.vat = parseFloat(this.request.vat);
+                this.totalUtility = parseFloat(this.totalUtility)
+                this.totalUtility = this.request.price - this.request.base_price
+
+                return this.formatPrice(this.totalUtility);
+            },
+            percentageUtility() {
+                this.totalValueSale = parseFloat(this.totalValueSale);
+                this.totalUtility =  parseFloat(this.totalUtility);
+
+                return this.totalUtility / this.request.price * 100;
+            },
+            totalQuantityWarehouses() {
+                let total = 0;
+                for (let index in this.request.warehouses_quantity) {
+                    total = total + parseInt(this.request.warehouses_quantity[index].quantity);
+                }
+                return total;
+            }
         },
         methods: {
-            calculateTotalCostPurchase() {
-                console.log(this.request.vat)
-                this.totalCostPurchase = parseFloat(this.request.base_price / this.request.vat);
-                console.log(this.totalCostPurchase)
+            setRequestWarehousesQuantity() {
+                for (let warehouse in this.warehouses) {
+                    this.request.warehouses_quantity.push({
+                        warehouse_id: this.warehouses[warehouse].id,
+                        quantity: 0
+                    });
+                }
+            },
+            formatPrice(value) {
+                let val = (value / 1).toFixed(2).replace('.', ',')
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
             handleFileUpload() {
                 this.request.image = this.$refs.file.files[0];
+                if (typeof this.request.image === "undefined") {
+                    this.url = '';
+                    this.request.image = '';
+                } else {
+                    this.url = URL.createObjectURL(this.request.image);
+                }
             },
             setRequest() {
-                let warehouseDataToEdit = JSON.parse(this.ProductToEdit)
-                this.request.id = warehouseDataToEdit.id
-                this.request.name = warehouseDataToEdit.name
-                this.request.address = warehouseDataToEdit.address
-                this.request.country_code = warehouseDataToEdit.country.code
-                this.request.state_id = warehouseDataToEdit.state_id
-                this.request.city_id = warehouseDataToEdit.city_id
-                this.request.phone_number = warehouseDataToEdit.phone_number
+                let productDataToEdit = JSON.parse(this.productToEdit)
+
+                this.request.id = productDataToEdit.id
+                this.request.category_id = productDataToEdit.category_id
+                this.request.code = productDataToEdit.code
+                this.request.reference = productDataToEdit.reference
+                this.request.base_price = productDataToEdit.base_price
+                this.request.vat = productDataToEdit.vat
+                this.request.price = productDataToEdit.price
+                this.request.description = productDataToEdit.description
+                this.request.image = productDataToEdit.image
+                this.url= productDataToEdit.image
+
+                this.updateWarehousesQuantityRequest(productDataToEdit.warehouses_quantity)
+
+                console.log(this.request)
+            },
+            updateWarehousesQuantityRequest(productDataToEditWarehousesQuantity) {
+                for (let warehouse in productDataToEditWarehousesQuantity) {
+                    this.request.warehouses_quantity.filter(item => {
+                        if (item.warehouse_id === productDataToEditWarehousesQuantity[warehouse].warehouse_id) {
+                            item.quantity = productDataToEditWarehousesQuantity[warehouse].quantity;
+                        }
+                    })
+                }
             },
 
             getRouteWithId: function (route, id) {
                 return route.replace('__ID__', id);
             },
             sendRequest() {
+
                 let routeStore = this.routeStore;
+
                 if (this.request.id > 0) {
                     routeStore = this.getRouteWithId(this.routeStore, this.request.id)
                 }
 
-                axios.post(routeStore, this.request)
+                let formData = new FormData();
+                formData.append('id', this.request.id);
+                formData.append('category_id', this.request.category_id);
+                formData.append('code', this.request.code);
+                formData.append('reference', this.request.reference);
+                formData.append('base_price', this.request.base_price);
+                formData.append('vat', this.request.vat);
+                formData.append('price', this.request.price);
+                formData.append('image', this.request.image);
+                formData.append('description', this.request.description);
+                formData.append('warehouses_quantity', JSON.stringify(this.request.warehouses_quantity));
+
+                console.log(this.request)
+
+                axios.post(routeStore, formData)
                     .then((response) => {
                         window.location.href = this.routeIndex;
                     })
@@ -173,6 +365,7 @@
                         console.log(error.response.data.message)
                         if (error.response.status === 422) {
                             this.errors = error.response.data.errors;
+                            console.log(this.errors)
                         } else if (typeof error.response.data.message != 'undefined') {
                             alert(error.response.data.message);
                         } else {
@@ -184,15 +377,29 @@
                 return typeof this.errors[input] != 'undefined';
             },
             clearRequest() {
+
+                const input = this.$refs.file
+                input.type = 'text'
+                input.type = 'file'
+
                 this.request = {
-                    name: '',
-                    address: '',
-                    country_code: 'CO',
-                    state_id: 0,
-                    city_id: 0,
-                    phone_number: '',
+                    id: 0,
+                    category_id: 0,
+                    code: '',
+                    reference: '',
+                    base_price: 0,
+                    vat: 0,
+                    price: 0,
+                    image: '',
+                    description: '',
+                    warehouses_quantity: []
                 }
+                this.setRequestWarehousesQuantity();
+                this.totalValueSale = 0.0;
+                this.totalCostPurchase = 0.0;
+                this.totalUtility = 0.0;
                 this.errors = {}
+                this.url = null
             },
             back() {
                 window.location.href = this.routeIndex
@@ -207,5 +414,16 @@
 
     #store .btn-success {
         float: left;
+    }
+
+    #preview {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #preview img {
+        max-width: 100%;
+        max-height: 500px;
     }
 </style>

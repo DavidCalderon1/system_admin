@@ -83,19 +83,20 @@ Route::group(['prefix' => 'inventory'], function () {
 
     //Products
     Route::group(['prefix' => 'products'], function () {
-//        Route::get('/', 'Inventory\Products\ProductsListController@index')->name('products.index');
-//        Route::get('/list', 'Inventory\Products\ProductsListController@list')->name('products.list');
+        Route::get('/', 'Inventory\Product\ProductListController@index')->name('inventory.products.index');
+        Route::get('/list', 'Inventory\Product\ProductListController@list')->name('inventory.products.list');
         Route::get('/create', 'Inventory\Product\ProductCreateController@create')->name('inventory.products.create');
         Route::post('/store', 'Inventory\Product\ProductCreateController@store')->name('inventory.products.store');
-//        Route::get('/edit/{id}', 'Inventory\Products\ProductsEditController@edit')->name('products.edit');
-//        Route::post('/update/{category}', 'Inventory\Products\ProductsEditController@update')->name('products.update');
-//        Route::delete('/destroy/{id}', 'Inventory\Products\ProductsDeleteController')->name('products.destroy');
+        Route::get('/edit/{id}', 'Inventory\Product\ProductEditController@edit')->name('inventory.products.edit');
+        Route::post('/update/{category}', 'Inventory\Product\ProductEditController@update')->name('inventory.products.update');
+//        Route::delete('/destroy/{id}', 'Inventory\Product\ProductDeleteController')->name('products.destroy');
     });
 });
 
 Route::group(['prefix' => 'warehouses'], function () {
     Route::get('/', 'Warehouse\WarehouseListController@index')->name('warehouses.index');
     Route::get('/list', 'Warehouse\WarehouseListController@list')->name('warehouses.list');
+    Route::get('/all', 'Warehouse\WarehouseListController@getAllWarehouses')->name('warehouses.all');
     Route::get('/create', 'Warehouse\WarehouseCreateController@create')->name('warehouses.create');
     Route::post('/store', 'Warehouse\WarehouseCreateController@store')->name('warehouses.store');
     Route::get('/edit/{id}', 'Warehouse\WarehouseEditController@edit')->name('warehouses.edit');

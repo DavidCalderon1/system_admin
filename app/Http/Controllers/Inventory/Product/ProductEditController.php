@@ -9,15 +9,16 @@ use App\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Session\Store as SessionStore;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\View\View;
 
 /**
- * Class ProductsCreateController
- * @package App\Http\Controllers\Inventory\Products
+ * Class ProductEditController
+ * @package App\Http\Controllers\Inventory\Product
  */
-class ProductCreateController extends Controller
+class ProductEditController extends Controller
 {
+
     /**
      * @var ProductRepositoryInterface
      */
@@ -29,7 +30,7 @@ class ProductCreateController extends Controller
     protected $session;
 
     /**
-     * ProductCreateController constructor.
+     * ProductEditController constructor.
      * @param ProductRepositoryInterface $productRepository
      * @param SessionStore $session
      */
@@ -41,22 +42,42 @@ class ProductCreateController extends Controller
     }
 
     /**
-     * @return View
+     * @param int $id
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function create(): View
+    public function edit(int $id)
     {
-        if (!$this->hasPermission(PermissionsConstants::PRODUCT_LIST)) {
+        if (!$this->hasPermission(PermissionsConstants::PRODUCT_UPDATE)) {
             abort(404);
         }
 
-        return view('inventory.products.create');
+        $product = $this->productRepository->get($id);
+
+        if (!empty($product['image'])) {
+            $product['image'] = asset(Storage::url($product['image']));
+        }
+
+        $product['warehouses_quantity'] = [];
+        if (!empty($product['warehouses'])) {
+            foreach ($product['warehouses'] as $warehouse) {
+                if (empty($warehouse['pivot'])) {
+                    continue;
+                }
+                $product['warehouses_quantity'][] = [
+                    'warehouse_id' => $warehouse['pivot']['warehouse_id'],
+                    'quantity' => $warehouse['pivot']['quantity'],
+                ];
+            }
+        }
+
+        return view('inventory.products.edit', compact('product'));
     }
 
     /**
      * @param ProductRequest $productRequest
      * @return JsonResponse
      */
-    public function store(ProductRequest $productRequest): JsonResponse
+    public function update(ProductRequest $productRequest): JsonResponse
     {
         if (!$this->hasPermission(PermissionsConstants::PRODUCT_CREATE)) {
             return $this->response(401);
@@ -71,6 +92,7 @@ class ProductCreateController extends Controller
             'warehouses_quantity.*.quantity.min' => 'El valor minimo de este campo es 0.',
         ]);
 
+        $id = $productRequest->get('id', 0);
         $warehousesQuantity = $warehousesQuantity->validated();
         $productRequest = $productRequest->validated();
 
@@ -78,13 +100,13 @@ class ProductCreateController extends Controller
             $productRequest['description'] = (!empty($productRequest['description'])) ? $productRequest['description'] : '';
             $productRequest['warehouses_quantity'] = $warehousesQuantity['warehouses_quantity'];
 
-            $saved = $this->productRepository->store($productRequest);
+            $saved = $this->productRepository->update($id, $productRequest);
 
             if (!$saved) {
-                throw new \Exception('Ah ocurrido un error almacenando el producto.', 500);
+                throw new \Exception("A ocurrido un error actualizando el producto.", 500);
             }
 
-            $this->session->flash('message', 'Producto creado correctamente.');
+            $this->session->flash('message', "producto actualizado correctamente.");
 
             return $this->response(201);
         } catch (\Exception $exception) {

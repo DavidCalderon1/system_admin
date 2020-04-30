@@ -22,14 +22,13 @@ class CreateProductsTable extends Migration
             $table->string('code', 6);
             $table->string('reference', 150);
             $table->mediumText('description');
-            $table->float('base_price');
+            $table->double('base_price');
             $table->enum('vat', [0, 5, 19]);
-            $table->float('price');
-            $table->string('image');
+            $table->double('price');
+            $table->string('image')->default('');
             $table->timestamps();
             $table->foreign('category_id')->references('id')->on('inventory_categories');
         });
-
     }
 
     /**

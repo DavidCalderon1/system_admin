@@ -25,6 +25,7 @@ class ThirdListController extends Controller
      */
     public function __construct(ThirdPartiesRepositoryInterface $thirdPartiesRepository)
     {
+        $this->middleware('auth');
         $this->thirdPartiesRepository = $thirdPartiesRepository;
     }
 
