@@ -51,6 +51,6 @@ class Controller extends BaseController
      */
     public function hasPermission(string $slug)
     {
-        return Auth::user()->can($slug);
+        return Auth::check() && Auth::user()->can($slug);
     }
 }

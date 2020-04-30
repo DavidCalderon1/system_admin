@@ -6,6 +6,8 @@
 
 require('./bootstrap');
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
+import VueAlertify from 'vue-alertify';
+
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -13,6 +15,24 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 window.Vue = require('vue');
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
+Vue.use(VueAlertify,{
+    notifier: {
+        // auto-dismiss wait time (in seconds)
+        delay: 5,
+        // default position
+        position: 'top-right',
+        // adds a close button to notifier messages
+        closeButton: false,
+    },
+    glossary: {
+        // dialogs default title
+        title: '',
+        // ok button text
+        ok: 'Aceptar',
+        // cancel button text
+        cancel: 'Cancelar',
+    },
+});
 
 /**
  * The following block of code may be used to automatically register your
@@ -32,6 +52,11 @@ Vue.component('roles-component', require('./components/RolesComponent.vue').defa
 Vue.component('grid-component', require('./components/GridComponent').default);
 Vue.component('form-create-third-component', require('./components/FormCreateThirdComponent').default);
 Vue.component('form-edit-third-component', require('./components/FormEditThirdComponent').default);
+Vue.component('inventory-categories-component', require('./components/InventoryCategoriesComponent').default);
+Vue.component('warehouses-component', require('./components/WarehousesComponent').default);
+Vue.component('form-create-warehouse-component', require('./components/FormCreateWarehouseComponent').default);
+Vue.component('form-create-product-component', require('./components/FormCreateProductComponent').default);
+Vue.component('products-component', require('./components/ProductsComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -9,6 +9,8 @@
                     </select>
                     <input type="text" id="texto" name="texto" class="form-control" v-model="search"
                            v-on:keyup.enter="getRoles"
+                           @keypress="getRoles"
+                           @keyup.delete="getRoles"
                            placeholder="Buscar">
                     <button type="button" class="btn btn-primary" @click="getRoles"><i
                         class="fa fa-search"></i>

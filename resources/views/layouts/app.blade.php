@@ -16,11 +16,13 @@
     <link rel="stylesheet" href="{{ asset('css/ionicons.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('css/adminlte.css') }}">
+
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
     <script src="{{ mix('/js/app.js') }}" defer></script>
 </head>
 
-<body class="hold-transition sidebar-mini sidebar-collapse">
+<body class="hold-transition sidebar-mini">
 <div id="app">
     <div class="wrapper">
         @guest
@@ -77,10 +79,8 @@
             <aside class="main-sidebar sidebar-dark-primary elevation-4">
                 <!-- Brand Logo -->
                 <a href="{{route('dashboard')}}" class="brand-link">
-                    <img src="{{asset('img/AdminLTELogo.png')}}" alt="AdminLTE Logo"
-                         class="brand-image img-circle elevation-3"
-                         style="opacity: .8">
-                    <span class="brand-text font-weight-light">Aplicacion</span>
+                    <img src="{{asset('img/logo.jpeg')}}" alt="AdminLTE Logo"
+                         class="brand-image elevation-3">
                 </a>
 
                 <!-- Sidebar -->
@@ -94,7 +94,7 @@
                             <li class="nav-item">
                                 <a href="pages/widgets.html" class="nav-link">
                                     <i class="nav-icon fa fa-th"></i>
-                                    <p>Indicadores</p>
+                                    <p>Dashboard</p>
                                 </a>
                             </li>
                             @if(auth()->user()->can(\App\Constants\PermissionsConstants::THIRD_LIST))
@@ -105,6 +105,43 @@
                                     </a>
                                 </li>
                             @endif
+                            @if(auth()->user()->can(\App\Constants\PermissionsConstants::PRODUCT_LIST)
+                                || auth()->user()->can(\App\Constants\PermissionsConstants::INVENTORY_CATEGORY_LIST)
+                                || auth()->user()->can(\App\Constants\PermissionsConstants::WAREHOUSE_LIST))
+                                <li class="nav-item has-treeview">
+                                    <a href="#" class="nav-link">
+                                        <i class="nav-icon fas fa-sitemap"></i>
+                                        <p>Inventario<i class="right fa fa-angle-left"></i></p>
+                                    </a>
+                                    <ul class="nav nav-treeview">
+                                        @if(auth()->user()->can(\App\Constants\PermissionsConstants::PRODUCT_LIST))
+                                            <li class="nav-item">
+                                                <a href="{{route('inventory.products.index')}}" class="nav-link">
+                                                    <i class="fab fa-product-hunt"></i>
+                                                    <p>Productos</p>
+                                                </a>
+                                            </li>
+                                        @endif
+                                        @if(auth()->user()->can(\App\Constants\PermissionsConstants::INVENTORY_CATEGORY_LIST))
+                                            <li class="nav-item">
+                                                <a href="{{route('inventory.category.index')}}" class="nav-link">
+                                                    <i class="fas fa-boxes"></i>
+                                                    <p>Categorias</p>
+                                                </a>
+                                            </li>
+                                        @endif
+                                        @if(auth()->user()->can(\App\Constants\PermissionsConstants::WAREHOUSE_LIST))
+                                            <li class="nav-item">
+                                                <a href="{{route('warehouses.index')}}" class="nav-link">
+                                                    <i class="fas fa-warehouse"></i>
+                                                    <p>Bodegas</p>
+                                                </a>
+                                            </li>
+                                        @endif
+                                    </ul>
+                                </li>
+                            @endif
+
                             <li class="nav-item has-treeview">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon fa fa-pie-chart"></i>
@@ -113,31 +150,31 @@
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
                                         <a href="pages/charts/chartjs.html" class="nav-link">
-                                            <i class="fa fa-circle-o nav-icon"></i>
+                                            <i class="fas fa-piggy-bank"></i>
+                                            <p>Ventas</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="pages/charts/chartjs.html" class="nav-link">
+                                            <i class="fas fa-shopping-cart"></i>
                                             <p>Compras/ gastos</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="pages/charts/flot.html" class="nav-link">
-                                            <i class="fa fa-circle-o nav-icon"></i>
-                                            <p>Inventario</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a href="pages/charts/flot.html" class="nav-link">
-                                            <i class="fa fa-circle-o nav-icon"></i>
+                                            <i class="fas fa-cash-register"></i>
                                             <p>Bancos/ Cajas</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="pages/charts/flot.html" class="nav-link">
-                                            <i class="fa fa-circle-o nav-icon"></i>
+                                            <i class="fas fa-money-bill-wave"></i>
                                             <p>Cuanto me deben</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="pages/charts/flot.html" class="nav-link">
-                                            <i class="fa fa-circle-o nav-icon"></i>
+                                            <i class="fas fa-money-check-alt"></i>
                                             <p>Cuanto estoy debiendo</p>
                                         </a>
                                     </li>
@@ -166,7 +203,7 @@
                                         <ul class="nav nav-treeview">
                                             <li class="nav-item">
                                                 <a href="{{route('users.index')}}" class="nav-link">
-                                                    <i class="fa fa-circle-o nav-icon"></i>
+                                                    <i class="fas fa-users"></i>
                                                     <p>Usuarios</p>
                                                 </a>
                                             </li>
@@ -176,7 +213,7 @@
                                         <ul class="nav nav-treeview">
                                             <li class="nav-item">
                                                 <a href="{{route('roles.index')}}" class="nav-link">
-                                                    <i class="fa fa-circle-o nav-icon"></i>
+                                                    <i class="fas fa-user-tag"></i>
                                                     <p>Roles</p>
                                                 </a>
                                             </li>
@@ -238,6 +275,9 @@
 <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
 <!-- AdminLTE App -->
 <script src="{{ asset('js/adminlte.js') }}"></script>
+
+<script src="{{ asset('/js/888e42c25f.js') }}" defer></script>
+
 @yield('scripts')
 
 </body>

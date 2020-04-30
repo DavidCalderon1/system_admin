@@ -46,20 +46,20 @@ class EloquentThirdPartiesRepository implements ThirdPartiesRepositoryInterface
     public function update(int $id, array $data): bool
     {
         return $this->thirdParties->where('id', $id)->update([
-            'identity_type' => $data['identity_type'],
-            'identity_number' => $data['identity_number'],
-            'type_person' => $data['type_person'],
-            'type' => $data['type'],
-            'name' => $data['name'],
-            'last_name' => $data['last_name'],
-            'address' => $data['address'],
-            'country_id' => $data['country_id'],
-            'state_id' => $data['state_id'],
-            'city_id' => $data['city_id'],
-            'phone_number' => $data['phone_number'],
-            'phone_extension' => $data['phone_extension'],
-            'email' => $data['email'],
-            'description' => $data['description'],
+            'identity_type' => strtoupper($data['identity_type']),
+            'identity_number' => strtoupper($data['identity_number']),
+            'type_person' => strtoupper($data['type_person']),
+            'type' => strtoupper($data['type']),
+            'name' => strtoupper($data['name']),
+            'last_name' => strtoupper($data['last_name']),
+            'address' => strtoupper($data['address']),
+            'country_id' => strtoupper($data['country_id']),
+            'state_id' => strtoupper($data['state_id']),
+            'city_id' => strtoupper($data['city_id']),
+            'phone_number' => strtoupper($data['phone_number']),
+            'phone_extension' => strtoupper($data['phone_extension']),
+            'email' => strtoupper($data['email']),
+            'description' => strtoupper($data['description']),
         ]);
     }
 
@@ -119,20 +119,20 @@ class EloquentThirdPartiesRepository implements ThirdPartiesRepositoryInterface
     public function store($data): ThirdParties
     {
         return $this->thirdParties->create([
-            'identity_type' => $data['identity_type'],
-            'identity_number' => $data['identity_number'],
-            'type_person' => $data['type_person'],
-            'type' => $data['type'],
-            'name' => $data['name'],
-            'last_name' => $data['last_name'],
-            'address' => $data['address'],
-            'country_id' => $data['country_id'],
-            'state_id' => $data['state_id'],
-            'city_id' => $data['city_id'],
-            'phone_number' => $data['phone_number'],
-            'phone_extension' => $data['phone_extension'],
-            'email' => $data['email'],
-            'description' => $data['description'],
+            'identity_type' => strtoupper($data['identity_type']),
+            'identity_number' => strtoupper($data['identity_number']),
+            'type_person' => strtoupper($data['type_person']),
+            'type' => strtoupper($data['type']),
+            'name' => strtoupper($data['name']),
+            'last_name' => strtoupper($data['last_name']),
+            'address' => strtoupper($data['address']),
+            'country_id' => strtoupper($data['country_id']),
+            'state_id' => strtoupper($data['state_id']),
+            'city_id' => strtoupper($data['city_id']),
+            'phone_number' => strtoupper($data['phone_number']),
+            'phone_extension' => strtoupper($data['phone_extension']),
+            'email' => strtoupper($data['email']),
+            'description' => strtoupper($data['description']),
         ]);
     }
 }
