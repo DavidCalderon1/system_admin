@@ -6,7 +6,6 @@
     <create-invoices-component
 
         route-filter-clients-by-identity-number="{{route('thirds.filterAllByType','client')}}"
-        route-get-client-by-id="{{route('thirds.getById','__ID__')}}"
         route-filter-products="{{route('inventory.products.filter')}}"
 
         route-index="{{route('inventory.products.index')}}"

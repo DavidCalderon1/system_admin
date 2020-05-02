@@ -99,35 +99,19 @@ class ThirdListController extends Controller
     public function filterAllByType(Request $request, string $type): JsonResponse
     {
         $query = empty($request->get('q')) ? '' : $request->get('q');
-        $person = $this->thirdPartiesRepository->filterAllByType($type, $query);
+        $persons = $this->thirdPartiesRepository->filterAllByType($type, $query);
 
-        if (empty($person)) {
+        if (empty($persons)) {
             return response()->json([], 200);
         }
-
-        $person['text'] = $person['identity_number'] . ' - ' . $person['name'] . ' ' . $person['last_name'];
-        $ext = (!empty($person['phone_extension'])) ? ' Ext: ' . $person['phone_extension'] : '';
-        $person['contacts'] = [
-            $person['email'],
-            $person['phone_number'] . $ext,
-        ];
-        return response()->json([$person], 200);
-    }
-
-    /**
-     * @param int $id
-     * @return JsonResponse
-     */
-    public function getById(int $id): JsonResponse
-    {
-        $person = $this->thirdPartiesRepository->get($id);
-
-        $ext = (!empty($person['phone_extension'])) ? ' Ext: ' . $person['phone_extension'] : '';
-        $person['contacts'] = [
-            $person['email'],
-            $person['phone_number'] . $ext,
-        ];
-
-        return response()->json($person, 200);
+        foreach ($persons as $key => $person) {
+            $persons[$key]['text'] = $person['identity_number'] . ' - ' . $person['name'] . ' ' . $person['last_name'];
+            $ext = (!empty($person['phone_extension'])) ? ' Ext: ' . $person['phone_extension'] : '';
+            $person[$key]['contacts'] = [
+                $person['email'],
+                $person['phone_number'] . $ext,
+            ];
+        }
+        return response()->json($persons, 200);
     }
 }

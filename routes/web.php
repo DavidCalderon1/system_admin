@@ -51,7 +51,6 @@ Route::group(['prefix' => 'thirds'], function () {
     Route::get('/', 'Third\ThirdListController@index')->name('thirds.index');
     Route::get('/list', 'Third\ThirdListController@list')->name('thirds.list');
     Route::get('/filterAllByType/{type}', 'Third\ThirdListController@filterAllByType')->name('thirds.filterAllByType');
-    Route::get('/getById/{id}', 'Third\ThirdListController@getById')->name('thirds.getById');
     Route::get('/create', 'Third\ThirdCreateController@create')->name('thirds.create');
     Route::post('/store', 'Third\ThirdCreateController@store')->name('thirds.store');
     Route::get('/edit/{thirdId}', 'Third\ThirdEditController@edit')->name('thirds.edit');

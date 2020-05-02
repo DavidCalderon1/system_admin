@@ -1,13 +1,13 @@
 <template>
-    <div>
-        <div class="row">
-            <div class="col-md-3">
-                <label>Número</label>
-                <input type="text" class="form-control form-control-sm" value="Numeración automática"
-                       disabled="disabled">
-            </div>
-        </div>
-        <hr>
+    <div id="create-invoices">
+        <!--        <div class="row">-->
+        <!--            <div class="col-md-3">-->
+        <!--                <label>Número</label>-->
+        <!--                <input type="text" class="form-control form-control-sm" value="Numeración automática"-->
+        <!--                       disabled="disabled">-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <!--        <hr>-->
         <div class="row">
             <div class="col-md-3">
                 <label>Cliente</label>
@@ -55,61 +55,88 @@
                 <label>Vendedor</label>
                 <input type="text" class="form-control form-control-sm">
             </div>
-
-            <table class="table table-bordered table-sm">
-                <thead>
-                <tr>
-                    <th style="width: 300px">Producto</th>
-                    <th>Descripción</th>
-                    <th>Bodega</th>
-                    <th style="width:78px;">Cantidad</th>
-                    <th style="width: 90px;">Valor unit.</th>
-                    <th style="width:78px;">% Desc.</th>
-                    <th style="width:78px;">Valor total</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(product,k) in request.products" :key="k">
-                    <td>
-                        <select-component v-on:response="loadProductData($event, k)"
-                                          v-bind:url="routeFilterProducts"
-                                          :placeholder="'Seleccione el producto'">
-                        </select-component>
-                    </td>
-                    <td>
+        </div>
+        <hr>
+        <table class="table table-striped table-hover table-bordered table-sm">
+            <thead class="thead-light text-center">
+            <tr>
+                <th style="width:200px">Producto</th>
+                <th style="width:250px">Descripción</th>
+                <th style="width:200px">Bodega</th>
+                <th style="width:78px;">Cantidad</th>
+                <th style="width:90px;">Valor unit.</th>
+                <th style="width:78px;">% Desc.</th>
+                <th style="width:70px;">% Iva</th>
+                <th style="width:85px;">Total</th>
+                <th style="width:48px;"></th>
+            </tr>
+            </thead>
+            <tbody class="text-center">
+            <tr v-for="(product,k) in request.products" :key="k">
+                <td>
+                    <select-component v-on:response="loadProductData($event, k)"
+                                      v-bind:url="routeFilterProducts"
+                                      :placeholder="'Seleccione el producto'">
+                    </select-component>
+                </td>
+                <td>
                         <textarea class="form-control form-control-sm" v-model="product.description"
                                   rows="1"></textarea>
 
-                    </td>
-                    <td>
-                        <select-component :options="warehousesData" v-model="warehouseSelected"
-                                          @input="loadWarehouseData">
-                            <option disabled value="0">Seleccione el Bodega</option>
-                        </select-component>
-                    </td>
-                    <td>
-                        <input type="text" class="form-control form-control-sm" v-model="product.quantity">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control form-control-sm" v-model="product.price">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control form-control-sm" v-model="product.discount_percentage">
-                    </td>
-                    <td>
-                        <input type="text" class="form-control form-control-sm" v-model="product.total">
-                    </td>
-                    <td>
-                        <span>
-                            <i class="fas fa-minus-circle" @click="remove(k)"
-                               v-show="k || ( !k && request.products.length > 1)"></i>
-                            <i class="fas fa-plus-circle" @click="add(k)" v-show="k == request.products.length-1"></i>
-                        </span>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+                </td>
+                <td>
+                    <select-component :options="warehousesData" v-model="warehouseSelected"
+                                      @input="loadWarehouseData">
+                        <option disabled value="0">Seleccione el Bodega</option>
+                    </select-component>
+                </td>
+                <td>
+                    <input type="number" class="form-control form-control-sm" min="1" v-model="product.quantity">
+                </td>
+                <td>
+                    <input type="text" class="form-control form-control-sm" v-model="product.price">
+                </td>
+                <td>
+                    <input type="text" class="form-control form-control-sm" v-model="product.discount_percentage">
+                </td>
+                <td>
+                    <input type="text" class="form-control form-control-sm" v-model="product.vat">
+                </td>
+                <td>
+                    <!--                        <input type="text" class="form-control form-control-sm" v-bind:value="calculateTotalRow(product)">-->
+
+                    ${{calculateTotalRow(product)}}
+                </td>
+                <td>
+                    <span>
+                        <i class="fas fa-minus-circle" @click="remove(k)"
+                           v-show="k || ( !k && request.products.length > 1)"></i>
+                        <i class="fas fa-plus-circle" @click="add(k)" v-show="k == request.products.length-1"></i>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4"></td>
+                <td colspan="2">Total bruto</td>
+                <td colspan="3">$ {{calculateGrossTotal}}</td>
+            </tr>
+            <tr>
+                <td colspan="4"></td>
+                <td colspan="2">Descuentos</td>
+                <td colspan="3">$ {{calculateDiscountsTotal}}</td>
+            </tr>
+            <tr>
+                <td colspan="4"></td>
+                <td colspan="2">Subtotal</td>
+                <td colspan="3">$ {{calculateSubTotal}}</td>
+            </tr>
+            <tr>
+                <td colspan="4"></td>
+                <td colspan="2"><b>Total neto $</b></td>
+                <td colspan="3">$ {{calculateTotal}}</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
@@ -119,10 +146,6 @@
 
         props: {
             routeFilterClientsByIdentityNumber: {
-                type: String,
-                required: true
-            },
-            routeGetClientById: {
                 type: String,
                 required: true
             },
@@ -150,9 +173,10 @@
                             name: '',
                             description: '',
                             warehouse: '',
-                            quantity: 0,
+                            quantity: 1,
                             price: 0,
                             discount_percentage: 0,
+                            vat: 0,
                             total: 0
                         }
                     ],
@@ -163,30 +187,51 @@
                     {id: 2, text: "vendedor 2"},
                     {id: 3, text: "vendedro 3"}
                 ],
-                productsData: [
-                    {id: 1, text: "producto 1"},
-                    {id: 2, text: "producto 2"},
-                    {id: 3, text: "producto 3"}
-                ],
                 warehousesData: [
                     {id: 1, text: "Bodega 1"},
                     {id: 2, text: "Bodega 2"},
                     {id: 3, text: "Bodega 3"}
                 ],
-                arr: ["Afghanistan", "Albania", "Algeria", 'esta', 'es una prueba', 'de autoompletado'],
-                tengo_resultados: '',
                 formatted: '',
 
                 sellerSelected: '',
                 productSelected: '',
                 warehouseSelected: '',
-                value: ''
+                value: '',
+
+                totalGross:0,
+                totalDiscounts:0,
+                subTotal:0,
+                total:0,
 
             }
         },
         mounted() {
             console.log(this.routeFilterClientsByIdentityNumber)
             console.log(this.routeFilterProducts)
+        },
+        computed: {
+            calculateGrossTotal() {
+
+                for (let i in this.request.products){
+                    this.totalGross += parseFloat(this.request.products[i].price)
+                }
+                return this.formatPrice(this.totalGross);
+            },
+            calculateDiscountsTotal() {
+
+                for (let i in this.request.products){
+                    let discount = parseFloat(this.request.products[i].price) * parseFloat(this.request.products[i].discount_percentage) / 100
+                    this.totalDiscounts += discount * this.request.products[i].quantity;
+                }
+
+                return this.formatPrice(this.totalDiscounts );
+            },
+            calculateSubTotal() {
+                return this.subTotal;
+            }, calculateTotal() {
+                return this.total;
+            }
         },
         methods: {
             getRouteWithId: function (route, id) {
@@ -202,16 +247,38 @@
                 this.request.client_identity_number = clientSelected.identity_number
                 this.request.client_identity_type = clientSelected.identity_type
             },
-
             loadProductData(productSelected, k) {
                 this.request.products[k].id = productSelected.id;
                 this.request.products[k].text = productSelected.text
                 this.request.products[k].description = productSelected.description
                 this.request.products[k].warehouse = productSelected.warehouse
-                this.request.products[k].quantity = productSelected.quantity
                 this.request.products[k].price = productSelected.price
-                this.request.products[k].discount_percentage = productSelected.discount_percentage
-                this.request.products[k].total = productSelected.total
+                this.request.products[k].vat = productSelected.vat
+                this.request.products[k].total = 0
+            },
+            calculateTotalRow(product) {
+
+                product.price = (product.price === '') ? 0 : product.price;
+                product.quantity = (product.quantity === '') ? 0 : product.quantity;
+                product.vat = (product.vat === '') ? 0 : product.vat;
+                product.discount_percentage = (product.discount_percentage === '') ? 0 : product.discount_percentage;
+
+                product.price = parseFloat(product.price)
+                product.quantity = parseInt(product.quantity)
+                product.vat = parseFloat(product.vat)
+                product.discount_percentage = parseFloat(product.discount_percentage)
+
+                let vat = product.price * product.vat / 100;
+                let discount = product.price * product.discount_percentage / 100;
+
+                product.total = (product.price - discount + vat) * product.quantity;
+
+                return this.formatPrice(product.total);
+            },
+
+            formatPrice(value) {
+                let val = (value / 1).toFixed(2).replace('.', ',')
+                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
             loadSellerData() {
                 console.log(this.sellerSelected)
@@ -231,9 +298,10 @@
                     text: '',
                     description: '',
                     warehouse: '',
-                    quantity: '',
                     price: 0,
+                    quantity: 1,
                     discount_percentage: 0,
+                    vat: 0,
                     total: 0
                 });
             },
@@ -245,5 +313,7 @@
 </script>
 
 <style scoped>
-
+    div#create-invoices {
+        font-size: 12px;
+    }
 </style>
