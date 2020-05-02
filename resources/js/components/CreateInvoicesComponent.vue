@@ -118,22 +118,27 @@
             <tr>
                 <td colspan="4"></td>
                 <td colspan="2">Total bruto</td>
-                <td colspan="3">$ {{calculateGrossTotal}}</td>
+                <td colspan="3">$ {{formatPrice(calculateGrossTotal)}}</td>
             </tr>
             <tr>
                 <td colspan="4"></td>
                 <td colspan="2">Descuentos</td>
-                <td colspan="3">$ {{calculateDiscountsTotal}}</td>
+                <td colspan="3">$ {{formatPrice(calculateDiscountsTotal)}}</td>
             </tr>
             <tr>
                 <td colspan="4"></td>
                 <td colspan="2">Subtotal</td>
-                <td colspan="3">$ {{calculateSubTotal}}</td>
+                <td colspan="3">$ {{formatPrice(calculateSubTotal)}}</td>
+            </tr>
+            <tr>
+                <td colspan="4"></td>
+                <td colspan="2">IVA</td>
+                <td colspan="3">$ {{formatPrice(calculateVatTotal)}}</td>
             </tr>
             <tr>
                 <td colspan="4"></td>
                 <td colspan="2"><b>Total neto $</b></td>
-                <td colspan="3">$ {{calculateTotal}}</td>
+                <td colspan="3">$ {{formatPrice(calculateTotal)}}</td>
             </tr>
             </tbody>
         </table>
@@ -212,25 +217,20 @@
         },
         computed: {
             calculateGrossTotal() {
-
-                for (let i in this.request.products){
-                    this.totalGross += parseFloat(this.request.products[i].price)
-                }
-                return this.formatPrice(this.totalGross);
+                return this.getTotalGross();
             },
             calculateDiscountsTotal() {
-
-                for (let i in this.request.products){
-                    let discount = parseFloat(this.request.products[i].price) * parseFloat(this.request.products[i].discount_percentage) / 100
-                    this.totalDiscounts += discount * this.request.products[i].quantity;
-                }
-
-                return this.formatPrice(this.totalDiscounts );
+                return this.getTotalDiscount();
             },
             calculateSubTotal() {
-                return this.subTotal;
-            }, calculateTotal() {
-                return this.total;
+                return this.getTotalGross() - this.getTotalDiscount()
+            },
+            calculateVatTotal(){
+                return this.getTotalVat();
+            },
+            calculateTotal() {
+                let subTotal = this.getTotalGross() - this.getTotalDiscount();
+                return subTotal + this.getTotalVat();
             }
         },
         methods: {
@@ -275,7 +275,29 @@
 
                 return this.formatPrice(product.total);
             },
-
+            getTotalGross() {
+                let totalGross = 0;
+                for (let i in this.request.products) {
+                    totalGross += parseFloat(this.request.products[i].price) * parseFloat(this.request.products[i].quantity)
+                }
+                return totalGross;
+            },
+            getTotalDiscount(){
+                let totalDiscount = 0;
+                for (let i in this.request.products){
+                    let discount = parseFloat(this.request.products[i].price) * parseFloat(this.request.products[i].discount_percentage) / 100
+                    totalDiscount += discount * this.request.products[i].quantity;
+                }
+                return totalDiscount;
+            },
+            getTotalVat(){
+                let totalVat = 0;
+                for (let i in this.request.products){
+                    let unitVat = parseFloat(this.request.products[i].price) * parseFloat(this.request.products[i].vat) / 100;
+                    totalVat += unitVat * parseFloat(this.request.products[i].quantity);
+                }
+                return totalVat;
+            },
             formatPrice(value) {
                 let val = (value / 1).toFixed(2).replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
