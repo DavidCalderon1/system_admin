@@ -135,4 +135,18 @@ class EloquentThirdPartiesRepository implements ThirdPartiesRepositoryInterface
             'description' => strtoupper($data['description']),
         ]);
     }
+
+    /**
+     * @param string $type
+     * @param string $query
+     * @return array
+     */
+    public function filterAllByType(string $type, string $query = ''): array
+    {
+        $person = $this->thirdParties->where('type', $type)
+            ->where('identity_number', $query)
+            ->first();
+
+        return (!empty($person)) ? $person->toArray() : [];
+    }
 }

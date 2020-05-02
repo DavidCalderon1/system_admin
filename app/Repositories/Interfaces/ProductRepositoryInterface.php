@@ -16,6 +16,13 @@ interface ProductRepositoryInterface
      */
     public function getPagination(int $perPage, array $filers = []);
 
+
+    /**
+     * @param string $filter
+     * @return array
+     */
+    public function filterByCodeOrReference(string $filter):array;
+
     /**
      * @param int $warehouseId
      * @return array

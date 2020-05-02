@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Inventory\Product;
 use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Session\Store as SessionStore;
 use Illuminate\Support\Facades\Storage;
@@ -91,6 +92,25 @@ class ProductListController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function filter(Request $request): JsonResponse
+    {
+        $query = empty($request->get('q')) ? '' : $request->get('q');
+        $products = $this->productRepository->filterByCodeOrReference($query);
+
+        if (empty($products)) {
+            return response()->json([], 200);
+        }
+
+        foreach ($products as $key => $product) {
+            $products[$key]['text'] = $product['code'] . ' - ' . $product['reference'];
+        }
+
+        return response()->json($products, 200);
     }
 }

@@ -54,6 +54,18 @@ class EloquentProductRepository implements ProductRepositoryInterface
     }
 
     /**
+     * @param string $filter
+     * @return array}
+     */
+    public function filterByCodeOrReference(string $filter): array
+    {
+        $products = $this->product->where('code', 'like', "%{$filter}%")
+            ->orWhere('reference', 'like', "%{$filter}%")
+            ->get();
+        return (!empty($products)) ? $products->toArray() : [];
+    }
+
+    /**
      * @param int $productId
      * @return array
      */

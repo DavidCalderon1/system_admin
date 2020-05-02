@@ -17,6 +17,10 @@
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('css/adminlte.css') }}">
 
+    <link rel="stylesheet" href="{{ asset('css/select2.min.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('css/select2-bootstrap4.min.css') }}">
+
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
     <script src="{{ mix('/js/app.js') }}" defer></script>
@@ -279,6 +283,7 @@
 <script src="{{ asset('/js/888e42c25f.js') }}" defer></script>
 
 @yield('scripts')
+
 
 </body>
 </html>

@@ -41,4 +41,11 @@ interface ThirdPartiesRepositoryInterface
      * @return ThirdParties
      */
     public function store($data): ThirdParties;
+
+    /**
+     * @param string $type
+     * @param string $query
+     * @return array
+     */
+    public function filterAllByType(string $type, string $query=''): array;
 }

@@ -90,4 +90,44 @@ class ThirdListController extends Controller
 
         return response()->json($response, 200);
     }
+
+    /**
+     * @param Request $request
+     * @param string $type
+     * @return JsonResponse
+     */
+    public function filterAllByType(Request $request, string $type): JsonResponse
+    {
+        $query = empty($request->get('q')) ? '' : $request->get('q');
+        $person = $this->thirdPartiesRepository->filterAllByType($type, $query);
+
+        if (empty($person)) {
+            return response()->json([], 200);
+        }
+
+        $person['text'] = $person['identity_number'] . ' - ' . $person['name'] . ' ' . $person['last_name'];
+        $ext = (!empty($person['phone_extension'])) ? ' Ext: ' . $person['phone_extension'] : '';
+        $person['contacts'] = [
+            $person['email'],
+            $person['phone_number'] . $ext,
+        ];
+        return response()->json([$person], 200);
+    }
+
+    /**
+     * @param int $id
+     * @return JsonResponse
+     */
+    public function getById(int $id): JsonResponse
+    {
+        $person = $this->thirdPartiesRepository->get($id);
+
+        $ext = (!empty($person['phone_extension'])) ? ' Ext: ' . $person['phone_extension'] : '';
+        $person['contacts'] = [
+            $person['email'],
+            $person['phone_number'] . $ext,
+        ];
+
+        return response()->json($person, 200);
+    }
 }

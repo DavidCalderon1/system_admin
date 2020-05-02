@@ -5,12 +5,17 @@
  */
 
 require('./bootstrap');
+require('../../node_modules/bootstrap-select/dist/js/bootstrap-select');
+
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 import VueAlertify from 'vue-alertify';
-
+import select2 from 'select2'
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import "bootstrap-select/sass/bootstrap-select.scss";
+
+
 
 window.Vue = require('vue');
 Vue.use(BootstrapVue)
@@ -33,7 +38,6 @@ Vue.use(VueAlertify,{
         cancel: 'Cancelar',
     },
 });
-
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -57,6 +61,8 @@ Vue.component('warehouses-component', require('./components/WarehousesComponent'
 Vue.component('form-create-warehouse-component', require('./components/FormCreateWarehouseComponent').default);
 Vue.component('form-create-product-component', require('./components/FormCreateProductComponent').default);
 Vue.component('products-component', require('./components/ProductsComponent').default);
+Vue.component('create-invoices-component', require('./components/CreateInvoicesComponent').default);
+Vue.component('select-component', require('./components/SelectComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
