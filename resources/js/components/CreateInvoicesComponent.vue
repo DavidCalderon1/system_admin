@@ -85,7 +85,7 @@
 
                 </td>
                 <td>
-                    <select-component :options="warehousesData" v-model="warehouseSelected"
+                    <select-component :options="product.warehouses" v-model="warehouseSelected"
                                       @input="loadWarehouseData">
                         <option disabled value="0">Seleccione el Bodega</option>
                     </select-component>
@@ -238,7 +238,6 @@
                 return route.replace('__ID__', id);
             },
             setRequestClientData(clientSelected) {
-
                 this.optionsClientContact = clientSelected.contacts;
 
                 this.request.client_id = clientSelected.id
@@ -248,10 +247,11 @@
                 this.request.client_identity_type = clientSelected.identity_type
             },
             loadProductData(productSelected, k) {
+                console.log(productSelected)
                 this.request.products[k].id = productSelected.id;
                 this.request.products[k].text = productSelected.text
                 this.request.products[k].description = productSelected.description
-                this.request.products[k].warehouse = productSelected.warehouse
+                this.request.products[k].warehouses = productSelected.warehouses
                 this.request.products[k].price = productSelected.price
                 this.request.products[k].vat = productSelected.vat
                 this.request.products[k].total = 0

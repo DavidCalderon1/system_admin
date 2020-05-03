@@ -107,7 +107,7 @@ class ThirdListController extends Controller
         foreach ($persons as $key => $person) {
             $persons[$key]['text'] = $person['identity_number'] . ' - ' . $person['name'] . ' ' . $person['last_name'];
             $ext = (!empty($person['phone_extension'])) ? ' Ext: ' . $person['phone_extension'] : '';
-            $person[$key]['contacts'] = [
+            $persons[$key]['contacts'] = [
                 $person['email'],
                 $person['phone_number'] . $ext,
             ];

@@ -109,6 +109,14 @@ class ProductListController extends Controller
 
         foreach ($products as $key => $product) {
             $products[$key]['text'] = $product['code'] . ' - ' . $product['reference'];
+            if(!empty($product['warehouses'])){
+                $products[$key]['warehouses'] = array_map(function ($warehouse){
+                    return [
+                        'id' => $warehouse['id'],
+                        'text' => $warehouse['name'].' -> '.$warehouse['pivot']['quantity'].'und',
+                    ];
+                },$product['warehouses']);
+            }
         }
 
         return response()->json($products, 200);
