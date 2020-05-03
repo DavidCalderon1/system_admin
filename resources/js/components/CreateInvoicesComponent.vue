@@ -1,18 +1,9 @@
 <template>
     <div id="create-invoices">
-        <!--        <div class="row">-->
-        <!--            <div class="col-md-3">-->
-        <!--                <label>Número</label>-->
-        <!--                <input type="text" class="form-control form-control-sm" value="Numeración automática"-->
-        <!--                       disabled="disabled">-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <!--        <hr>-->
         <div class="row">
             <div class="col-md-3">
                 <label>Cliente</label>
-                <select-component v-model="clientSelectedId"
-                                  v-on:response="setRequestClientData"
+                <select-component v-on:response="setRequestClientData"
                                   v-bind:url="routeFilterClientsByIdentityNumber"
                                   :placeholder="'Seleccione el cliente'">
                 </select-component>
@@ -43,9 +34,8 @@
                                 button-only
                                 right
                                 size="sm"
-                                locale="en-US"
+                                locale="es-CO"
                                 aria-controls="example-input"
-                                @context="onContext"
                             ></b-form-datepicker>
                         </b-input-group-append>
                     </b-input-group>
@@ -53,7 +43,7 @@
             </div>
             <div class="col-md-3">
                 <label>Vendedor</label>
-                <input type="text" class="form-control form-control-sm">
+                <input type="text" v-model="request.seller_code" class="form-control form-control-sm">
             </div>
         </div>
         <hr>
@@ -80,13 +70,10 @@
                     </select-component>
                 </td>
                 <td>
-                        <textarea class="form-control form-control-sm" v-model="product.description"
-                                  rows="1"></textarea>
-
+                    <textarea class="form-control form-control-sm" v-model="product.description" rows="1"></textarea>
                 </td>
                 <td>
-                    <select-component :options="product.warehouses" v-model="warehouseSelected"
-                                      @input="loadWarehouseData">
+                    <select-component :options="product.warehouses" v-model="product.warehouse_id">
                         <option disabled value="0">Seleccione el Bodega</option>
                     </select-component>
                 </td>
@@ -94,7 +81,7 @@
                     <input type="number" class="form-control form-control-sm" min="1" v-model="product.quantity">
                 </td>
                 <td>
-                    <input type="text" class="form-control form-control-sm" v-model="product.price">
+                    <currency-input-component v-model="product.price" ></currency-input-component>
                 </td>
                 <td>
                     <input type="text" class="form-control form-control-sm" v-model="product.discount_percentage">
@@ -103,15 +90,14 @@
                     <input type="text" class="form-control form-control-sm" v-model="product.vat">
                 </td>
                 <td>
-                    <!--                        <input type="text" class="form-control form-control-sm" v-bind:value="calculateTotalRow(product)">-->
-
+                    <!--<input type="text" class="form-control form-control-sm" v-bind:value="calculateTotalRow(product)">-->
                     ${{calculateTotalRow(product)}}
                 </td>
                 <td>
                     <span>
-                        <i class="fas fa-minus-circle" @click="remove(k)"
+                        <i class="fas fa-minus-circle" @click="removeProductRow(k)"
                            v-show="k || ( !k && request.products.length > 1)"></i>
-                        <i class="fas fa-plus-circle" @click="add(k)" v-show="k == request.products.length-1"></i>
+                        <i class="fas fa-plus-circle" @click="addProductRow(k)" v-show="k == request.products.length-1"></i>
                     </span>
                 </td>
             </tr>
@@ -142,6 +128,59 @@
             </tr>
             </tbody>
         </table>
+
+        <section v-if="calculateTotal > 0">
+            <h6>Forma de pago</h6>
+            <table>
+                <thead>
+                <tr v-for="(payment,i) in request.payments" :key="i">
+                    <th>
+                        <select v-model="payment.way_to_pay" class="form-control form-control-sm">
+                            <option value="credit">Crédito</option>
+                            <option value="cash">Contado</option>
+                        </select>
+                    </th>
+                    <th>
+                        <currency-input-component v-model="payment.amount"></currency-input-component>
+                    </th>
+                    <th v-if="payment.way_to_pay === 'cash'">
+                        <select v-model="payment.method" class="form-control form-control-sm">
+                            <option v-for="payment_method in payment_methods">{{payment_method.name}}</option>
+                        </select>
+                    </th>
+                    <th>
+                        <span>
+                            <i class="fas fa-minus-circle" @click="removePaymentMethodRow(i)"
+                               v-show="i || ( !i && request.payments.length > 1)"></i>
+                            <i class="fas fa-plus-circle" @click="addPaymentMethodRow(i)"
+                               v-show=" (i == request.payments.length-1) && canAddPayment"></i>
+                        </span>
+                    </th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th>Total formas de pago: ${{formatPrice(calculateTotalPayments)}}</th>
+                </tr>
+                </thead>
+            </table>
+        </section>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Observaciones</label>
+                <textarea class="form-control form-control-sm" v-model="request.description"></textarea>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <label>Adjuntar Archivo</label>
+                <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
+            </div>
+        </div>
+        <hr>
+        <button class="btn btn-sm btn-success" v-bind:disabled="!canCreate" @click="sendRequest(0)">Guardar</button>
+        <button class="btn btn-sm btn-primary" v-bind:disabled="!canCreate" @click="sendRequest(1)">Guardar y descargar</button>
     </div>
 </template>
 
@@ -150,6 +189,10 @@
         name: "CreateInvoicesComponent",
 
         props: {
+            routeStore: {
+                type: String,
+                required: true
+            },
             routeFilterClientsByIdentityNumber: {
                 type: String,
                 required: true
@@ -162,8 +205,6 @@
         data() {
             return {
                 optionsClientContact: [],
-                clientSelectedId: '',
-
                 request: {
                     client_id: 0,
                     client_name: '',
@@ -171,13 +212,16 @@
                     client_identity_number: '',
                     client_identity_type: '',
                     client_contact: '',
+                    seller_code:'',
                     date: '',
+                    description:'',
+                    file:'',
                     products: [
                         {
                             id: 0,
                             name: '',
                             description: '',
-                            warehouse: '',
+                            warehouse_id: 0,
                             quantity: 1,
                             price: 0,
                             discount_percentage: 0,
@@ -185,30 +229,28 @@
                             total: 0
                         }
                     ],
-                    payments: []
+                    payments: [
+                        {
+                            'way_to_pay' : 'cash',
+                            'amount' : 0,
+                            'method' : '',
+                        }
+                    ]
                 },
-                sellersData: [
-                    {id: 1, text: "vendedor 1"},
-                    {id: 2, text: "vendedor 2"},
-                    {id: 3, text: "vendedro 3"}
+                payment_methods: [
+                    {
+                        id:1,
+                        name: 'Efectivo'
+                    },
+                    {
+                        id:2,
+                        name: 'Tarjeta débito'
+                    },
+                    {
+                        id:2,
+                        name: 'Tarjeta de crédito'
+                    }
                 ],
-                warehousesData: [
-                    {id: 1, text: "Bodega 1"},
-                    {id: 2, text: "Bodega 2"},
-                    {id: 3, text: "Bodega 3"}
-                ],
-                formatted: '',
-
-                sellerSelected: '',
-                productSelected: '',
-                warehouseSelected: '',
-                value: '',
-
-                totalGross:0,
-                totalDiscounts:0,
-                subTotal:0,
-                total:0,
-
             }
         },
         mounted() {
@@ -223,14 +265,40 @@
                 return this.getTotalDiscount();
             },
             calculateSubTotal() {
-                return this.getTotalGross() - this.getTotalDiscount()
+                return this.getSubTotal()
             },
             calculateVatTotal(){
                 return this.getTotalVat();
             },
             calculateTotal() {
-                let subTotal = this.getTotalGross() - this.getTotalDiscount();
-                return subTotal + this.getTotalVat();
+                return this.getTotal();
+            },
+            calculateTotalPayments(){
+                return this.getTotalPayments();
+            },
+            canAddPayment(){
+                return this.getTotalPayments() < this.getTotal();
+            },
+            canCreate() {
+
+                for (let i in this.request.products){
+                    if (this.request.products[i].warehouse_id === 0 || this.request.products[i].warehouse_id  === ''){
+                        return false;
+                    }
+                }
+
+                for (let i in this.request.payments){
+                    if (this.request.payments[i].method === ''){
+                        return false;
+                    }
+                }
+
+                return this.request.client_id > 0
+                    && this.request.client_contact.length > 0
+                    && this.request.date.length > 0
+                    && this.request.seller_code.length > 0
+                    && this.getTotal() > 0
+                    && this.getTotalPayments() === this.getTotal();
             }
         },
         methods: {
@@ -298,23 +366,24 @@
                 }
                 return totalVat;
             },
+            getSubTotal(){
+                return this.getTotalGross() - this.getTotalDiscount();
+            },
+            getTotal(){
+                return this.getSubTotal() + this.getTotalVat();
+            },
+            getTotalPayments(){
+                let totalPayments = 0;
+                for (let i in this.request.payments) {
+                    totalPayments += parseFloat(this.request.payments[i].amount)
+                }
+                return totalPayments;
+            },
             formatPrice(value) {
                 let val = (value / 1).toFixed(2).replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
             },
-            loadSellerData() {
-                console.log(this.sellerSelected)
-            },
-            loadWarehouseData() {
-                console.log(this.warehouseSelected)
-            },
-            onContext(ctx) {
-                // The date formatted in the locale, or the `label-no-date-selected` string
-                this.formatted = ctx.selectedFormatted
-                // The following will be an empty string until a valid date is entered
-                this.selected = ctx.selectedYMD
-            },
-            add(index) {
+            addProductRow(index) {
                 this.request.products.push({
                     id: 0,
                     text: '',
@@ -327,9 +396,48 @@
                     total: 0
                 });
             },
-            remove(index) {
+            removeProductRow(index) {
                 this.request.products.splice(index, 1);
-            }
+            },
+            addPaymentMethodRow(index) {
+
+                let nextTotal = this.getTotal() - this.getTotalPayments();
+
+                this.request.payments.push( {
+                    'way_to_pay' : 'cash',
+                    'amount' : nextTotal,
+                    'method' : '',
+                });
+            },
+            removePaymentMethodRow(index) {
+                this.request.payments.splice(index, 1);
+            },
+            handleFileUpload(){
+                this.request.file = this.$refs.file.files[0];
+            },
+            sendRequest(download){
+
+                let formData = new FormData();
+                formData.append('client_id', this.request.client_id);
+                formData.append('client_name', this.request.client_name);
+                formData.append('client_last_name', this.request.client_last_name);
+                formData.append('client_identity_number', this.request.client_identity_number);
+                formData.append('client_identity_type', this.request.client_identity_type);
+                formData.append('client_contact', this.request.client_contact);
+                formData.append('seller_code', this.request.seller_code);
+                formData.append('date', this.request.date);
+                formData.append('description', this.request.description);
+                formData.append('file', this.request.file);
+                formData.append('products', JSON.stringify(this.request.products));
+                formData.append('payments',  JSON.stringify(this.request.payments));
+
+                axios.post(this.routeStore+"/"+download,formData,
+                        {headers: {"Content-Type": "application/json"}}
+                    )
+                    .then(r => console.log(r.status))
+                    .catch(e => console.log(e));
+                console.log(this.request, download)
+            },
         }
     }
 </script>

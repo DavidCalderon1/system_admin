@@ -15,4 +15,9 @@ class InvoiceCreateController extends Controller
     {
         return view('inventory.invoices.create');
     }
+
+    public function store(Request $request, bool $download)
+    {
+        dd($download, $request->all());
+    }
 }
