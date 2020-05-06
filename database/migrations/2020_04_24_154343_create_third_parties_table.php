@@ -14,7 +14,7 @@ class CreateThirdPartiesTable extends Migration
     public function up()
     {
         Schema::create('third_parties', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id')->index();
             $table->unsignedInteger('country_id');
             $table->unsignedInteger('state_id');
             $table->unsignedInteger('city_id');

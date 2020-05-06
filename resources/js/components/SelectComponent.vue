@@ -7,7 +7,7 @@
 <script>
     export default {
         name: "SelectComponent",
-        props: ['options', 'placeholder', 'url'],
+        props: ['options', 'value', 'placeholder', 'url'],
         data(){
             return{
                 response:[],
@@ -20,6 +20,8 @@
             if (typeof this.options === "undefined") {
                 this.$select2 = $(this.$el).select2({
                     placeholder: this.placeholder,
+                    width: 'resolve',
+                    dropdownAutoWidth: 'true',
                     ajax: {
                         url: this.url,
                         dataType: 'json',
@@ -52,6 +54,8 @@
             } else {
                 this.$select2 = $(this.$el).select2({
                     placeholder: this.placeholder,
+                    width: 'resolve',
+                    dropdownAutoWidth: 'true',
                     data: this.options
                 }).on('change', function (e) {
                     self.$emit('input', $(e.target).val())
@@ -60,11 +64,18 @@
             }
         },
         watch: {
+            value(value) {
+                let select = $(this.$el).select2();
+                select.val(value).trigger("change");
+            },
             options(newOpts) {
+
                 if (typeof this.options === "undefined") {
 
                     this.$select2.empty().html('<option></option>').select2({
                         placeholder: this.placeholder,
+                        width: 'resolve',
+                        dropdownAutoWidth: 'true',
                         ajax: {
                             url: this.url,
                             dataType: 'json',
@@ -82,12 +93,14 @@
                                 };
                             }
                         }
-                    })
+                    });
                 } else {
                     this.$select2.empty().html('<option></option>').select2({
                         placeholder: this.placeholder,
+                        width: 'resolve',
+                        dropdownAutoWidth: 'true',
                         data: this.options
-                    })
+                    });
                 }
             },
         }
@@ -95,5 +108,7 @@
 </script>
 
 <style scoped>
-
+    .bigdrop {
+        width: 600px !important;
+    }
 </style>

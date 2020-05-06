@@ -59,6 +59,7 @@
                 <div class="form-group col-md-2">
                     <label>Costo unitario:</label>
                     <input type="number" min="0" class="form-control form-control-sm"
+                           step="0.01"
                            onkeyup="javascript:this.value=this.value.toUpperCase();"
                            v-model="request.base_price"
                            v-bind:class="{'is-invalid': validate('base_price')}"
@@ -89,6 +90,7 @@
                 <div class="form-group col-md-2">
                     <label>Valor unitario:</label>
                     <input type="number" min="0" class="form-control form-control-sm"
+                           step="0.01"
                            v-model="request.price"
                            v-bind:class="{'is-invalid': validate('price')}"
                            placeholder="$">

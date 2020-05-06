@@ -6,10 +6,15 @@ use App\Models\ThirdParties;
 use Faker\Generator as Faker;
 
 $factory->define(ThirdParties::class, function (Faker $faker) {
+    $randomId = rand(1, 48331);
+    $city = \App\Models\City::where('id', $randomId)->first();
+    $state = \App\Models\State::where('id', $city->state_id)->first();
+    $country = \App\Models\Country::where('id', $state->country_id)->first();
+
     return [
-        'country_id' => 1,
-        'state_id' => 1,
-        'city_id' =>1,
+        'country_id' => $country->id,
+        'state_id' => $state->id,
+        'city_id' => $city->id,
         'type' => $faker->randomElement(['client', 'provider', 'other']),
         'identity_number' => $faker->randomNumber(),
         'identity_type' => $faker->randomElement(['CC', 'NIT']),

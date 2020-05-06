@@ -97,7 +97,9 @@ Route::group(['prefix' => 'inventory'], function () {
     //Invoices
     Route::group(['prefix' => 'invoices'], function () {
         Route::get('/create', 'Inventory\Invoice\InvoiceCreateController@create')->name('inventory.invoices.create');
-        Route::post('/store/{download?}', 'Inventory\Invoice\InvoiceCreateController@store')->name('inventory.invoices.store');
+        Route::post('/store/', 'Inventory\Invoice\InvoiceCreateController@store')->name('inventory.invoices.store');
+        Route::get('/view/{sale_id}', 'Inventory\Invoice\SaleViewController')->name('inventory.invoices.view');
+        Route::get('/download/{sale_id}', 'Inventory\Invoice\SaleExportPdfController')->name('inventory.invoices.download');
 
     });
 });

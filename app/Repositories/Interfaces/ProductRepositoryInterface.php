@@ -21,7 +21,7 @@ interface ProductRepositoryInterface
      * @param string $filter
      * @return array
      */
-    public function filterByCodeOrReference(string $filter):array;
+    public function filterByCodeOrReference(string $filter): array;
 
     /**
      * @param int $warehouseId
@@ -45,5 +45,13 @@ interface ProductRepositoryInterface
      * @param int $id
      * @return bool
      */
-    public function destroy(int $id): bool ;
+    public function destroy(int $id): bool;
+
+    /**
+     * @param int $productId
+     * @param int $warehouseId
+     * @param int $quantityToDiscount
+     * @return bool
+     */
+    public function updatePivotSubtractQuantity(int $productId, int $warehouseId, int $quantityToDiscount): bool;
 }

@@ -11,12 +11,12 @@ $factory->define(Product::class, function (Faker $faker) {
         'category_id' => function () {
             return factory(InventoryCategory::class)->create();
         },
-        'code' => $faker->word,
+        'code' => $faker->randomNumber(6),
         'reference' => $faker->name,
         'description' => $faker->text,
         'base_price' => $faker->randomFloat(),
-        'vat' => $faker->randomNumber(),
+        'vat' => $faker->randomElement(['0','5','19']),
         'price' => $faker->randomFloat(),
-        'image' => $faker->image(),
+        'image' => $faker->imageUrl(),
     ];
 });

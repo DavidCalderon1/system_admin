@@ -7,6 +7,8 @@
                                   v-bind:url="routeFilterClientsByIdentityNumber"
                                   :placeholder="'Seleccione el cliente'">
                 </select-component>
+                <small class="form-text text-danger"
+                       v-if="validate('client_name')">{{errors.client_name[0]}}</small>
             </div>
             <div class="col-md-3">
                 <div class="autocomplete">
@@ -14,6 +16,8 @@
                     <select-component v-model="request.client_contact" v-bind:options="optionsClientContact"
                                       :placeholder="'Seleccione el contacto'">
                     </select-component>
+                    <small class="form-text text-danger"
+                           v-if="validate('client_contact')">{{errors.client_contact[0]}}</small>
                 </div>
             </div>
             <div class="col-md-3">
@@ -23,6 +27,7 @@
                         <b-form-input
                             id="example-input"
                             v-model="request.date"
+                            v-bind:class="{'is-invalid': validate('date')}"
                             size="sm"
                             type="text"
                             placeholder="YYYY-MM-DD"
@@ -39,11 +44,16 @@
                             ></b-form-datepicker>
                         </b-input-group-append>
                     </b-input-group>
+                    <small class="form-text text-danger"
+                           v-if="validate('date')">{{errors.date[0]}}</small>
                 </div>
             </div>
             <div class="col-md-3">
                 <label>Vendedor</label>
-                <input type="text" v-model="request.seller_code" class="form-control form-control-sm">
+                <input type="text" v-model="request.seller_code" class="form-control form-control-sm"
+                       v-bind:class="{'is-invalid': validate('seller_code')}">
+                <small class="form-text text-danger"
+                       v-if="validate('seller_code')">{{errors.seller_code[0]}}</small>
             </div>
         </div>
         <hr>
@@ -54,7 +64,7 @@
                 <th style="width:250px">Descripción</th>
                 <th style="width:200px">Bodega</th>
                 <th style="width:78px;">Cantidad</th>
-                <th style="width:90px;">Valor unit.</th>
+                <th style="width:150px;">Valor unit.</th>
                 <th style="width:78px;">% Desc.</th>
                 <th style="width:70px;">% Iva</th>
                 <th style="width:85px;">Total</th>
@@ -68,26 +78,43 @@
                                       v-bind:url="routeFilterProducts"
                                       :placeholder="'Seleccione el producto'">
                     </select-component>
+                    <small class="form-text text-danger"
+                           v-if="validate('products.'+k+'.name')">{{errors['products.'+k+'.name'][0]}}</small>
                 </td>
                 <td>
                     <textarea class="form-control form-control-sm" v-model="product.description" rows="1"></textarea>
+                    <small class="form-text text-danger"
+                           v-if="validate('products.'+k+'.description')">{{errors['products.'+k+'.description'][0]}}</small>
                 </td>
                 <td>
-                    <select-component :options="product.warehouses" v-model="product.warehouse_id">
-                        <option disabled value="0">Seleccione el Bodega</option>
-                    </select-component>
+                    <div>
+                        <select2 :options="product.warehouses" v-model="product.warehouse_id">
+                            <option disabled value="0">Seleccione una bodega</option>
+                        </select2>
+                    </div>
+
+                    <small class="form-text text-danger"
+                           v-if="validate('products.'+k+'.warehouse_id')">{{errors['products.'+k+'.warehouse_id'][0]}}</small>
                 </td>
                 <td>
                     <input type="number" class="form-control form-control-sm" min="1" v-model="product.quantity">
+                    <small class="form-text text-danger"
+                           v-if="validate('products.'+k+'.quantity')">{{errors['products.'+k+'.quantity'][0]}}</small>
                 </td>
                 <td>
-                    <currency-input-component v-model="product.price" ></currency-input-component>
+                    <currency-input-component v-model="product.price"></currency-input-component>
+                    <small class="form-text text-danger"
+                           v-if="validate('products.'+k+'.price')">{{errors['products.'+k+'.price'][0]}}</small>
                 </td>
                 <td>
                     <input type="text" class="form-control form-control-sm" v-model="product.discount_percentage">
+                    <small class="form-text text-danger"
+                           v-if="validate('products.'+k+'.discount_percentage')">{{errors['products.'+k+'.discount_percentage'][0]}}</small>
                 </td>
                 <td>
                     <input type="text" class="form-control form-control-sm" v-model="product.vat">
+                    <small class="form-text text-danger"
+                           v-if="validate('products.'+k+'.vat')">{{errors['products.'+k+'.vat'][0]}}</small>
                 </td>
                 <td>
                     <!--<input type="text" class="form-control form-control-sm" v-bind:value="calculateTotalRow(product)">-->
@@ -97,7 +124,8 @@
                     <span>
                         <i class="fas fa-minus-circle" @click="removeProductRow(k)"
                            v-show="k || ( !k && request.products.length > 1)"></i>
-                        <i class="fas fa-plus-circle" @click="addProductRow(k)" v-show="k == request.products.length-1"></i>
+                        <i class="fas fa-plus-circle" @click="addProductRow(k)"
+                           v-show="k == request.products.length-1"></i>
                     </span>
                 </td>
             </tr>
@@ -139,14 +167,20 @@
                             <option value="credit">Crédito</option>
                             <option value="cash">Contado</option>
                         </select>
+                        <small class="form-text text-danger"
+                               v-if="validate('payments.'+i+'.way_to_pay')">{{errors['payments.'+i+'.way_to_pay'][0]}}</small>
                     </th>
                     <th>
                         <currency-input-component v-model="payment.amount"></currency-input-component>
+                        <small class="form-text text-danger"
+                               v-if="validate('payments.'+i+'.amount')">{{errors['payments.'+i+'.amount'][0]}}</small>
                     </th>
                     <th v-if="payment.way_to_pay === 'cash'">
                         <select v-model="payment.method" class="form-control form-control-sm">
                             <option v-for="payment_method in payment_methods">{{payment_method.name}}</option>
                         </select>
+                        <small class="form-text text-danger"
+                               v-if="validate('payments.'+i+'.method')">{{errors['payments.'+i+'.method'][0]}}</small>
                     </th>
                     <th>
                         <span>
@@ -180,7 +214,9 @@
         </div>
         <hr>
         <button class="btn btn-sm btn-success" v-bind:disabled="!canCreate" @click="sendRequest(0)">Guardar</button>
-        <button class="btn btn-sm btn-primary" v-bind:disabled="!canCreate" @click="sendRequest(1)">Guardar y descargar</button>
+        <button class="btn btn-sm btn-primary" v-bind:disabled="!canCreate" @click="sendRequest(1)">Guardar y
+            descargar
+        </button>
     </div>
 </template>
 
@@ -200,7 +236,15 @@
             routeFilterProducts: {
                 type: String,
                 required: true
-            }
+            },
+            routeSaleView: {
+                type: String,
+                required: true
+            },
+            routeSaleDownload: {
+                type: String,
+                required: true
+            },
         },
         data() {
             return {
@@ -212,10 +256,10 @@
                     client_identity_number: '',
                     client_identity_type: '',
                     client_contact: '',
-                    seller_code:'',
+                    seller_code: '',
                     date: '',
-                    description:'',
-                    file:'',
+                    description: '',
+                    file: '',
                     products: [
                         {
                             id: 0,
@@ -231,31 +275,33 @@
                     ],
                     payments: [
                         {
-                            'way_to_pay' : 'cash',
-                            'amount' : 0,
-                            'method' : '',
+                            'way_to_pay': 'cash',
+                            'amount': 0,
+                            'method': '',
                         }
                     ]
                 },
                 payment_methods: [
                     {
-                        id:1,
+                        id: 1,
                         name: 'Efectivo'
                     },
                     {
-                        id:2,
+                        id: 2,
                         name: 'Tarjeta débito'
                     },
                     {
-                        id:2,
+                        id: 2,
                         name: 'Tarjeta de crédito'
                     }
                 ],
+                errors: {},
             }
         },
         mounted() {
             console.log(this.routeFilterClientsByIdentityNumber)
             console.log(this.routeFilterProducts)
+            console.log(this.routeSaleView)
         },
         computed: {
             calculateGrossTotal() {
@@ -267,28 +313,28 @@
             calculateSubTotal() {
                 return this.getSubTotal()
             },
-            calculateVatTotal(){
+            calculateVatTotal() {
                 return this.getTotalVat();
             },
             calculateTotal() {
                 return this.getTotal();
             },
-            calculateTotalPayments(){
+            calculateTotalPayments() {
                 return this.getTotalPayments();
             },
-            canAddPayment(){
+            canAddPayment() {
                 return this.getTotalPayments() < this.getTotal();
             },
             canCreate() {
 
-                for (let i in this.request.products){
-                    if (this.request.products[i].warehouse_id === 0 || this.request.products[i].warehouse_id  === ''){
+                for (let i in this.request.products) {
+                    if (this.request.products[i].warehouse_id === 0 || this.request.products[i].warehouse_id === '') {
                         return false;
                     }
                 }
 
-                for (let i in this.request.payments){
-                    if (this.request.payments[i].method === ''){
+                for (let i in this.request.payments) {
+                    if (this.request.payments[i].method === '') {
                         return false;
                     }
                 }
@@ -318,6 +364,7 @@
                 console.log(productSelected)
                 this.request.products[k].id = productSelected.id;
                 this.request.products[k].text = productSelected.text
+                this.request.products[k].name = productSelected.text
                 this.request.products[k].description = productSelected.description
                 this.request.products[k].warehouses = productSelected.warehouses
                 this.request.products[k].price = productSelected.price
@@ -341,43 +388,45 @@
 
                 product.total = (product.price - discount + vat) * product.quantity;
 
-                return this.formatPrice(product.total);
+                return Math.round(product.total * 100) / 100;
             },
             getTotalGross() {
                 let totalGross = 0;
                 for (let i in this.request.products) {
                     totalGross += parseFloat(this.request.products[i].price) * parseFloat(this.request.products[i].quantity)
                 }
-                return totalGross;
+                return Math.round(totalGross * 100) / 100;
             },
-            getTotalDiscount(){
+            getTotalDiscount() {
                 let totalDiscount = 0;
-                for (let i in this.request.products){
+                for (let i in this.request.products) {
                     let discount = parseFloat(this.request.products[i].price) * parseFloat(this.request.products[i].discount_percentage) / 100
                     totalDiscount += discount * this.request.products[i].quantity;
                 }
-                return totalDiscount;
+                return Math.round(totalDiscount * 100) / 100;
             },
-            getTotalVat(){
+            getTotalVat() {
                 let totalVat = 0;
-                for (let i in this.request.products){
+                for (let i in this.request.products) {
                     let unitVat = parseFloat(this.request.products[i].price) * parseFloat(this.request.products[i].vat) / 100;
                     totalVat += unitVat * parseFloat(this.request.products[i].quantity);
                 }
-                return totalVat;
+                return Math.round(totalVat * 100) / 100;
             },
-            getSubTotal(){
-                return this.getTotalGross() - this.getTotalDiscount();
+            getSubTotal() {
+                let subTotal = this.getTotalGross() - this.getTotalDiscount();
+                return Math.round(subTotal * 100) / 100;
             },
-            getTotal(){
-                return this.getSubTotal() + this.getTotalVat();
+            getTotal() {
+                let total = this.getSubTotal() + this.getTotalVat();
+                return Math.round(total * 100) / 100;
             },
-            getTotalPayments(){
+            getTotalPayments() {
                 let totalPayments = 0;
                 for (let i in this.request.payments) {
                     totalPayments += parseFloat(this.request.payments[i].amount)
                 }
-                return totalPayments;
+                return Math.round(totalPayments * 100) / 100;
             },
             formatPrice(value) {
                 let val = (value / 1).toFixed(2).replace('.', ',')
@@ -388,7 +437,7 @@
                     id: 0,
                     text: '',
                     description: '',
-                    warehouse: '',
+                    warehouse_id: 0,
                     price: 0,
                     quantity: 1,
                     discount_percentage: 0,
@@ -403,19 +452,22 @@
 
                 let nextTotal = this.getTotal() - this.getTotalPayments();
 
-                this.request.payments.push( {
-                    'way_to_pay' : 'cash',
-                    'amount' : nextTotal,
-                    'method' : '',
+                this.request.payments.push({
+                    'way_to_pay': 'cash',
+                    'amount': nextTotal,
+                    'method': '',
                 });
             },
             removePaymentMethodRow(index) {
                 this.request.payments.splice(index, 1);
             },
-            handleFileUpload(){
+            handleFileUpload() {
                 this.request.file = this.$refs.file.files[0];
             },
-            sendRequest(download){
+            validate(input) {
+                return typeof this.errors[input] != 'undefined';
+            },
+            sendRequest(download) {
 
                 let formData = new FormData();
                 formData.append('client_id', this.request.client_id);
@@ -429,13 +481,42 @@
                 formData.append('description', this.request.description);
                 formData.append('file', this.request.file);
                 formData.append('products', JSON.stringify(this.request.products));
-                formData.append('payments',  JSON.stringify(this.request.payments));
+                formData.append('payments', JSON.stringify(this.request.payments));
 
-                axios.post(this.routeStore+"/"+download,formData,
-                        {headers: {"Content-Type": "application/json"}}
-                    )
-                    .then(r => console.log(r.status))
-                    .catch(e => console.log(e));
+                axios.post(this.routeStore, formData, {headers: {"Content-Type": "application/json"}})
+                    .then(resp => {
+                        this.$alertify.success(resp.data.data.message);
+                        let url = this.getRouteWithId(this.routeSaleView, resp.data.data.sale_id)
+                        if (download) {
+                            let urlDownload = this.getRouteWithId(this.routeSaleDownload, resp.data.data.sale_id);
+
+                            axios({
+                                url: urlDownload,
+                                method: 'GET',
+                                responseType: 'blob',
+                            }).then((response) => {
+                                let fileURL = window.URL.createObjectURL(new Blob([response.data]));
+                                let fileLink = document.createElement('a');
+                                fileLink.href = fileURL;
+                                fileLink.setAttribute('download', 'file.pdf');
+                                document.body.appendChild(fileLink);
+                                fileLink.click();
+                                window.location.href = url;
+                            });
+                        } else {
+                            window.location.href = url;
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error.response)
+                        if (error.response.status === 422) {
+                            this.errors = error.response.data.errors;
+                        } else if (typeof error.response.data.errors.message != 'undefined') {
+                            this.$alertify.error(error.response.data.errors.message);
+                        } else {
+                            this.$alertify.error('Internal error');
+                        }
+                    });
                 console.log(this.request, download)
             },
         }

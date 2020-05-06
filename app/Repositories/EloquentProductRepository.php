@@ -59,7 +59,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
      */
     public function filterByCodeOrReference(string $filter): array
     {
-        $products = $this->product->with( 'warehouses')->where('code', 'like', "%{$filter}%")
+        $products = $this->product->with('warehouses')->where('code', 'like', "%{$filter}%")
             ->orWhere('reference', 'like', "%{$filter}%")
             ->limit(20)
             ->get();
@@ -173,5 +173,27 @@ class EloquentProductRepository implements ProductRepositoryInterface
         $product = $this->product->where('id', $id)->first();
         Storage::delete([$product->image]);
         return $product->delete();
+    }
+
+    /**
+     * @param int $productId
+     * @param int $warehouseId
+     * @param int $quantityToDiscount
+     * @return bool
+     */
+    public function updatePivotSubtractQuantity(int $productId, int $warehouseId, int $quantityToDiscount): bool
+    {
+        $product = $this->product->with('warehouses')->where('id', $productId)->first();
+
+        foreach ($product->warehouses as $warehouse) {
+            if ($warehouseId !== $warehouse->id) {
+                continue;
+            }
+
+            $warehouse->pivot->quantity = $warehouse->pivot->quantity - $quantityToDiscount;
+            return $warehouse->pivot->save();
+        }
+
+        return false;
     }
 }

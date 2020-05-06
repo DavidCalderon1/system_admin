@@ -64,6 +64,7 @@ Vue.component('products-component', require('./components/ProductsComponent').de
 Vue.component('create-invoices-component', require('./components/CreateInvoicesComponent').default);
 Vue.component('select-component', require('./components/SelectComponent').default);
 Vue.component('currency-input-component', require('./components/CurrencyInputComponent').default);
+Vue.component('select2', require('./components/Select2').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

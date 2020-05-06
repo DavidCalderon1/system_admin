@@ -22,6 +22,16 @@ use App\Repositories\Interfaces\StateRepositoryInterface;
 use App\Repositories\Interfaces\ThirdPartiesRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\WarehousesRepositoryInterface;
+use App\Repositories\Sales\EloquentMainSaleRepository;
+use App\Repositories\Sales\EloquentSalePaymentRepository;
+use App\Repositories\Sales\EloquentSaleProductRepository;
+use App\Repositories\Sales\EloquentSaleRepository;
+use App\Repositories\Sales\Interfaces\MainSaleRepositoryInterface;
+use App\Repositories\Sales\Interfaces\SalePaymentRepositoryInterface;
+use App\Repositories\Sales\Interfaces\SaleProductRepositoryInterface;
+use App\Repositories\Sales\Interfaces\SaleRepositoryInterface;
+use App\UsesCases\Interfaces\SalesUseCaseInterface;
+use App\UsesCases\SalesUseCase;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -45,6 +55,14 @@ class AppServiceProvider extends ServiceProvider
         InventoryCategoryRepositoryInterface::class => EloquentInventoryCategoryRepository::class,
         WarehousesRepositoryInterface::class => EloquentWarehousesRepository::class,
         ProductRepositoryInterface::class => EloquentProductRepository::class,
+        SaleRepositoryInterface::class => EloquentSaleRepository::class,
+        SaleProductRepositoryInterface::class => EloquentSaleProductRepository::class,
+        SalePaymentRepositoryInterface::class => EloquentSalePaymentRepository::class,
+        MainSaleRepositoryInterface::class => EloquentMainSaleRepository::class,
+
+        //UsesCases
+
+        SalesUseCaseInterface::class => SalesUseCase::class,
     ];
 
     /**
