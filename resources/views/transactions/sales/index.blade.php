@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Productos')
+@section('title', 'Ventas')
 @section('content')
     <div class="container">
         @if(session()->has('message'))
