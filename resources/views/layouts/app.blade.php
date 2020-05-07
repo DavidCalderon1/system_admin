@@ -21,6 +21,8 @@
 
     <link rel="stylesheet" href="{{ asset('css/select2-bootstrap4.min.css') }}">
 
+    <link rel="stylesheet" href="{{ asset('css/alertifyjs/alertify.min.css') }}">
+
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
     <script src="{{ mix('/js/app.js') }}" defer></script>
@@ -152,12 +154,14 @@
                                     <p>Transacciones<i class="right fa fa-angle-left"></i></p>
                                 </a>
                                 <ul class="nav nav-treeview">
-                                    <li class="nav-item">
-                                        <a href="pages/charts/chartjs.html" class="nav-link">
-                                            <i class="fas fa-piggy-bank"></i>
-                                            <p>Ventas</p>
-                                        </a>
-                                    </li>
+                                    @if(auth()->user()->can(\App\Constants\PermissionsConstants::SALE_LIST))
+                                        <li class="nav-item">
+                                            <a href="{{route('transactions.sales.index')}}" class="nav-link">
+                                                <i class="fas fa-piggy-bank"></i>
+                                                <p>Ventas</p>
+                                            </a>
+                                        </li>
+                                    @endif
                                     <li class="nav-item">
                                         <a href="pages/charts/chartjs.html" class="nav-link">
                                             <i class="fas fa-shopping-cart"></i>
@@ -281,6 +285,9 @@
 <script src="{{ asset('js/adminlte.js') }}"></script>
 
 <script src="{{ asset('/js/888e42c25f.js') }}" defer></script>
+
+<script src="{{ asset('/js/alertifyjs/alertify.min.js') }}" defer></script>
+
 
 @yield('scripts')
 

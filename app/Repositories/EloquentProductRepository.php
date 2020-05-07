@@ -50,20 +50,39 @@ class EloquentProductRepository implements ProductRepositoryInterface
                 $query->where('name', 'LIKE', "%{$filers['category']}%");
             });
         }
+
         return $products->paginate($perPage)->toArray();
     }
 
     /**
-     * @param string $filter
-     * @return array}
+     * @return array
      */
-    public function filterByCodeOrReference(string $filter): array
+    public function getAll(): array
     {
-        $products = $this->product->with('warehouses')->where('code', 'like', "%{$filter}%")
-            ->orWhere('reference', 'like', "%{$filter}%")
-            ->limit(20)
-            ->get();
-        return (!empty($products)) ? $products->toArray() : [];
+        $products = $this->product->with('warehouses')->get();
+
+        if(empty($products)){
+            return [];
+        }
+
+        $products = $products->toArray();
+
+        foreach ($products as $key => $product) {
+
+            $products[$key]['id'] = (string) $product['id'];
+            $products[$key]['text'] = $product['code'] . ' - ' . $product['reference'];
+
+            if (!empty($product['warehouses'])) {
+                $products[$key]['warehouses'] = array_map(function ($warehouse) {
+                    return [
+                        'id' => (string)$warehouse['id'],
+                        'text' => $warehouse['name'] . ' -> ' . $warehouse['pivot']['quantity'] . 'und',
+                    ];
+                }, $product['warehouses']);
+            }
+        }
+
+        return $products;
     }
 
     /**
@@ -196,4 +215,25 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
         return false;
     }
-}
+
+    /**
+     * @param int $productId
+     * @param int $warehouseId
+     * @param int $quantityToSum
+     * @return bool
+     */
+    public function updatePivotSumQuantity(int $productId, int $warehouseId, int $quantityToSum): bool
+    {
+        $product = $this->product->with('warehouses')->where('id', $productId)->first();
+
+        foreach ($product->warehouses as $warehouse) {
+            if ($warehouseId !== $warehouse->id) {
+                continue;
+            }
+
+            $warehouse->pivot->quantity = $warehouse->pivot->quantity + $quantityToSum;
+            return $warehouse->pivot->save();
+        }
+
+        return false;
+    }}

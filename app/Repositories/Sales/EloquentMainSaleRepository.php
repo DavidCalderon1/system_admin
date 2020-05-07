@@ -64,15 +64,14 @@ class EloquentMainSaleRepository implements MainSaleRepositoryInterface
      * @return array
      * @throws \Exception
      */
-    public
-    function create(array $saleData, array $saleProducts, array $salePayments): array
+    public function create(array $saleData, array $saleProducts, array $salePayments): array
     {
         try {
             DB::beginTransaction();
 
             $saleData['prefix'] = 'FE';
             $saleData['consecutive'] = $this->getConsecutive();
-            $saleData['status'] = 'active';
+            $saleData['status'] = 'Activa';
             $saleData['date'] = Carbon::now()->format('Y-m-d h:i:s');
             $saleSaved = $this->saleRepository->create($saleData);
 
@@ -81,7 +80,7 @@ class EloquentMainSaleRepository implements MainSaleRepositoryInterface
                 DB::rollBack();
             }
 
-            foreach ($saleProducts as $key => $saleProduct){
+            foreach ($saleProducts as $key => $saleProduct) {
                 $saleProducts[$key]['sale_id'] = $saleSaved->id;
                 $this->productRepository->updatePivotSubtractQuantity(
                     $saleProduct['product_id'],
@@ -111,10 +110,48 @@ class EloquentMainSaleRepository implements MainSaleRepositoryInterface
     }
 
     /**
+     * @param $saleId
+     * @return array
+     */
+    public function cancel($saleId): array
+    {
+        try {
+            DB::beginTransaction();
+
+            $sale = $this->saleRepository->get($saleId);
+
+            foreach ($sale['sale_products'] as $key => $saleProduct) {
+               $response = $this->productRepository->updatePivotSumQuantity(
+                    $saleProduct['product_id'],
+                    $saleProduct['warehouse_id'],
+                    $saleProduct['quantity']
+                );
+
+               if(!$response){
+                   throw new \Exception('Ha ocurrido un error anulando la factura de venta.', 500);
+                   DB::rollBack();
+               }
+            }
+            $response = $this->saleRepository->changeStatus($sale['id'],'Anulada');
+
+            if(!$response){
+                throw new \Exception('Ha ocurrido un error anulando la factura de venta.', 500);
+                DB::rollBack();
+            }
+
+            DB::commit();
+
+            return ['status' => true, 'message' => 'Venta Anulada correctamente', 'code' => 200];
+
+        } catch (\Throwable $exception) {
+            return ['status' => false, 'message' => $exception->getMessage(), 'code' => $exception->getCode()];
+        }
+    }
+
+    /**
      * @return int
      */
-    private
-    function getConsecutive(): int
+    private function getConsecutive(): int
     {
         return $this->saleRepository->getLastConsecutive() + 1;
     }

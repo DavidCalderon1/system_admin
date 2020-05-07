@@ -90,28 +90,4 @@ class ThirdListController extends Controller
 
         return response()->json($response, 200);
     }
-
-    /**
-     * @param Request $request
-     * @param string $type
-     * @return JsonResponse
-     */
-    public function filterAllByType(Request $request, string $type): JsonResponse
-    {
-        $query = empty($request->get('q')) ? '' : $request->get('q');
-        $persons = $this->thirdPartiesRepository->filterAllByType($type, $query);
-
-        if (empty($persons)) {
-            return response()->json([], 200);
-        }
-        foreach ($persons as $key => $person) {
-            $persons[$key]['text'] = $person['identity_number'] . ' - ' . $person['name'] . ' ' . $person['last_name'];
-            $ext = (!empty($person['phone_extension'])) ? ' Ext: ' . $person['phone_extension'] : '';
-            $persons[$key]['contacts'] = [
-                $person['email'],
-                $person['phone_number'] . $ext,
-            ];
-        }
-        return response()->json($persons, 200);
-    }
 }

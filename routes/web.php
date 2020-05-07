@@ -50,7 +50,6 @@ Route::group(['prefix' => 'config'], function () {
 Route::group(['prefix' => 'thirds'], function () {
     Route::get('/', 'Third\ThirdListController@index')->name('thirds.index');
     Route::get('/list', 'Third\ThirdListController@list')->name('thirds.list');
-    Route::get('/filterAllByType/{type}', 'Third\ThirdListController@filterAllByType')->name('thirds.filterAllByType');
     Route::get('/create', 'Third\ThirdCreateController@create')->name('thirds.create');
     Route::post('/store', 'Third\ThirdCreateController@store')->name('thirds.store');
     Route::get('/edit/{thirdId}', 'Third\ThirdEditController@edit')->name('thirds.edit');
@@ -86,20 +85,23 @@ Route::group(['prefix' => 'inventory'], function () {
     Route::group(['prefix' => 'products'], function () {
         Route::get('/', 'Inventory\Product\ProductListController@index')->name('inventory.products.index');
         Route::get('/list', 'Inventory\Product\ProductListController@list')->name('inventory.products.list');
-        Route::get('/filter', 'Inventory\Product\ProductListController@filter')->name('inventory.products.filter');
         Route::get('/create', 'Inventory\Product\ProductCreateController@create')->name('inventory.products.create');
         Route::post('/store', 'Inventory\Product\ProductCreateController@store')->name('inventory.products.store');
         Route::get('/edit/{id}', 'Inventory\Product\ProductEditController@edit')->name('inventory.products.edit');
         Route::post('/update/{category}', 'Inventory\Product\ProductEditController@update')->name('inventory.products.update');
         Route::delete('/destroy/{id}', 'Inventory\Product\ProductDeleteController')->name('inventory.products.destroy');
     });
+});
 
-    //Invoices
-    Route::group(['prefix' => 'invoices'], function () {
-        Route::get('/create', 'Inventory\Invoice\InvoiceCreateController@create')->name('inventory.invoices.create');
-        Route::post('/store/', 'Inventory\Invoice\InvoiceCreateController@store')->name('inventory.invoices.store');
-        Route::get('/view/{sale_id}', 'Inventory\Invoice\SaleViewController')->name('inventory.invoices.view');
-        Route::get('/download/{sale_id}', 'Inventory\Invoice\SaleExportPdfController')->name('inventory.invoices.download');
+Route::group(['prefix' => 'transactions'], function () {
+    Route::group(['prefix' => 'sales'], function () {
+        Route::get('/', 'Transaction\Sale\SaleListController@index')->name('transactions.sales.index');
+        Route::get('/list', 'Transaction\Sale\SaleListController@list')->name('transactions.sales.list');
+        Route::get('/create', 'Transaction\Sale\SaleCreateController@create')->name('transactions.sales.create');
+        Route::post('/store/', 'Transaction\Sale\SaleCreateController@store')->name('transactions.sales.store');
+        Route::get('/view/{sale_id}', 'Transaction\Sale\SaleViewController')->name('transactions.sales.view');
+        Route::get('/download/{sale_id}', 'Transaction\Sale\SaleExportPdfController')->name('transactions.sales.download');
+        Route::delete('/cancel/{id}', 'Transaction\Sale\SaleCancelController')->name('transactions.sales.cancel');
 
     });
 });

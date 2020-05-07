@@ -6,7 +6,7 @@ use App\Repositories\Sales\Interfaces\SaleRepositoryInterface;
 use App\UsesCases\Interfaces\SalesUseCaseInterface;
 
 /**
- * Class InvoicesUseCase
+ * Class SalesUseCase
  * @package App\UsesCases
  */
 class SalesUseCase implements SalesUseCaseInterface
@@ -35,9 +35,25 @@ class SalesUseCase implements SalesUseCaseInterface
         $sale['sale_products'] = $this->getProductsWhitTotal($sale['sale_products']);
         $sale['sale_payments'] = $this->getPaymentsTrans($sale['sale_payments']);
         $sale['totals'] = $this->getTotalValues($sale['sale_products']);
-        $sale['totals']['total_payment'] = $this->getTotalPayments($sale['sale_payments']);
+        $sale['totals']['total_payment'] =  $this->numberFormat($this->getTotalPayments($sale['sale_payments']));
 
         return $sale;
+    }
+
+    /**
+     * @param int $perPages
+     * @param array $filters
+     * @return array
+     */
+    public function getPagination(int $perPages, array $filters = []): array
+    {
+        $sales = $this->saleRepository->getPagination($perPages, $filters);
+        foreach ($sales['data'] as $key => $datum) {
+            $sales['data'][$key]['sale_products'] = $this->getProductsWhitTotal($datum['sale_products']);
+            $sales['data'][$key]['totals'] = $this->getTotalValues($datum['sale_products']);
+        }
+
+        return $sales;
     }
 
     /**
@@ -47,6 +63,13 @@ class SalesUseCase implements SalesUseCaseInterface
     private function getProductsWhitTotal(array $saleProducts)
     {
         return array_map(function ($saleProduct) {
+            $total =  $this->getProductTotal(
+                $saleProduct['price'],
+                $saleProduct['vat'],
+                $saleProduct['discount_percentage'],
+                $saleProduct['quantity']
+            );
+
             return [
                 'id' => $saleProduct['id'],
                 'sale_id' => $saleProduct['sale_id'],
@@ -54,16 +77,13 @@ class SalesUseCase implements SalesUseCaseInterface
                 'warehouse_id' => $saleProduct['warehouse_id'],
                 'name' => $saleProduct['name'],
                 'price' => $saleProduct['price'],
+                'price_formatted' =>  $this->numberFormat($saleProduct['price']),
                 'quantity' => $saleProduct['quantity'],
                 'discount_percentage' => $saleProduct['discount_percentage'],
                 'vat' => $saleProduct['vat'],
                 'description' => $saleProduct['description'],
-                'total' => $this->getProductTotal(
-                    $saleProduct['price'],
-                    $saleProduct['vat'],
-                    $saleProduct['discount_percentage'],
-                    $saleProduct['quantity']
-                ),
+                'total' =>$total,
+                'total_formatted' => $this->numberFormat($total),
             ];
         }, $saleProducts);
     }
@@ -106,12 +126,21 @@ class SalesUseCase implements SalesUseCaseInterface
         $subTotal = round($totalGross - $totalDiscount, 2);
         $total = round($subTotal + $totalVat, 2);
 
+        $totalGross = round($totalGross, 2);
+        $totalDiscount = round($totalDiscount, 2);
+        $totalVat = round($totalVat, 2);
+
         return [
-            'total_gross' => round($totalGross, 2),
-            'total_discount' => round($totalDiscount, 2),
-            'total_vat' => round($totalVat, 2),
+            'total_gross' => $totalGross,
+            'total_gross_formatted' => $this->numberFormat($totalGross),
+            'total_discount' => $totalDiscount,
+            'total_discount_formatted' => $this->numberFormat($totalDiscount),
+            'total_vat' => $totalVat,
+            'total_vat_formatted' => $this->numberFormat($totalVat),
             'sub_total' => $subTotal,
+            'sub_total_formatted' => $this->numberFormat($subTotal),
             'total' => $total,
+            'total_formatted' => $this->numberFormat($total),
         ];
     }
 
@@ -151,12 +180,17 @@ class SalesUseCase implements SalesUseCaseInterface
         return round($unitVat * $quantity, 2);
     }
 
-    private function getPaymentsTrans(array $salePayments)
+    /**
+     * @param array $salePayments
+     * @return array
+     */
+    private function getPaymentsTrans(array $salePayments): array
     {
         return array_map(function ($salePayment) {
             return [
                 'way_to_pay' => __('sales.payment_' . $salePayment['way_to_pay']),
                 'amount' => $salePayment['amount'],
+                'amount_formatted' =>  $this->numberFormat($salePayment['amount']),
                 'method' => $salePayment['method'],
                 'date' => $salePayment['date'],
             ];
@@ -165,9 +199,9 @@ class SalesUseCase implements SalesUseCaseInterface
 
     /**
      * @param array $salePayments
-     * @return false|float
+     * @return float
      */
-    private function getTotalPayments(array $salePayments)
+    private function getTotalPayments(array $salePayments): float
     {
         $totalPayments = 0;
 
@@ -176,5 +210,14 @@ class SalesUseCase implements SalesUseCaseInterface
         });
 
         return round($totalPayments, 2);
+    }
+
+    /**
+     * @param float $value
+     * @return string
+     */
+    private function numberFormat(float $value):string
+    {
+        return number_format($value, 2,',','.');
     }
 }

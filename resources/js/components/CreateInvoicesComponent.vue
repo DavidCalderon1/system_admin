@@ -3,19 +3,23 @@
         <div class="row">
             <div class="col-md-3">
                 <label>Cliente</label>
-                <select-component v-on:response="setRequestClientData"
-                                  v-bind:url="routeFilterClientsByIdentityNumber"
-                                  :placeholder="'Seleccione el cliente'">
-                </select-component>
+                <Select2 :options="optionsAllClients"
+                         v-bind:id="'select_clients'"
+                         :settings="{dropdownAutoWidth:'true', width: 'resolve',}"
+                         @select="setRequestClientData($event)"
+                />
                 <small class="form-text text-danger"
                        v-if="validate('client_name')">{{errors.client_name[0]}}</small>
             </div>
             <div class="col-md-3">
                 <div class="autocomplete">
                     <label>Contacto</label>
-                    <select-component v-model="request.client_contact" v-bind:options="optionsClientContact"
-                                      :placeholder="'Seleccione el contacto'">
-                    </select-component>
+                    <Select2 :options="optionsClientContact"
+                             v-bind:id="'select_contact'"
+                             v-model="request.client_contact"
+                             :settings="{dropdownAutoWidth:'true', width: 'resolve',}"
+                    />
+
                     <small class="form-text text-danger"
                            v-if="validate('client_contact')">{{errors.client_contact[0]}}</small>
                 </div>
@@ -74,10 +78,16 @@
             <tbody class="text-center">
             <tr v-for="(product,k) in request.products" :key="k">
                 <td>
-                    <select-component v-on:response="loadProductData($event, k)"
-                                      v-bind:url="routeFilterProducts"
-                                      :placeholder="'Seleccione el producto'">
-                    </select-component>
+                    <div>
+                        <Select2 :options="optionsAllProducts"
+                                 v-bind:id='"select_product_"+k'
+                                 v-model="product.id"
+                                 @change="resetWarehouseId(product)"
+                                 :settings="{dropdownAutoWidth:'true', width: 'resolve',}"
+                                 @select="loadProductData($event, product)"/>
+                    </div>
+
+
                     <small class="form-text text-danger"
                            v-if="validate('products.'+k+'.name')">{{errors['products.'+k+'.name'][0]}}</small>
                 </td>
@@ -88,9 +98,11 @@
                 </td>
                 <td>
                     <div>
-                        <select2 :options="product.warehouses" v-model="product.warehouse_id">
-                            <option disabled value="0">Seleccione una bodega</option>
-                        </select2>
+                        <Select2
+                            v-bind:options="product.warehouses"
+                            v-model="product.warehouse_id"
+                            :settings="{dropdownAutoWidth:'true', width: 'resolve',}"
+                            v-bind:id='"select_warehouse_"+k'/>
                     </div>
 
                     <small class="form-text text-danger"
@@ -221,19 +233,21 @@
 </template>
 
 <script>
+    import Select2 from 'v-select2-component';
+
     export default {
         name: "CreateInvoicesComponent",
-
+        components: {Select2},
         props: {
             routeStore: {
                 type: String,
                 required: true
             },
-            routeFilterClientsByIdentityNumber: {
+            allClients: {
                 type: String,
                 required: true
             },
-            routeFilterProducts: {
+            allProducts: {
                 type: String,
                 required: true
             },
@@ -248,7 +262,10 @@
         },
         data() {
             return {
+                optionsAllClients: [],
                 optionsClientContact: [],
+                optionsAllProducts: [],
+
                 request: {
                     client_id: 0,
                     client_name: '',
@@ -299,9 +316,9 @@
             }
         },
         mounted() {
-            console.log(this.routeFilterClientsByIdentityNumber)
-            console.log(this.routeFilterProducts)
-            console.log(this.routeSaleView)
+            this.optionsAllClients = JSON.parse(this.allClients);
+            this.optionsAllProducts = JSON.parse(this.allProducts);
+            console.log(this.optionsAllProducts)
         },
         computed: {
             calculateGrossTotal() {
@@ -353,23 +370,24 @@
             },
             setRequestClientData(clientSelected) {
                 this.optionsClientContact = clientSelected.contacts;
-
                 this.request.client_id = clientSelected.id
                 this.request.client_name = clientSelected.name
                 this.request.client_last_name = clientSelected.last_name
                 this.request.client_identity_number = clientSelected.identity_number
                 this.request.client_identity_type = clientSelected.identity_type
             },
-            loadProductData(productSelected, k) {
-                console.log(productSelected)
-                this.request.products[k].id = productSelected.id;
-                this.request.products[k].text = productSelected.text
-                this.request.products[k].name = productSelected.text
-                this.request.products[k].description = productSelected.description
-                this.request.products[k].warehouses = productSelected.warehouses
-                this.request.products[k].price = productSelected.price
-                this.request.products[k].vat = productSelected.vat
-                this.request.products[k].total = 0
+            loadProductData(productSelected, product) {
+                // product.id = productSelected.id;
+                product.text = productSelected.text
+                product.name = productSelected.text
+                product.description = productSelected.description
+                product.warehouses = productSelected.warehouses
+                product.price = productSelected.price
+                product.vat = productSelected.vat
+                product.total = 0
+            },
+            resetWarehouseId(product) {
+                product.warehouse_id = 0;
             },
             calculateTotalRow(product) {
 

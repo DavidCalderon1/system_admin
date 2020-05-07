@@ -11,6 +11,13 @@ use App\Models\Sale;
 interface SaleRepositoryInterface
 {
     /**
+     * @param int $perPage
+     * @param array $filers
+     * @return array
+     */
+    public function getPagination(int $perPage, array $filers = []):array;
+
+    /**
      * @param $saleId
      * @return array
      */
@@ -26,4 +33,10 @@ interface SaleRepositoryInterface
      * @return Sale
      */
     public function create(array $data): Sale;
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function changeStatus(int $id, string $status): bool;
 }

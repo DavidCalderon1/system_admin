@@ -18,10 +18,9 @@ interface ProductRepositoryInterface
 
 
     /**
-     * @param string $filter
      * @return array
      */
-    public function filterByCodeOrReference(string $filter): array;
+    public function getAll(): array;
 
     /**
      * @param int $warehouseId
@@ -54,4 +53,12 @@ interface ProductRepositoryInterface
      * @return bool
      */
     public function updatePivotSubtractQuantity(int $productId, int $warehouseId, int $quantityToDiscount): bool;
+
+    /**
+     * @param int $productId
+     * @param int $warehouseId
+     * @param int $quantityToSum
+     * @return bool
+     */
+    public function updatePivotSumQuantity(int $productId, int $warehouseId, int $quantityToSum): bool;
 }

@@ -47,5 +47,5 @@ interface ThirdPartiesRepositoryInterface
      * @param string $query
      * @return array
      */
-    public function filterAllByType(string $type, string $query=''): array;
+    public function filterAllByType(string $type): array;
 }

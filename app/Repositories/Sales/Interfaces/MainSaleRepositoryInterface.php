@@ -15,4 +15,10 @@ interface MainSaleRepositoryInterface
      * @return array
      */
     public function create(array $saleData, array $saleProducts, array $salePayments): array;
+
+    /**
+     * @param $saleId
+     * @return array
+     */
+    public function cancel($saleId): array;
 }

@@ -141,12 +141,25 @@ class EloquentThirdPartiesRepository implements ThirdPartiesRepositoryInterface
      * @param string $query
      * @return array
      */
-    public function filterAllByType(string $type, string $query = ''): array
+    public function filterAllByType(string $type): array
     {
-        $person = $this->thirdParties->where('type', $type)
-            ->where('identity_number','LIKE', "%{$query}%")
-            ->get();
+        $persons = $this->thirdParties->where('type', $type)->get();
 
-        return (!empty($person)) ? $person->toArray() : [];
+        if(empty($persons)){
+            return [];
+        }
+
+        $persons =$persons->toArray();
+
+        foreach ($persons as $key => $person) {
+            $persons[$key]['text'] = $person['identity_number'] . ' - ' . $person['name'] . ' ' . $person['last_name'];
+            $ext = (!empty($person['phone_extension'])) ? ' Ext: ' . $person['phone_extension'] : '';
+            $persons[$key]['contacts'] = [
+                $person['email'],
+                $person['phone_number'] . $ext,
+            ];
+        }
+
+        return $persons;
     }
 }

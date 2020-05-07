@@ -24,6 +24,7 @@
     "vue-template-compiler": "^2.6.10"
   },
   "dependencies": {
+    "v-select2-component": "^0.4.3",
     "vue-bootstrap-datetimepicker": "^5.0.1",
     "vue-bootstrap-typeahead": "^0.2.6",
     "vuejs-datepicker": "^1.6.2"

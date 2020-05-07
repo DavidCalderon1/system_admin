@@ -62,9 +62,8 @@ Vue.component('form-create-warehouse-component', require('./components/FormCreat
 Vue.component('form-create-product-component', require('./components/FormCreateProductComponent').default);
 Vue.component('products-component', require('./components/ProductsComponent').default);
 Vue.component('create-invoices-component', require('./components/CreateInvoicesComponent').default);
-Vue.component('select-component', require('./components/SelectComponent').default);
 Vue.component('currency-input-component', require('./components/CurrencyInputComponent').default);
-Vue.component('select2', require('./components/Select2').default);
+Vue.component('sales-component', require('./components/SalesComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

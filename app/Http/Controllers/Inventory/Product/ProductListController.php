@@ -93,32 +93,4 @@ class ProductListController extends Controller
 
         return response()->json($response, 200);
     }
-
-    /**
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function filter(Request $request): JsonResponse
-    {
-        $query = empty($request->get('q')) ? '' : $request->get('q');
-        $products = $this->productRepository->filterByCodeOrReference($query);
-
-        if (empty($products)) {
-            return response()->json([], 200);
-        }
-
-        foreach ($products as $key => $product) {
-            $products[$key]['text'] = $product['code'] . ' - ' . $product['reference'];
-            if(!empty($product['warehouses'])){
-                $products[$key]['warehouses'] = array_map(function ($warehouse){
-                    return [
-                        'id' => $warehouse['id'],
-                        'text' => $warehouse['name'].' -> '.$warehouse['pivot']['quantity'].'und',
-                    ];
-                },$product['warehouses']);
-            }
-        }
-
-        return response()->json($products, 200);
-    }
 }

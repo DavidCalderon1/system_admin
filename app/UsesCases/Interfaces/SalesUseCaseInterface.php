@@ -13,4 +13,11 @@ interface SalesUseCaseInterface
      * @return array
      */
     public function getById(int $saleId):array;
+
+    /**
+     * @param int $perPages
+     * @param array $filters
+     * @return mixed
+     */
+    public function getPagination(int $perPages, array $filters=[]): array;
 }

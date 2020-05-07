@@ -28,6 +28,35 @@ class EloquentSaleRepository implements SaleRepositoryInterface
     }
 
     /**
+     * @param int $perPage
+     * @param array $filers
+     * @return array
+     */
+    public function getPagination(int $perPage, array $filers = []): array
+    {
+        $sales = $this->sale->with(['saleProducts']);
+
+        if (!empty($filers['consecutive'])) {
+
+            $invoiceNumberData = explode('-', $filers['consecutive']);
+
+            if (count($invoiceNumberData) == 2) {
+                $sales->where('prefix', "LIKE", "%{$invoiceNumberData[0]}%");
+                $sales->where('consecutive', "LIKE", "%{$invoiceNumberData[1]}%");
+            } else {
+                $sales->where('prefix', "LIKE", "%{$invoiceNumberData[0]}%");
+                $sales->orWhere('consecutive', "LIKE", "%{$invoiceNumberData[0]}%");
+            }
+        } elseif (!empty($filers['client_name'])) {
+            $sales->orWhere('client_name', "LIKE", "%{$filers['client_name']}%");
+        } elseif (!empty($filers['status'])) {
+            $sales->orWhere('status', "LIKE", "%{$filers['status']}%");
+        }
+
+        return $sales->paginate($perPage)->toArray();
+    }
+
+    /**
      * @param $saleId
      * @return array
      */
@@ -60,7 +89,7 @@ class EloquentSaleRepository implements SaleRepositoryInterface
             'description' => $data['description'],
             'status' => $data['status'],
             'file' => (!empty($data['file']) && $data['file'] instanceof UploadedFile)
-                ? $data['file']->storePubliclyAs('public/invoices', $invoiceNumber . '.' . $data['file']->getClientOriginalExtension())
+                ? $data['file']->storePubliclyAs('public/sales', $invoiceNumber . '.' . $data['file']->getClientOriginalExtension())
                 : '',
         ]);
     }
@@ -77,5 +106,17 @@ class EloquentSaleRepository implements SaleRepositoryInterface
         }
 
         return $sale->consecutive;
+    }
+
+    /**
+     * @param int $id
+     * @param string $status
+     * @return bool
+     */
+    public function changeStatus(int $id, string $status): bool
+    {
+        return $this->sale->where('id', $id)->update([
+            'status' => $status
+        ]);
     }
 }
