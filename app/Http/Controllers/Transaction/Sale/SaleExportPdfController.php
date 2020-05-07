@@ -20,19 +20,32 @@ class SaleExportPdfController extends Controller
     public function __construct(SalesUseCaseInterface $salesUseCase)
     {
         $this->middleware('auth');
-        $this->salesUseCase= $salesUseCase;
+        $this->salesUseCase = $salesUseCase;
     }
 
     /**
      * @param int $saleId
      * @return mixed
      */
-    public function __invoke(int $saleId)
+    public function download(int $saleId)
     {
         $sale = $this->salesUseCase->getById($saleId);
 
         $pdf = PDF::loadView('transactions.sales.template_pdf', ['sale' => $sale]);
 
-        return $pdf->download($sale['prefix'].'-'.$sale['consecutive'].'.pdf');
+        return $pdf->download($sale['prefix'] . '-' . $sale['consecutive'] . '.pdf');
+    }
+
+    /**
+     * @param int $saleId
+     * @return mixed
+     */
+    public function print(int $saleId)
+    {
+        $sale = $this->salesUseCase->getById($saleId);
+
+        $pdf = PDF::loadView('transactions.sales.template_pdf', ['sale' => $sale]);
+
+        return $pdf->stream($sale['prefix'] . '-' . $sale['consecutive'] . '.pdf');
     }
 }

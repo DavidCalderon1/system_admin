@@ -102,7 +102,7 @@ class EloquentMainSaleRepository implements MainSaleRepositoryInterface
 
             DB::commit();
 
-            return ['status' => true, 'message' => 'Venta registrada correctamente', 'code' => 201, 'sale_id' => $saleSaved->id];
+            return ['status' => true, 'message' => 'Venta registrada correctamente', 'code' => 201, 'sale' => $saleSaved];
 
         } catch (\Throwable $exception) {
             return ['status' => false, 'message' => $exception->getMessage(), 'code' => $exception->getCode()];

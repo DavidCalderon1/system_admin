@@ -144,7 +144,7 @@ class SaleCreateController extends Controller
             'data' => [
                 'message' => $response['message'],
                 'code' => $response['code'],
-                'sale_id' => $response['sale_id']
+                'sale' => $response['sale']
             ]
         ], $response['code']);
     }

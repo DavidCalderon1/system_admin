@@ -17,6 +17,9 @@
                 @if($sale['status'] !=='Anulada')
                     <button class="btn btn-danger btn-sm pull-right ml-2" id="cancel">Anular</button>
                 @endif
+                    <a href="{{route('transactions.sales.print', $sale['id'])}}" target="_blank"
+                       class="btn btn-primary btn-sm pull-right ml-2">Imprimir</a>
+
                 <a href="{{route('transactions.sales.download', $sale['id'])}}"
                    class="btn btn-success btn-sm pull-right ml-2">Descargar</a>
             </div>

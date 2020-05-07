@@ -4,6 +4,7 @@
 @section('content')
     <create-invoices-component
         route-store="{{route('transactions.sales.store')}}"
+        route-index="{{route('transactions.sales.index')}}"
         all-clients="{{json_encode($clients)}}"
         all-products="{{json_encode($products)}}"
         route-sale-view="{{route('transactions.sales.view',['sale_id' => '__ID__'])}}"

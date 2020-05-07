@@ -229,6 +229,7 @@
         <button class="btn btn-sm btn-primary" v-bind:disabled="!canCreate" @click="sendRequest(1)">Guardar y
             descargar
         </button>
+        <a v-bind:href="routeIndex" class="btn btn-sm btn-danger">Cancelar</a>
     </div>
 </template>
 
@@ -240,6 +241,10 @@
         components: {Select2},
         props: {
             routeStore: {
+                type: String,
+                required: true
+            },
+            routeIndex: {
                 type: String,
                 required: true
             },
@@ -504,9 +509,9 @@
                 axios.post(this.routeStore, formData, {headers: {"Content-Type": "application/json"}})
                     .then(resp => {
                         this.$alertify.success(resp.data.data.message);
-                        let url = this.getRouteWithId(this.routeSaleView, resp.data.data.sale_id)
+                        let url = this.getRouteWithId(this.routeSaleView, resp.data.data.sale.id)
                         if (download) {
-                            let urlDownload = this.getRouteWithId(this.routeSaleDownload, resp.data.data.sale_id);
+                            let urlDownload = this.getRouteWithId(this.routeSaleDownload, resp.data.data.sale.id);
 
                             axios({
                                 url: urlDownload,
@@ -516,7 +521,7 @@
                                 let fileURL = window.URL.createObjectURL(new Blob([response.data]));
                                 let fileLink = document.createElement('a');
                                 fileLink.href = fileURL;
-                                fileLink.setAttribute('download', 'file.pdf');
+                                fileLink.setAttribute('download', resp.data.data.sale.prefix + '-' + resp.data.data.sale.consecutive + '.pdf');
                                 document.body.appendChild(fileLink);
                                 fileLink.click();
                                 window.location.href = url;

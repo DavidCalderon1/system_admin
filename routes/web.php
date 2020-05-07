@@ -100,7 +100,8 @@ Route::group(['prefix' => 'transactions'], function () {
         Route::get('/create', 'Transaction\Sale\SaleCreateController@create')->name('transactions.sales.create');
         Route::post('/store/', 'Transaction\Sale\SaleCreateController@store')->name('transactions.sales.store');
         Route::get('/view/{sale_id}', 'Transaction\Sale\SaleViewController')->name('transactions.sales.view');
-        Route::get('/download/{sale_id}', 'Transaction\Sale\SaleExportPdfController')->name('transactions.sales.download');
+        Route::get('/download/{sale_id}', 'Transaction\Sale\SaleExportPdfController@download')->name('transactions.sales.download');
+        Route::get('/print/{sale_id}', 'Transaction\Sale\SaleExportPdfController@print')->name('transactions.sales.print');
         Route::delete('/cancel/{id}', 'Transaction\Sale\SaleCancelController')->name('transactions.sales.cancel');
 
     });
