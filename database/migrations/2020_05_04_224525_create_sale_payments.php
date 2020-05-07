@@ -18,7 +18,9 @@ class CreateSalePayments extends Migration
             $table->integer('sale_id')->unsigned();
             $table->enum('way_to_pay', ['credit', 'cash']);
             $table->double('amount');
-            $table->string('method');
+            $table->string('method')->default('');
+            $table->integer('days_to_pay')->default(0);
+            $table->dateTime('credit_expiration_date')->nullable();
             $table->dateTime('date');
 
             $table->foreign('sale_id')->references('id')->on('sales');

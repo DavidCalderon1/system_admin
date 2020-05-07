@@ -18,6 +18,8 @@ class SalePayment extends Model
         'way_to_pay',
         'amount',
         'method',
+        'days_to_pay',
+        'credit_expiration_date',
         'date',
     ];
 }

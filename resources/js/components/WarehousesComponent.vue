@@ -145,18 +145,21 @@
                         }
                     });
             },
-            destroy(roleId) {
-                if (confirm("Estas seguro que deseas borrar el registro?")) {
-                    let url = this.getRouteWithId(this.destroyRoute, roleId);
-                    axios.delete(url)
-                        .then(resp => {
-                            alert(resp.data.message);
-                            this.getData();
-                        })
-                        .catch(error => {
-                            alert(error.response.data.message);
-                        })
-                }
+            destroy(id) {
+                this.$alertify.confirm(
+                    'Estas seguro que deseas borrar el registro?',
+                    () => {
+                        let url = this.getRouteWithId(this.destroyRoute, id);
+                        axios.delete(url)
+                            .then(resp => {
+                                this.$alertify.success(resp.data.message);
+                                this.getData();
+                            })
+                            .catch(error => {
+                                this.$alertify.error(error.response.data.message);
+                            })
+                    },
+                );
             },
             getRouteWithId: function (route, id) {
                 return route.replace('__ID__', id);

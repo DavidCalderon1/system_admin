@@ -69,10 +69,10 @@ class EloquentMainSaleRepository implements MainSaleRepositoryInterface
         try {
             DB::beginTransaction();
 
-            $saleData['prefix'] = 'FE';
+            $saleData['prefix'] = 'FV';
             $saleData['consecutive'] = $this->getConsecutive();
             $saleData['status'] = 'Activa';
-            $saleData['date'] = Carbon::now()->format('Y-m-d h:i:s');
+
             $saleSaved = $this->saleRepository->create($saleData);
 
             if (empty($saleSaved)) {
@@ -90,7 +90,7 @@ class EloquentMainSaleRepository implements MainSaleRepositoryInterface
             }
 
             $saleProducts = $this->getSaleProductsWithRelationId($saleSaved->id, $saleProducts);
-            $salePayments = $this->getSalePaymentsWithRelationId($saleSaved->id, $salePayments);
+            $salePayments = $this->getSalePaymentsWithRelationId($saleSaved->id, $salePayments, $saleData['date']);
 
             $saleProductSaved = $this->saleProductRepository->create($saleProducts);
             $salePaymentSaved = $this->salePaymentRepository->create($salePayments);
@@ -181,16 +181,27 @@ class EloquentMainSaleRepository implements MainSaleRepositoryInterface
     /**
      * @param int $saleId
      * @param array $salePayments
+     * @param string $saleDate
      * @return array
      */
-    private function getSalePaymentsWithRelationId(int $saleId, array $salePayments): array
+    private function getSalePaymentsWithRelationId(int $saleId, array $salePayments, string $saleDate): array
     {
-        return array_map(function ($salePayment) use ($saleId) {
+        return array_map(function ($salePayment) use ($saleId, $saleDate) {
+
+            $creditExpirationDate = null;
+
+            if($salePayment['way_to_pay'] === 'credit'){
+                $creditExpirationDate = strtotime ( "+{$salePayment['days_to_pay']} day" , strtotime ( $saleDate ) ) ;
+                $creditExpirationDate = date ( 'Y-m-d' , $creditExpirationDate );
+            }
+
             return [
                 'sale_id' => $saleId,
                 'way_to_pay' => $salePayment['way_to_pay'],
                 'amount' => $salePayment['amount'],
                 'method' => $salePayment['method'],
+                'days_to_pay' => $salePayment['days_to_pay'],
+                'credit_expiration_date' => $creditExpirationDate,
                 'date' => Carbon::now()->format('Y-m-d h:i:s'),
             ];
         }, $salePayments);

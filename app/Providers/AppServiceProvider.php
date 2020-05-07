@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Repositories\EloquentCityRepository;
 use App\Repositories\EloquentCountryRepository;
 use App\Repositories\EloquentInventoryCategoryRepository;
+use App\Repositories\EloquentPaymentMethodRepository;
 use App\Repositories\EloquentPermissionRepository;
 use App\Repositories\EloquentProductRepository;
 use App\Repositories\EloquentRoleRepository;
@@ -15,6 +16,7 @@ use App\Repositories\EloquentWarehousesRepository;
 use App\Repositories\Interfaces\CityRepositoryInterface;
 use App\Repositories\Interfaces\CountryRepositoryInterface;
 use App\Repositories\Interfaces\InventoryCategoryRepositoryInterface;
+use App\Repositories\Interfaces\PaymentMethodRepositoryInterface;
 use App\Repositories\Interfaces\PermissionRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
@@ -59,6 +61,7 @@ class AppServiceProvider extends ServiceProvider
         SaleProductRepositoryInterface::class => EloquentSaleProductRepository::class,
         SalePaymentRepositoryInterface::class => EloquentSalePaymentRepository::class,
         MainSaleRepositoryInterface::class => EloquentMainSaleRepository::class,
+        PaymentMethodRepositoryInterface::class => EloquentPaymentMethodRepository::class,
 
         //UsesCases
 

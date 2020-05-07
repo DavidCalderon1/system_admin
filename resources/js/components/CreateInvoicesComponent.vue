@@ -77,7 +77,8 @@
             <tr v-for="(product,k) in request.products" :key="k">
                 <td>
                     <div>
-                        <select2-ajax @response="loadProductData($event, product)" :url="routeFilterProducts" style="width: 100%"/>
+                        <select2-ajax @response="loadProductData($event, product)" :url="routeFilterProducts"
+                                      style="width: 100%"/>
                     </div>
 
                     <small class="form-text text-danger"
@@ -164,11 +165,13 @@
 
         <section v-if="calculateTotal > 0">
             <h6>Forma de pago</h6>
-            <table>
+            <table class="text-center">
                 <thead>
                 <tr v-for="(payment,i) in request.payments" :key="i">
                     <th>
-                        <select v-model="payment.way_to_pay" class="form-control form-control-sm">
+                        <label> &nbsp;</label>
+
+                        <select v-model="request.payments[i].way_to_pay" class="form-control form-control-sm" @change="resetCurrentMethod(payment)">
                             <option value="credit">Crédito</option>
                             <option value="cash">Contado</option>
                         </select>
@@ -176,13 +179,23 @@
                                v-if="validate('payments.'+i+'.way_to_pay')">{{errors['payments.'+i+'.way_to_pay'][0]}}</small>
                     </th>
                     <th>
-                        <currency-input-component v-model="payment.amount"></currency-input-component>
+                        <label>Valor</label>
+                        <currency-input-component v-model="request.payments[i].amount"></currency-input-component>
                         <small class="form-text text-danger"
                                v-if="validate('payments.'+i+'.amount')">{{errors['payments.'+i+'.amount'][0]}}</small>
                     </th>
-                    <th v-if="payment.way_to_pay === 'cash'">
+                    <th v-if="request.payments[i].way_to_pay === 'cash'">
+                        <label>Metodo de pago</label>
                         <select v-model="payment.method" class="form-control form-control-sm">
                             <option v-for="payment_method in payment_methods">{{payment_method.name}}</option>
+                        </select>
+                        <small class="form-text text-danger"
+                               v-if="validate('payments.'+i+'.method')">{{errors['payments.'+i+'.method'][0]}}</small>
+                    </th>
+                    <th v-if="request.payments[i].way_to_pay === 'credit'">
+                        <label>Dias de plazo</label>
+                        <select v-model="payment.days_to_pay" class="form-control form-control-sm">
+                            <option v-for="days_to_pay_option in days_to_pay_options">{{days_to_pay_option}}</option>
                         </select>
                         <small class="form-text text-danger"
                                v-if="validate('payments.'+i+'.method')">{{errors['payments.'+i+'.method'][0]}}</small>
@@ -258,6 +271,10 @@
                 type: String,
                 required: true
             },
+            paymentMethods: {
+                type: String,
+                required: true
+            }
         },
         data() {
             return {
@@ -292,28 +309,17 @@
                             'way_to_pay': 'cash',
                             'amount': 0,
                             'method': '',
+                            'days_to_pay': '',
                         }
                     ]
                 },
-                payment_methods: [
-                    {
-                        id: 1,
-                        name: 'Efectivo'
-                    },
-                    {
-                        id: 2,
-                        name: 'Tarjeta débito'
-                    },
-                    {
-                        id: 2,
-                        name: 'Tarjeta de crédito'
-                    }
-                ],
+                payment_methods: [],
+                days_to_pay_options: [15, 30, 90, 120, 360],
                 errors: {},
             }
         },
         mounted() {
-
+            this.payment_methods = JSON.parse(this.paymentMethods);
         },
         computed: {
             calculateGrossTotal() {
@@ -346,7 +352,16 @@
                 }
 
                 for (let i in this.request.payments) {
-                    if (this.request.payments[i].method === '') {
+
+                    if (typeof this.request.payments[i].method == "undefined") {
+                        return false;
+                    }
+
+                    if (this.request.payments[i].way_to_pay === 'cash' && this.request.payments[i].method === '') {
+                        return false;
+                    }
+
+                    if (this.request.payments[i].way_to_pay === 'credit' && typeof this.request.payments[i].days_to_pay == 'undefined') {
                         return false;
                     }
                 }
@@ -360,12 +375,16 @@
             }
         },
         methods: {
+            resetCurrentMethod(payment){
+                payment.method='';
+                payment.days_to_pay='';
+            },
             getRouteWithId: function (route, id) {
                 return route.replace('__ID__', id);
             },
             setRequestClientData(response) {
                 response.data.filter(client => {
-                    if(client.id == response.selected){
+                    if (client.id == response.selected) {
                         this.optionsClientContact = client.contacts;
                         this.request.client_id = client.id
                         this.request.client_name = client.name
@@ -377,7 +396,7 @@
             },
             loadProductData(response, product) {
                 response.data.filter(item => {
-                    if(item.id == response.selected){
+                    if (item.id == response.selected) {
                         product.id = item.id;
                         product.text = item.text
                         product.name = item.text

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Transaction\Sale;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\Interfaces\PaymentMethodRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Repositories\Interfaces\ThirdPartiesRepositoryInterface;
 use App\Repositories\Sales\Interfaces\MainSaleRepositoryInterface;
@@ -32,29 +33,40 @@ class SaleCreateController extends Controller
     protected $productRepository;
 
     /**
-     * InvoiceCreateController constructor.
+     * @var PaymentMethodRepositoryInterface
+     */
+    protected $methodRepository;
+
+    /**
+     * SaleCreateController constructor.
      * @param MainSaleRepositoryInterface $mainSaleRepository
      * @param ThirdPartiesRepositoryInterface $thirdPartiesRepository
      * @param ProductRepositoryInterface $productRepository
+     * @param PaymentMethodRepositoryInterface $methodRepository
      */
     public function __construct(
         MainSaleRepositoryInterface $mainSaleRepository,
         ThirdPartiesRepositoryInterface $thirdPartiesRepository,
-        ProductRepositoryInterface $productRepository
+        ProductRepositoryInterface $productRepository,
+        PaymentMethodRepositoryInterface $methodRepository
     )
     {
         $this->middleware('auth');
+
         $this->mainSaleRepository = $mainSaleRepository;
         $this->thirdPartiesRepository = $thirdPartiesRepository;
         $this->productRepository = $productRepository;
+        $this->methodRepository = $methodRepository;
     }
 
     /**
      * @return View
      */
-    public function create():View
+    public function create(): View
     {
-        return view('transactions.sales.create');
+        $paymentsMethods = $this->methodRepository->all();
+
+        return view('transactions.sales.create', compact('paymentsMethods'));
     }
 
     /**
@@ -111,7 +123,8 @@ class SaleCreateController extends Controller
             'payments' => 'array|required',
             'payments.*.way_to_pay' => 'required|string',
             'payments.*.amount' => 'required|numeric|min:1',
-            'payments.*.method' => 'required|string',
+            'payments.*.method' => 'string',
+            'payments.*.days_to_pay' => 'numeric',
         ]);
 
         $request = $data->validated();
@@ -146,7 +159,8 @@ class SaleCreateController extends Controller
             return [
                 'way_to_pay' => $salePayments['way_to_pay'],
                 'amount' => $salePayments['amount'],
-                'method' => $salePayments['method'],
+                'method' => (!empty($salePayments['method'])) ? $salePayments['method'] : '',
+                'days_to_pay' => (!empty($salePayments['days_to_pay'])) ? $salePayments['days_to_pay'] : 0,
             ];
         }, $request['payments']);
 

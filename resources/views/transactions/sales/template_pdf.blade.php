@@ -92,27 +92,38 @@
 </table>
 <br>
 <br>
-<table style="width: 50%">
+<h3>Pagos</h3>
+<table style="width: 100%">
     <thead>
     <tr>
         <th>Forma de pago</th>
         <th>Metodo de pago</th>
         <th>Valor</th>
         <th>Fecha</th>
+        <th>Plazo</th>
+        <th>Fecha limite de pago</th>
     </tr>
     </thead>
     <tbody style="text-align: center">
     @foreach($sale['sale_payments'] as $payment)
         <tr>
-            <td>{{$payment['way_to_pay']}}</td>
+            <td>{{$payment['way_to_pay_trans']}}</td>
             <td>{{$payment['method']}}</td>
             <td>$ {{$payment['amount_formatted']}}</td>
             <td>{{$payment['date']}}</td>
+            @if($payment['way_to_pay'] == 'credit')
+                <td>{{$payment['days_to_pay']}} dias</td>
+                <td>{{$payment['credit_expiration_date']}}</td>
+            @else
+                <td>-</td>
+                <td>-</td>
+            @endif
         </tr>
     @endforeach
     <tr>
         <td colspan="2"><b>Total Pagos</b></td>
-        <td colspan="2">$ {{$sale['totals']['total_payment']}}</td>
+        <td colspan="1">$ {{$sale['totals']['total_payment']}}</td>
+        <td colspan="3"></td>
     </tr>
     </tbody>
     <tbody>

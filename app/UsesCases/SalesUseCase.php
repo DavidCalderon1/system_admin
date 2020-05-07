@@ -4,6 +4,7 @@ namespace App\UsesCases;
 
 use App\Repositories\Sales\Interfaces\SaleRepositoryInterface;
 use App\UsesCases\Interfaces\SalesUseCaseInterface;
+use Carbon\Carbon;
 
 /**
  * Class SalesUseCase
@@ -188,10 +189,13 @@ class SalesUseCase implements SalesUseCaseInterface
     {
         return array_map(function ($salePayment) {
             return [
-                'way_to_pay' => __('sales.payment_' . $salePayment['way_to_pay']),
+                'way_to_pay' => $salePayment['way_to_pay'],
+                'way_to_pay_trans' => __('sales.payment_' . $salePayment['way_to_pay']),
                 'amount' => $salePayment['amount'],
                 'amount_formatted' =>  $this->numberFormat($salePayment['amount']),
                 'method' => $salePayment['method'],
+                'days_to_pay' => $salePayment['days_to_pay'],
+                'credit_expiration_date' => Carbon::create( $salePayment['credit_expiration_date'])->format('Y-m-d'),
                 'date' => $salePayment['date'],
             ];
         }, $salePayments);
