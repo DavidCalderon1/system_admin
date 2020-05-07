@@ -98,6 +98,8 @@ Route::group(['prefix' => 'transactions'], function () {
         Route::get('/', 'Transaction\Sale\SaleListController@index')->name('transactions.sales.index');
         Route::get('/list', 'Transaction\Sale\SaleListController@list')->name('transactions.sales.list');
         Route::get('/create', 'Transaction\Sale\SaleCreateController@create')->name('transactions.sales.create');
+        Route::get('/filterClientsAjax', 'Transaction\Sale\SaleCreateController@filterClientsAjax')->name('transactions.sales.filterClientsAjax');
+        Route::get('/filterProductsAjax', 'Transaction\Sale\SaleCreateController@filterProductsAjax')->name('transactions.sales.filterProductsAjax');
         Route::post('/store/', 'Transaction\Sale\SaleCreateController@store')->name('transactions.sales.store');
         Route::get('/view/{sale_id}', 'Transaction\Sale\SaleViewController')->name('transactions.sales.view');
         Route::get('/download/{sale_id}', 'Transaction\Sale\SaleExportPdfController@download')->name('transactions.sales.download');

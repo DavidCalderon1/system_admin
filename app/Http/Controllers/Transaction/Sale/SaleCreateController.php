@@ -54,10 +54,29 @@ class SaleCreateController extends Controller
      */
     public function create():View
     {
-        $clients = $this->thirdPartiesRepository->filterAllByType('client');
-        $products = $this->productRepository->getAll();
+        return view('transactions.sales.create');
+    }
 
-        return view('transactions.sales.create', compact('clients', 'products'));
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function filterClientsAjax(Request $request)
+    {
+        $filter = $request->get('term', '');
+
+        return $this->thirdPartiesRepository->filterClientByIdentityNumber($filter);
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     */
+    public function filterProductsAjax(Request $request)
+    {
+        $filter = $request->get('term', '');
+
+        return $this->productRepository->filter($filter);
     }
 
     /**

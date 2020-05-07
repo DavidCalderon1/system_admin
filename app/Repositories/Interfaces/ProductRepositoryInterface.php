@@ -23,6 +23,12 @@ interface ProductRepositoryInterface
     public function getAll(): array;
 
     /**
+     * @param string $filter
+     * @return array
+     */
+    public function filter(string $filter): array;
+
+    /**
      * @param int $warehouseId
      * @return array
      */

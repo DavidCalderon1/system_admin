@@ -49,6 +49,10 @@ class ProductListController extends Controller
 
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function list(Request $request)
     {
         if (!$this->hasPermission(PermissionsConstants::PRODUCT_LIST)) {

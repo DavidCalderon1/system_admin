@@ -137,13 +137,14 @@ class EloquentThirdPartiesRepository implements ThirdPartiesRepositoryInterface
     }
 
     /**
-     * @param string $type
-     * @param string $query
+     * @param string $filter
      * @return array
      */
-    public function filterAllByType(string $type): array
+    public function filterClientByIdentityNumber(string $filter): array
     {
-        $persons = $this->thirdParties->where('type', $type)->get();
+        $persons = $this->thirdParties->where('type', 'client')
+            ->where('identity_number', 'LIKE', "%{$filter}%")
+            ->get();
 
         if(empty($persons)){
             return [];

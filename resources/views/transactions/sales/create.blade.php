@@ -5,8 +5,8 @@
     <create-invoices-component
         route-store="{{route('transactions.sales.store')}}"
         route-index="{{route('transactions.sales.index')}}"
-        all-clients="{{json_encode($clients)}}"
-        all-products="{{json_encode($products)}}"
+        route-filter-clients="{{route('transactions.sales.filterClientsAjax')}}"
+        route-filter-products="{{route('transactions.sales.filterProductsAjax')}}"
         route-sale-view="{{route('transactions.sales.view',['sale_id' => '__ID__'])}}"
         route-sale-download="{{route('transactions.sales.download',['sale_id' => '__ID__'])}}"
     ></create-invoices-component>

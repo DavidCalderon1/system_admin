@@ -61,7 +61,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     {
         $products = $this->product->with('warehouses')->get();
 
-        if(empty($products)){
+        if (empty($products)) {
             return [];
         }
 
@@ -69,13 +69,44 @@ class EloquentProductRepository implements ProductRepositoryInterface
 
         foreach ($products as $key => $product) {
 
-            $products[$key]['id'] = (string) $product['id'];
+            $products[$key]['id'] = (string)$product['id'];
             $products[$key]['text'] = $product['code'] . ' - ' . $product['reference'];
 
             if (!empty($product['warehouses'])) {
                 $products[$key]['warehouses'] = array_map(function ($warehouse) {
                     return [
                         'id' => (string)$warehouse['id'],
+                        'text' => $warehouse['name'] . ' -> ' . $warehouse['pivot']['quantity'] . 'und',
+                    ];
+                }, $product['warehouses']);
+            }
+        }
+
+        return $products;
+    }
+
+    /**
+     * @param string $filter
+     * @return array
+     */
+    public function filter(string $filter): array
+    {
+        $products = $this->product->with('warehouses')
+            ->where('code', 'LIKE', "%{$filter}%")
+            ->orWhere('reference', 'LIKE', "%{$filter}%")
+            ->limit(20)
+            ->get()
+            ->toArray();
+
+        foreach ($products as $key => $product) {
+
+            $products[$key]['id'] = $product['id'];
+            $products[$key]['text'] = $product['code'] . ' - ' . $product['reference'];
+
+            if (!empty($product['warehouses'])) {
+                $products[$key]['warehouses'] = array_map(function ($warehouse) {
+                    return [
+                        'id' => $warehouse['id'],
                         'text' => $warehouse['name'] . ' -> ' . $warehouse['pivot']['quantity'] . 'und',
                     ];
                 }, $product['warehouses']);
@@ -236,4 +267,5 @@ class EloquentProductRepository implements ProductRepositoryInterface
         }
 
         return false;
-    }}
+    }
+}

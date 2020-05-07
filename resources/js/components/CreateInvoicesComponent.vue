@@ -3,11 +3,9 @@
         <div class="row">
             <div class="col-md-3">
                 <label>Cliente</label>
-                <Select2 :options="optionsAllClients"
-                         v-bind:id="'select_clients'"
-                         :settings="{dropdownAutoWidth:'true', width: 'resolve',}"
-                         @select="setRequestClientData($event)"
-                />
+
+                <select2-ajax @response="setRequestClientData($event)" :url="routeFilterClients" style="width: 100%"/>
+
                 <small class="form-text text-danger"
                        v-if="validate('client_name')">{{errors.client_name[0]}}</small>
             </div>
@@ -79,14 +77,8 @@
             <tr v-for="(product,k) in request.products" :key="k">
                 <td>
                     <div>
-                        <Select2 :options="optionsAllProducts"
-                                 v-bind:id='"select_product_"+k'
-                                 v-model="product.id"
-                                 @change="resetWarehouseId(product)"
-                                 :settings="{dropdownAutoWidth:'true', width: 'resolve',}"
-                                 @select="loadProductData($event, product)"/>
+                        <select2-ajax @response="loadProductData($event, product)" :url="routeFilterProducts" style="width: 100%"/>
                     </div>
-
 
                     <small class="form-text text-danger"
                            v-if="validate('products.'+k+'.name')">{{errors['products.'+k+'.name'][0]}}</small>
@@ -104,6 +96,7 @@
                             :settings="{dropdownAutoWidth:'true', width: 'resolve',}"
                             v-bind:id='"select_warehouse_"+k'/>
                     </div>
+
 
                     <small class="form-text text-danger"
                            v-if="validate('products.'+k+'.warehouse_id')">{{errors['products.'+k+'.warehouse_id'][0]}}</small>
@@ -235,10 +228,11 @@
 
 <script>
     import Select2 from 'v-select2-component';
+    import Select2Ajax from "./Select2Ajax";
 
     export default {
         name: "CreateInvoicesComponent",
-        components: {Select2},
+        components: {Select2Ajax, Select2},
         props: {
             routeStore: {
                 type: String,
@@ -248,11 +242,11 @@
                 type: String,
                 required: true
             },
-            allClients: {
+            routeFilterClients: {
                 type: String,
                 required: true
             },
-            allProducts: {
+            routeFilterProducts: {
                 type: String,
                 required: true
             },
@@ -267,9 +261,7 @@
         },
         data() {
             return {
-                optionsAllClients: [],
                 optionsClientContact: [],
-                optionsAllProducts: [],
 
                 request: {
                     client_id: 0,
@@ -321,9 +313,7 @@
             }
         },
         mounted() {
-            this.optionsAllClients = JSON.parse(this.allClients);
-            this.optionsAllProducts = JSON.parse(this.allProducts);
-            console.log(this.optionsAllProducts)
+
         },
         computed: {
             calculateGrossTotal() {
@@ -373,23 +363,31 @@
             getRouteWithId: function (route, id) {
                 return route.replace('__ID__', id);
             },
-            setRequestClientData(clientSelected) {
-                this.optionsClientContact = clientSelected.contacts;
-                this.request.client_id = clientSelected.id
-                this.request.client_name = clientSelected.name
-                this.request.client_last_name = clientSelected.last_name
-                this.request.client_identity_number = clientSelected.identity_number
-                this.request.client_identity_type = clientSelected.identity_type
+            setRequestClientData(response) {
+                response.data.filter(client => {
+                    if(client.id == response.selected){
+                        this.optionsClientContact = client.contacts;
+                        this.request.client_id = client.id
+                        this.request.client_name = client.name
+                        this.request.client_last_name = client.last_name
+                        this.request.client_identity_number = client.identity_number
+                        this.request.client_identity_type = client.identity_type
+                    }
+                });
             },
-            loadProductData(productSelected, product) {
-                // product.id = productSelected.id;
-                product.text = productSelected.text
-                product.name = productSelected.text
-                product.description = productSelected.description
-                product.warehouses = productSelected.warehouses
-                product.price = productSelected.price
-                product.vat = productSelected.vat
-                product.total = 0
+            loadProductData(response, product) {
+                response.data.filter(item => {
+                    if(item.id == response.selected){
+                        product.id = item.id;
+                        product.text = item.text
+                        product.name = item.text
+                        product.description = item.description
+                        product.warehouses = item.warehouses
+                        product.price = item.price
+                        product.vat = item.vat
+                        product.total = 0
+                    }
+                })
             },
             resetWarehouseId(product) {
                 product.warehouse_id = 0;
