@@ -72,7 +72,6 @@
             'roleAdminId',
         ],
         mounted() {
-            console.log(this.roleAdminId);
             this.getRoles();
         },
         data() {
@@ -90,7 +89,6 @@
         },
         methods: {
             getRoles() {
-                console.log(this.roleListRoute)
                 let pathFilter = '';
 
                 if (this.search !== '') {
@@ -118,17 +116,21 @@
                     });
             },
             destroy(roleId) {
-                if (confirm("Estas seguro que deseas borrar el rol?")) {
-                    let url = this.getRouteWithId(this.roleDestroyRoute, roleId);
-                    axios.delete(url)
-                        .then(resp => {
-                            alert(resp.data.message);
-                            this.getRoles();
-                        })
-                        .catch(error => {
-                            alert(error.response.data.message);
-                        })
-                }
+
+                this.$alertify.confirm(
+                    'Estas seguro que deseas borrar el rol?',
+                    () => {
+                        let url = this.getRouteWithId(this.roleDestroyRoute, roleId);
+                        axios.delete(url)
+                            .then(resp => {
+                                this.$alertify.success(resp.data.message);
+                                this.getRoles();
+                            })
+                            .catch(error => {
+                                this.$alertify.error(error.response.data.message);
+                            })
+                    },
+                );
             },
             getRouteWithId: function (route, roleId) {
                 return route.replace('__ID__', roleId);

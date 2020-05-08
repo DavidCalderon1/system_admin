@@ -51,6 +51,10 @@ class ThirdListController extends Controller
         );
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function list(Request $request): JsonResponse
     {
         if (!$this->hasPermission(PermissionsConstants::THIRD_LIST)) {

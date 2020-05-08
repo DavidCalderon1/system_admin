@@ -23,6 +23,10 @@ class DatabaseSeeder extends Seeder
         $this->call(StatesTableSeeder::class);
         $this->call(CitiesTableSeeder::class);
 
+        //Agregar metodos de pago
+        $this->call(PaymentMethodsSeeder::class);
+
+
         //Permisos de cada modulo crud
         $this->call(PermissionsUsersModuleSeeder::class);
         $this->call(PermissionsRolesModuleSeeder::class);
@@ -30,5 +34,6 @@ class DatabaseSeeder extends Seeder
         $this->call(PermissionsInventoryCategoryModuleSeeder::class);
         $this->call(PermissionsWarehousesModuleSeeder::class);
         $this->call(PermissionsProductsModuleSeeder::class);
+        $this->call(PermissionsSalesModuleSeeder::class);
     }
 }

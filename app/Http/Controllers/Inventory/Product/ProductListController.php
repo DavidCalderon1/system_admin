@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Inventory\Product;
 use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Session\Store as SessionStore;
 use Illuminate\Support\Facades\Storage;
@@ -48,6 +49,10 @@ class ProductListController extends Controller
 
     }
 
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function list(Request $request)
     {
         if (!$this->hasPermission(PermissionsConstants::PRODUCT_LIST)) {
@@ -91,6 +96,5 @@ class ProductListController extends Controller
         ];
 
         return response()->json($response, 200);
-
     }
 }

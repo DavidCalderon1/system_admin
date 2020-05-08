@@ -117,17 +117,20 @@
                     });
             },
             destroyUser(userId) {
-                if (confirm("Estas seguro que deseas borrar el usuario?")) {
-                    let url = this.getRouteWithUserId(this.userDestroyRoute, userId);
-                    axios.delete(url)
-                        .then(resp => {
-                            alert(resp.data.message);
-                            this.getUsers();
-                        })
-                        .catch(error => {
-                            alert(error.response.data.message);
-                        })
-                }
+                this.$alertify.confirm(
+                    'Estas seguro que deseas borrar el usuario?',
+                    () => {
+                        let url = this.getRouteWithUserId(this.userDestroyRoute, userId);
+                        axios.delete(url)
+                            .then(resp => {
+                                this.$alertify.success(resp.data.message);
+                                this.getUsers();
+                            })
+                            .catch(error => {
+                                this.$alertify.error(error.response.data.message);
+                            })
+                    },
+                );
             },
             getRouteWithUserId: function (route, userId) {
                 return route.replace('__userId__', userId);

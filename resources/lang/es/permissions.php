@@ -29,5 +29,9 @@ return [
         PermissionsConstants::PRODUCT_CREATE => 'Crear Productos',
         PermissionsConstants::PRODUCT_UPDATE => 'Actualizar Productos',
         PermissionsConstants::PRODUCT_DELETE => 'Eliminar Productos',
+        PermissionsConstants::SALE_LIST => 'Listar Ventas',
+        PermissionsConstants::SALE_VIEW => 'Ver Detalles de Ventas',
+        PermissionsConstants::SALE_CREATE => 'Crear Ventas',
+        PermissionsConstants::SALE_CANCEL => 'Anular Ventas',
     ]
 ];

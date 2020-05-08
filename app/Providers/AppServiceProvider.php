@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Repositories\EloquentCityRepository;
 use App\Repositories\EloquentCountryRepository;
 use App\Repositories\EloquentInventoryCategoryRepository;
+use App\Repositories\EloquentPaymentMethodRepository;
 use App\Repositories\EloquentPermissionRepository;
 use App\Repositories\EloquentProductRepository;
 use App\Repositories\EloquentRoleRepository;
@@ -15,6 +16,7 @@ use App\Repositories\EloquentWarehousesRepository;
 use App\Repositories\Interfaces\CityRepositoryInterface;
 use App\Repositories\Interfaces\CountryRepositoryInterface;
 use App\Repositories\Interfaces\InventoryCategoryRepositoryInterface;
+use App\Repositories\Interfaces\PaymentMethodRepositoryInterface;
 use App\Repositories\Interfaces\PermissionRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
@@ -22,6 +24,16 @@ use App\Repositories\Interfaces\StateRepositoryInterface;
 use App\Repositories\Interfaces\ThirdPartiesRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\WarehousesRepositoryInterface;
+use App\Repositories\Sales\EloquentMainSaleRepository;
+use App\Repositories\Sales\EloquentSalePaymentRepository;
+use App\Repositories\Sales\EloquentSaleProductRepository;
+use App\Repositories\Sales\EloquentSaleRepository;
+use App\Repositories\Sales\Interfaces\MainSaleRepositoryInterface;
+use App\Repositories\Sales\Interfaces\SalePaymentRepositoryInterface;
+use App\Repositories\Sales\Interfaces\SaleProductRepositoryInterface;
+use App\Repositories\Sales\Interfaces\SaleRepositoryInterface;
+use App\UsesCases\Interfaces\SalesUseCaseInterface;
+use App\UsesCases\SalesUseCase;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -45,6 +57,15 @@ class AppServiceProvider extends ServiceProvider
         InventoryCategoryRepositoryInterface::class => EloquentInventoryCategoryRepository::class,
         WarehousesRepositoryInterface::class => EloquentWarehousesRepository::class,
         ProductRepositoryInterface::class => EloquentProductRepository::class,
+        SaleRepositoryInterface::class => EloquentSaleRepository::class,
+        SaleProductRepositoryInterface::class => EloquentSaleProductRepository::class,
+        SalePaymentRepositoryInterface::class => EloquentSalePaymentRepository::class,
+        MainSaleRepositoryInterface::class => EloquentMainSaleRepository::class,
+        PaymentMethodRepositoryInterface::class => EloquentPaymentMethodRepository::class,
+
+        //UsesCases
+
+        SalesUseCaseInterface::class => SalesUseCase::class,
     ];
 
     /**

@@ -93,6 +93,22 @@ Route::group(['prefix' => 'inventory'], function () {
     });
 });
 
+Route::group(['prefix' => 'transactions'], function () {
+    Route::group(['prefix' => 'sales'], function () {
+        Route::get('/', 'Transaction\Sale\SaleListController@index')->name('transactions.sales.index');
+        Route::get('/list', 'Transaction\Sale\SaleListController@list')->name('transactions.sales.list');
+        Route::get('/create', 'Transaction\Sale\SaleCreateController@create')->name('transactions.sales.create');
+        Route::get('/filterClientsAjax', 'Transaction\Sale\SaleCreateController@filterClientsAjax')->name('transactions.sales.filterClientsAjax');
+        Route::get('/filterProductsAjax', 'Transaction\Sale\SaleCreateController@filterProductsAjax')->name('transactions.sales.filterProductsAjax');
+        Route::post('/store/', 'Transaction\Sale\SaleCreateController@store')->name('transactions.sales.store');
+        Route::get('/view/{sale_id}', 'Transaction\Sale\SaleViewController')->name('transactions.sales.view');
+        Route::get('/download/{sale_id}', 'Transaction\Sale\SaleExportPdfController@download')->name('transactions.sales.download');
+        Route::get('/print/{sale_id}', 'Transaction\Sale\SaleExportPdfController@print')->name('transactions.sales.print');
+        Route::delete('/cancel/{id}', 'Transaction\Sale\SaleCancelController')->name('transactions.sales.cancel');
+
+    });
+});
+
 Route::group(['prefix' => 'warehouses'], function () {
     Route::get('/', 'Warehouse\WarehouseListController@index')->name('warehouses.index');
     Route::get('/list', 'Warehouse\WarehouseListController@list')->name('warehouses.list');

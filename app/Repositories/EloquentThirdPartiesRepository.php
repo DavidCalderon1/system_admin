@@ -135,4 +135,32 @@ class EloquentThirdPartiesRepository implements ThirdPartiesRepositoryInterface
             'description' => strtoupper($data['description']),
         ]);
     }
+
+    /**
+     * @param string $filter
+     * @return array
+     */
+    public function filterClientByIdentityNumber(string $filter): array
+    {
+        $persons = $this->thirdParties->where('type', 'client')
+            ->where('identity_number', 'LIKE', "%{$filter}%")
+            ->get();
+
+        if(empty($persons)){
+            return [];
+        }
+
+        $persons =$persons->toArray();
+
+        foreach ($persons as $key => $person) {
+            $persons[$key]['text'] = $person['identity_number'] . ' - ' . $person['name'] . ' ' . $person['last_name'];
+            $ext = (!empty($person['phone_extension'])) ? ' Ext: ' . $person['phone_extension'] : '';
+            $persons[$key]['contacts'] = [
+                $person['email'],
+                $person['phone_number'] . $ext,
+            ];
+        }
+
+        return $persons;
+    }
 }
