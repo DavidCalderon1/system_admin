@@ -91,29 +91,12 @@ class EloquentProductRepository implements ProductRepositoryInterface
      */
     public function filter(string $filter): array
     {
-        $products = $this->product->with('warehouses')
+        return $this->product->with('warehouses')
             ->where('code', 'LIKE', "%{$filter}%")
             ->orWhere('reference', 'LIKE', "%{$filter}%")
             ->limit(20)
             ->get()
             ->toArray();
-
-        foreach ($products as $key => $product) {
-
-            $products[$key]['id'] = $product['id'];
-            $products[$key]['text'] = $product['code'] . ' - ' . $product['reference'];
-
-            if (!empty($product['warehouses'])) {
-                $products[$key]['warehouses'] = array_map(function ($warehouse) {
-                    return [
-                        'id' => $warehouse['id'],
-                        'text' => $warehouse['name'] . ' -> ' . $warehouse['pivot']['quantity'] . 'und',
-                    ];
-                }, $product['warehouses']);
-            }
-        }
-
-        return $products;
     }
 
     /**
@@ -241,10 +224,16 @@ class EloquentProductRepository implements ProductRepositoryInterface
             }
 
             $warehouse->pivot->quantity = $warehouse->pivot->quantity - $quantityToDiscount;
+
             return $warehouse->pivot->save();
         }
 
-        return false;
+        $product->warehouses()->attach($warehouseId, [
+            'product_id' => $product->id,
+            'quantity' => $quantityToDiscount * -1
+        ]);
+
+        return true;
     }
 
     /**
@@ -266,6 +255,11 @@ class EloquentProductRepository implements ProductRepositoryInterface
             return $warehouse->pivot->save();
         }
 
-        return false;
+        $product->warehouses()->attach($warehouseId, [
+            'product_id' => $product->id,
+            'quantity' => $quantityToSum
+        ]);
+
+        return true;
     }
 }

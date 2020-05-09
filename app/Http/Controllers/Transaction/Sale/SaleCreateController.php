@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Transaction\Sale;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\PaymentMethodRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
+use App\Repositories\Interfaces\ProductWarehouseRepositoryInterface;
 use App\Repositories\Interfaces\ThirdPartiesRepositoryInterface;
 use App\Repositories\Sales\Interfaces\MainSaleRepositoryInterface;
 use Illuminate\Http\Request;
@@ -28,9 +29,9 @@ class SaleCreateController extends Controller
     protected $thirdPartiesRepository;
 
     /**
-     * @var ProductRepositoryInterface
+     * @var ProductWarehouseRepositoryInterface
      */
-    protected $productRepository;
+    protected $productWarehouseRepository;
 
     /**
      * @var PaymentMethodRepositoryInterface
@@ -41,13 +42,13 @@ class SaleCreateController extends Controller
      * SaleCreateController constructor.
      * @param MainSaleRepositoryInterface $mainSaleRepository
      * @param ThirdPartiesRepositoryInterface $thirdPartiesRepository
-     * @param ProductRepositoryInterface $productRepository
+     * @param ProductWarehouseRepositoryInterface $productWarehouseRepository
      * @param PaymentMethodRepositoryInterface $methodRepository
      */
     public function __construct(
         MainSaleRepositoryInterface $mainSaleRepository,
         ThirdPartiesRepositoryInterface $thirdPartiesRepository,
-        ProductRepositoryInterface $productRepository,
+        ProductWarehouseRepositoryInterface $productWarehouseRepository,
         PaymentMethodRepositoryInterface $methodRepository
     )
     {
@@ -55,7 +56,7 @@ class SaleCreateController extends Controller
 
         $this->mainSaleRepository = $mainSaleRepository;
         $this->thirdPartiesRepository = $thirdPartiesRepository;
-        $this->productRepository = $productRepository;
+        $this->productWarehouseRepository = $productWarehouseRepository;
         $this->methodRepository = $methodRepository;
     }
 
@@ -88,7 +89,7 @@ class SaleCreateController extends Controller
     {
         $filter = $request->get('term', '');
 
-        return $this->productRepository->filter($filter);
+        return  $this->productWarehouseRepository->filterForSelect($filter);
     }
 
     /**

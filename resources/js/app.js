@@ -62,6 +62,7 @@ Vue.component('form-create-warehouse-component', require('./components/FormCreat
 Vue.component('form-create-product-component', require('./components/FormCreateProductComponent').default);
 Vue.component('products-component', require('./components/ProductsComponent').default);
 Vue.component('create-invoices-component', require('./components/CreateInvoicesComponent').default);
+Vue.component('create-purchase-component', require('./components/CreatePurchaseComponent').default);
 Vue.component('currency-input-component', require('./components/CurrencyInputComponent').default);
 Vue.component('sales-component', require('./components/SalesComponent').default);
 Vue.component('select2-ajax', require('./components/Select2Ajax').default);

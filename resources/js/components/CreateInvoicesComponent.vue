@@ -395,6 +395,7 @@
                 });
             },
             loadProductData(response, product) {
+                product.warehouse_id =0;
                 response.data.filter(item => {
                     if (item.id == response.selected) {
                         product.id = item.id;
