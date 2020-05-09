@@ -65,7 +65,7 @@
                 <th style="width:200px">Producto</th>
                 <th style="width:250px">Descripción</th>
                 <th style="width:200px">Bodega</th>
-                <th style="width:78px;">Cantidad</th>
+                <th style="width:100px;">Cantidad</th>
                 <th style="width:150px;">Valor unit.</th>
                 <th style="width:78px;">% Desc.</th>
                 <th style="width:70px;">% Iva</th>

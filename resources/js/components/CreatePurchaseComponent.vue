@@ -59,10 +59,10 @@
                 <th style="width:200px">Producto</th>
                 <th style="width:250px">Descripción</th>
                 <th style="width:200px">Bodega</th>
-                <th style="width:78px;">Cant.</th>
+                <th style="width:70px;">Cant.</th>
                 <th style="width:70px;">% Iva</th>
-                <th style="width:78px;">Ret. en la fuente</th>
-                <th style="width:85px;">Total</th>
+                <th style="width:auto;">Ret. en la fuente</th>
+                <th style="width:130px;">Total</th>
                 <th style="width:48px;"></th>
             </tr>
             </thead>
@@ -90,8 +90,6 @@
                             :settings="{dropdownAutoWidth:'true', width: 'resolve',}"
                             v-bind:id='"select_warehouse_"+k'/>
                     </div>
-
-
                     <small class="form-text text-danger"
                            v-if="validate('products.'+k+'.warehouse_id')">{{errors['products.'+k+'.warehouse_id'][0]}}</small>
                 </td>
@@ -106,16 +104,16 @@
                            v-if="validate('products.'+k+'.vat')">{{errors['products.'+k+'.vat'][0]}}</small>
                 </td>
                 <td>
-                    <Select2
-                        v-bind:options="['Retencion1', 'Retencion2', 'Retencion3']"
-                        v-model="product.withholding_tax_percentage"
-                        :settings="{dropdownAutoWidth:'true', width: 'resolve',}"
-                        v-bind:id='"select_withholding_tax_percentage_"+k'/>
+                    <select class="form-control form-control-sm" style="width: auto" v-model="product.withholding_tax_percentage">
+                        <option v-for="withholding_tax_percentage in withholding_tax_percentages" :value="withholding_tax_percentage.percentage">
+                            {{withholding_tax_percentage.name}}
+                        </option>
+                    </select>
                     <small class="form-text text-danger"
                            v-if="validate('products.'+k+'.withholding_tax_percentage')">{{errors['products.'+k+'.withholding_tax_percentage'][0]}}</small>
                 </td>
                 <td>
-                    <input type="text" class="form-control form-control-sm" v-model="product.total">
+                    <currency-input-component v-model="product.total" style="width: auto"></currency-input-component>
                     <small class="form-text text-danger"
                            v-if="validate('products.'+k+'.total')">{{errors['products.'+k+'.total'][0]}}</small>
                 </td>
@@ -123,6 +121,7 @@
                     <span>
                         <i class="fas fa-minus-circle" @click="removeProductRow(k)"
                            v-show="k || ( !k && request.products.length > 1)"></i>
+
                         <i class="fas fa-plus-circle" @click="addProductRow(k)"
                            v-show="k == request.products.length-1"></i>
                     </span>
@@ -294,7 +293,7 @@
                             quantity: 1,
                             withholding_tax_percentage: 0,
                             vat: 0,
-                            total: ''
+                            total: 0
                         }
                     ],
                     payments: [
@@ -307,6 +306,11 @@
                     ]
                 },
                 payment_methods: [],
+                withholding_tax_percentages: [
+                    {id:1, name:'RETEFUENTE 2.5', percentage:2.5},
+                    {id:1, name:'Retecion 2', percentage:4},
+                    {id:1, name:'Retecion 3', percentage:10},
+                ],
                 days_to_pay_options: [15, 30, 90, 120, 360],
                 errors: {},
             }
@@ -476,7 +480,7 @@
                     quantity: 1,
                     withholding_tax_percentage: 0,
                     vat: 0,
-                    total: ''
+                    total: 0
                 });
             },
             removeProductRow(index) {
