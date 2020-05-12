@@ -205,6 +205,12 @@ Route::group(['prefix' => 'transactions'], function () {
     });
     Route::group(['prefix' => 'purchases'], function () {
 
+        Route::get('/', 'Transaction\Purchase\PurchaseListController@index')
+            ->name('transactions.purchases.index');
+
+        Route::get('/list', 'Transaction\Purchase\PurchaseListController@list')
+            ->name('transactions.purchases.list');
+
         Route::get('/create', 'Transaction\Purchase\PurchaseCreateController@create')
             ->name('transactions.purchases.create');
 
@@ -216,6 +222,15 @@ Route::group(['prefix' => 'transactions'], function () {
 
         Route::post('/store', 'Transaction\Purchase\PurchaseCreateController@store')
             ->name('transactions.purchases.store');
+
+        Route::get('/view/{purchase_id}', 'Transaction\Purchase\PurchaseViewController')
+            ->name('transactions.purchases.view');
+
+        Route::get('/download/{purchase_id}', 'Transaction\Purchase\PurchaseExportPdfController@download')
+            ->name('transactions.purchases.download');
+
+        Route::get('/print/{purchase_id}', 'Transaction\Purchase\PurchaseExportPdfController@print')
+            ->name('transactions.purchases.print');
     });
 });
 

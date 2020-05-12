@@ -36,6 +36,7 @@ interface SaleRepositoryInterface
 
     /**
      * @param int $id
+     * @param string $status
      * @return bool
      */
     public function changeStatus(int $id, string $status): bool;

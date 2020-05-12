@@ -1,5 +1,5 @@
 <template>
-    <select>
+    <select style="width: 100%;">
         <slot></slot>
     </select>
 </template>
@@ -51,13 +51,19 @@
                 .trigger('change')
                 .on('change', function (e) {
                     vm.$emit('input', this.value)
-                    vm.$emit('response', {data : response, selected: this.value })
+                    vm.$emit('response', {data : response, selected: this.value})
                 })
         },
         watch: {
             url: function (value) {
                 this.ajaxOptions.url = this.url;
                 $(this.$el).select2({ajax: this.ajaxOptions});
+            },
+            value: function (value) {
+                $(this.$el).select2({
+                    data: response,
+                    dropdownAutoWidth:'true'
+                }).val(value).trigger("change");
             }
         },
 

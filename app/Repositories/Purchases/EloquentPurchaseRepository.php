@@ -81,7 +81,6 @@ class EloquentPurchaseRepository implements PurchaseRepositoryInterface
             'consecutive' => $data['consecutive'],
             'provider_invoice_number' => $data['provider_invoice_number'],
             'provider_name' => $data['provider_name'],
-            'provider_last_name' => $data['provider_last_name'],
             'provider_identity_number' => $data['provider_identity_number'],
             'provider_identity_type' => $data['provider_identity_type'],
             'provider_address' => $data['provider_address'],

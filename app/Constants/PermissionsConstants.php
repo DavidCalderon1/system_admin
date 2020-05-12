@@ -72,4 +72,12 @@ class PermissionsConstants
     public const SALE_CREATE = 'sale-create';
     public const SALE_CANCEL = 'sale-cancel';
 
+    /**
+     * Permisos crud modulo de compras
+     */
+    public const PURCHASE_LIST = 'purchase-list';
+    public const PURCHASE_VIEW = 'purchase-view';
+    public const PURCHASE_CREATE = 'purchase-create';
+    public const PURCHASE_CANCEL = 'purchase-cancel';
+
 }

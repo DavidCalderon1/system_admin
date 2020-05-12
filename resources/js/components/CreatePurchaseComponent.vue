@@ -4,7 +4,8 @@
             <div class="col-md-3">
                 <label>Proveedor</label>
 
-                <select2-ajax @response="setRequestProviderData($event)" :url="routeFilterProviders" style="width: 100%"/>
+                <select2-ajax @response="setRequestProviderData($event)" :url="routeFilterProviders"
+                              style="width: 100%"/>
 
                 <small class="form-text text-danger"
                        v-if="validate('provider_name')">{{errors.provider_name[0]}}</small>
@@ -48,7 +49,7 @@
                 <label>Impuestos</label><br>
                 <input type="radio" id="yes" v-model="request.include_taxes" v-bind:value="'1'">
                 <label for="yes">Sí</label>
-                <input type="radio" id="no" v-model="request.include_taxes"  v-bind:value="'0'" class="ml-3">
+                <input type="radio" id="no" v-model="request.include_taxes" v-bind:value="'0'" class="ml-3">
                 <label for="no">No</label><br>
             </div>
         </div>
@@ -70,7 +71,9 @@
             <tr v-for="(product,k) in request.products" :key="k">
                 <td>
                     <div>
-                        <select2-ajax @response="loadProductData($event, product)" :url="routeFilterProducts"
+                        <select2-ajax @response="loadProductData($event, product)"
+                                      :url="routeFilterProducts"
+                                      :value="product.id"
                                       style="width: 100%"/>
                     </div>
 
@@ -104,8 +107,10 @@
                            v-if="validate('products.'+k+'.vat')">{{errors['products.'+k+'.vat'][0]}}</small>
                 </td>
                 <td>
-                    <select class="form-control form-control-sm" style="width: auto" v-model="product.withholding_tax_percentage">
-                        <option v-for="withholding_tax_percentage in withholding_tax_percentages" :value="withholding_tax_percentage.percentage">
+                    <select class="form-control form-control-sm" style="width: auto"
+                            v-model="product.withholding_tax_percentage">
+                        <option v-for="withholding_tax_percentage in withholding_tax_percentages"
+                                :value="withholding_tax_percentage.percentage">
                             {{withholding_tax_percentage.name}}
                         </option>
                     </select>
@@ -134,18 +139,18 @@
             </tr>
             <tr>
                 <td colspan="4"></td>
-                <td colspan="2">Descuentos</td>
-                <td colspan="3">$ {{formatPrice(calculateDiscountsTotal)}}</td>
-            </tr>
-            <tr>
-                <td colspan="4"></td>
                 <td colspan="2">Subtotal</td>
                 <td colspan="3">$ {{formatPrice(calculateSubTotal)}}</td>
             </tr>
             <tr>
                 <td colspan="4"></td>
+                <td colspan="2">Retención en la fuente</td>
+                <td colspan="3">$ {{formatPrice(calculateTaxesTotal)}}</td>
+            </tr>
+            <tr>
+                <td colspan="4"></td>
                 <td colspan="2">IVA</td>
-                <td colspan="3">$ {{formatPrice(calculateVatTotal)}}</td>
+                <td colspan="3">$ {{formatPrice(calculateTotalVat)}}</td>
             </tr>
             <tr>
                 <td colspan="4"></td>
@@ -237,7 +242,7 @@
     import Select2Ajax from "./Select2Ajax";
 
     export default {
-        name: "CreateInvoicesComponent",
+        name: "CreatePurchaseComponent",
         components: {Select2Ajax, Select2},
         props: {
             routeStore: {
@@ -307,9 +312,10 @@
                 },
                 payment_methods: [],
                 withholding_tax_percentages: [
-                    {id:1, name:'RETEFUENTE 2.5', percentage:2.5},
-                    {id:1, name:'Retecion 2', percentage:4},
-                    {id:1, name:'Retecion 3', percentage:10},
+                    {id: 1, name: 'RETEFUENTE 0%', percentage: 0},
+                    {id: 2, name: 'RETEFUENTE 2.5%', percentage: 2.5},
+                    {id: 3, name: 'RETEFUENTE 4%', percentage: 4},
+                    {id: 4, name: 'RETEFUENTE 10%', percentage: 10},
                 ],
                 days_to_pay_options: [15, 30, 90, 120, 360],
                 errors: {},
@@ -322,14 +328,14 @@
             calculateGrossTotal() {
                 return this.getTotalGross();
             },
-            calculateDiscountsTotal() {
-                return this.getTotalDiscount();
-            },
             calculateSubTotal() {
                 return this.getSubTotal()
             },
-            calculateVatTotal() {
-                return this.getTotalVat();
+            calculateTaxesTotal(){
+              return this.getTotalTaxes();
+            },
+            calculateTotalVat(){
+              return this.getTotalVat();
             },
             calculateTotal() {
                 return this.getTotal();
@@ -344,6 +350,9 @@
 
                 for (let i in this.request.products) {
                     if (this.request.products[i].warehouse_id === 0 || this.request.products[i].warehouse_id === '') {
+                        return false;
+                    }
+                    if (this.request.products[i].withholding_tax_percentage < 0 || this.request.products[i].withholding_tax_percentage==null) {
                         return false;
                     }
                 }
@@ -363,10 +372,10 @@
                     }
                 }
 
-                return this.request.client_id > 0
-                    && this.request.client_contact.length > 0
+                return this.request.provider_id > 0
                     && this.request.date.length > 0
-                    && this.request.seller_code.length > 0
+                    && this.request.provider_invoice_number.length > 0
+                    && (this.request.include_taxes == 0 ||  this.request.include_taxes == 1)
                     && this.getTotal() > 0
                     && this.getTotalPayments() === this.getTotal();
             }
@@ -387,13 +396,12 @@
                         this.request.provider_identity_number = provider.identity_number
                         this.request.provider_identity_type = provider.identity_type
                         this.request.provider_address = provider.address
-                        this.request.provider_phone_number = provider.phone_number+' '+provider.phone_extension
-                        this.request.provider_location = provider.city.name+'-'+provider.country.name
+                        this.request.provider_phone_number = provider.phone_number + ' ' + provider.phone_extension
+                        this.request.provider_location = provider.city.name + '-' + provider.country.name
                     }
                 });
             },
             loadProductData(response, product) {
-                product.warehouse_id =0;
                 response.data.filter(item => {
                     if (item.id == response.selected) {
                         product.id = item.id;
@@ -410,52 +418,37 @@
             resetWarehouseId(product) {
                 product.warehouse_id = 0;
             },
-            calculateTotalRow(product) {
-
-                product.price = (product.price === '') ? 0 : product.price;
-                product.quantity = (product.quantity === '') ? 0 : product.quantity;
-                product.vat = (product.vat === '') ? 0 : product.vat;
-                product.discount_percentage = (product.discount_percentage === '') ? 0 : product.discount_percentage;
-
-                product.price = parseFloat(product.price)
-                product.quantity = parseInt(product.quantity)
-                product.vat = parseFloat(product.vat)
-                product.discount_percentage = parseFloat(product.discount_percentage)
-
-                let vat = product.price * product.vat / 100;
-                let discount = product.price * product.discount_percentage / 100;
-
-                product.total = (product.price - discount + vat) * product.quantity;
-
-                return Math.round(product.total * 100) / 100;
-            },
             getTotalGross() {
                 let totalGross = 0;
                 for (let i in this.request.products) {
-                    totalGross += parseFloat(this.request.products[i].price) * parseFloat(this.request.products[i].quantity)
+                    let vatValue = this.request.products[i].total * this.request.products[i].vat / 100;
+                    totalGross += parseFloat(this.request.products[i].total) - vatValue;
                 }
                 return Math.round(totalGross * 100) / 100;
             },
-            getTotalDiscount() {
-                let totalDiscount = 0;
+            getSubTotal() {
+                let subTotal = 0;
                 for (let i in this.request.products) {
-                    let discount = parseFloat(this.request.products[i].price) * parseFloat(this.request.products[i].discount_percentage) / 100
-                    totalDiscount += discount * this.request.products[i].quantity;
+                    subTotal += parseFloat(this.request.products[i].total);
                 }
-                return Math.round(totalDiscount * 100) / 100;
+                subTotal -= this.getTotalVat();
+                return Math.round(subTotal * 100) / 100;
+            },
+            getTotalTaxes(){
+                let totalTaxes = 0;
+                for (let i in this.request.products) {
+                    totalTaxes += this.request.products[i].total * this.request.products[i].withholding_tax_percentage / 100;
+                }
+                return Math.round(totalTaxes * 100) / 100;
             },
             getTotalVat() {
                 let totalVat = 0;
                 for (let i in this.request.products) {
-                    let unitVat = parseFloat(this.request.products[i].price) * parseFloat(this.request.products[i].vat) / 100;
-                    totalVat += unitVat * parseFloat(this.request.products[i].quantity);
+                    totalVat += parseFloat(this.request.products[i].total) * parseFloat(this.request.products[i].vat) / 100;
                 }
                 return Math.round(totalVat * 100) / 100;
             },
-            getSubTotal() {
-                let subTotal = this.getTotalGross() - this.getTotalDiscount();
-                return Math.round(subTotal * 100) / 100;
-            },
+
             getTotal() {
                 let total = this.getSubTotal() + this.getTotalVat();
                 return Math.round(total * 100) / 100;
@@ -508,13 +501,15 @@
             sendRequest(download) {
 
                 let formData = new FormData();
-                formData.append('client_id', this.request.client_id);
-                formData.append('client_name', this.request.client_name);
-                formData.append('client_last_name', this.request.client_last_name);
-                formData.append('client_identity_number', this.request.client_identity_number);
-                formData.append('client_identity_type', this.request.client_identity_type);
-                formData.append('client_contact', this.request.client_contact);
-                formData.append('seller_code', this.request.seller_code);
+                formData.append('provider_id', this.request.provider_id);
+                formData.append('provider_name', this.request.provider_name);
+                formData.append('provider_identity_number', this.request.provider_identity_number);
+                formData.append('provider_identity_type', this.request.provider_identity_type);
+                formData.append('provider_address', this.request.provider_address);
+                formData.append('provider_phone_number', this.request.provider_phone_number);
+                formData.append('provider_location', this.request.provider_location);
+                formData.append('provider_invoice_number', this.request.provider_invoice_number);
+                formData.append('include_taxes', this.request.include_taxes);
                 formData.append('date', this.request.date);
                 formData.append('description', this.request.description);
                 formData.append('file', this.request.file);
@@ -524,9 +519,9 @@
                 axios.post(this.routeStore, formData, {headers: {"Content-Type": "application/json"}})
                     .then(resp => {
                         this.$alertify.success(resp.data.data.message);
-                        let url = this.getRouteWithId(this.routeSaleView, resp.data.data.sale.id)
+                        let url = this.getRouteWithId(this.routeSaleView, resp.data.data.purchase.id)
                         if (download) {
-                            let urlDownload = this.getRouteWithId(this.routeSaleDownload, resp.data.data.sale.id);
+                            let urlDownload = this.getRouteWithId(this.routeSaleDownload, resp.data.data.purchase.id);
 
                             axios({
                                 url: urlDownload,
@@ -536,7 +531,7 @@
                                 let fileURL = window.URL.createObjectURL(new Blob([response.data]));
                                 let fileLink = document.createElement('a');
                                 fileLink.href = fileURL;
-                                fileLink.setAttribute('download', resp.data.data.sale.prefix + '-' + resp.data.data.sale.consecutive + '.pdf');
+                                fileLink.setAttribute('download', resp.data.data.purchase.prefix + '-' + resp.data.data.purchase.consecutive + '.pdf');
                                 document.body.appendChild(fileLink);
                                 fileLink.click();
                                 window.location.href = url;

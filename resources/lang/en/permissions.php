@@ -33,5 +33,9 @@ return [
         PermissionsConstants::SALE_VIEW => 'View Sale Details',
         PermissionsConstants::SALE_CREATE => 'Create Sales',
         PermissionsConstants::SALE_CANCEL => 'Cancel Sales',
+        PermissionsConstants::PURCHASE_LIST => 'list Purchases',
+        PermissionsConstants::PURCHASE_VIEW => 'View Purchase Details',
+        PermissionsConstants::PURCHASE_CREATE => 'Create Purchases',
+        PermissionsConstants::PURCHASE_CANCEL => 'Cancel Purchases',
     ]
 ];

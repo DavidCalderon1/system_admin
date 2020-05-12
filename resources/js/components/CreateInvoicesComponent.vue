@@ -77,7 +77,9 @@
             <tr v-for="(product,k) in request.products" :key="k">
                 <td>
                     <div>
-                        <select2-ajax @response="loadProductData($event, product)" :url="routeFilterProducts"
+                        <select2-ajax @response="loadProductData($event, product)"
+                                      :url="routeFilterProducts"
+                                      :value="product.id"
                                       style="width: 100%"/>
                     </div>
 
@@ -301,15 +303,15 @@
                             price: 0,
                             discount_percentage: 0,
                             vat: 0,
-                            total: 0
+                            total: 0,
                         }
                     ],
                     payments: [
                         {
-                            'way_to_pay': 'cash',
-                            'amount': 0,
-                            'method': '',
-                            'days_to_pay': '',
+                            way_to_pay: 'cash',
+                            amount: 0,
+                            method: '',
+                            days_to_pay: '',
                         }
                     ]
                 },
@@ -395,7 +397,6 @@
                 });
             },
             loadProductData(response, product) {
-                product.warehouse_id =0;
                 response.data.filter(item => {
                     if (item.id == response.selected) {
                         product.id = item.id;

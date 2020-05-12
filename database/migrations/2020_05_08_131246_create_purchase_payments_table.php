@@ -23,7 +23,7 @@ class CreatePurchasePaymentsTable extends Migration
             $table->dateTime('credit_expiration_date')->nullable();
             $table->dateTime('date');
 
-            $table->foreign('purchase_id')->references('id')->on('sales');
+            $table->foreign('purchase_id')->references('id')->on('purchases');
         });
     }
 

@@ -67,7 +67,7 @@ class EloquentMainPurchaseRepository implements MainPurchaseRepositoryInterface
     {
         try {
             DB::beginTransaction();
-            dd($purchaseData, $purchaseProducts, $purchasePayments);
+
             $purchaseData['prefix'] = 'FC';
             $purchaseData['consecutive'] = $this->getConsecutive();
             $purchaseData['status'] = 'Activa';
@@ -75,18 +75,8 @@ class EloquentMainPurchaseRepository implements MainPurchaseRepositoryInterface
             $purchaseSaved = $this->purchaseRepository->create($purchaseData);
 
             if (empty($purchaseSaved)) {
-                throw new \Exception('Ha ocurrido un error almacenando la venta.', 500);
+                throw new \Exception('Ha ocurrido un error almacenando la compra.', 500);
                 DB::rollBack();
-            }
-
-            foreach ($purchaseProducts as $key => $purchaseProduct) {
-                $purchaseProducts[$key]['purchase_id'] = $purchaseSaved->id;
-
-                $this->productRepository->updatePivotSumQuantity(
-                    $purchaseProduct['product_id'],
-                    $purchaseProduct['warehouse_id'],
-                    $purchaseProduct['quantity']
-                );
             }
 
             $purchaseProducts = $this->getPurchaseProductsWithRelationId($purchaseSaved->id, $purchaseProducts);
@@ -98,6 +88,16 @@ class EloquentMainPurchaseRepository implements MainPurchaseRepositoryInterface
             if (empty($purchaseProductSaved) || empty($purchasePaymentSaved)) {
                 throw new \Exception('Ha ocurrido un error almacenando la compra.', 500);
                 DB::rollBack();
+            }
+
+            foreach ($purchaseProducts as $key => $purchaseProduct) {
+                $purchaseProducts[$key]['purchase_id'] = $purchaseSaved->id;
+
+                $this->productRepository->updatePivotSumQuantity(
+                    $purchaseProduct['product_id'],
+                    $purchaseProduct['warehouse_id'],
+                    $purchaseProduct['quantity']
+                );
             }
 
             DB::commit();
@@ -171,9 +171,9 @@ class EloquentMainPurchaseRepository implements MainPurchaseRepositoryInterface
                 'description' => (!empty($purchaseProduct['description'])) ? $purchaseProduct['description'] : '',
                 'warehouse_id' => $purchaseProduct['warehouse_id'],
                 'quantity' => $purchaseProduct['quantity'],
-                'price' => $purchaseProduct['price'],
-                'discount_percentage' => $purchaseProduct['discount_percentage'],
+                'withholding_tax_percentage' => $purchaseProduct['withholding_tax_percentage'],
                 'vat' => $purchaseProduct['vat'],
+                'total' => $purchaseProduct['total'],
             ];
         }, $purchaseProducts);
     }

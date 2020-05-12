@@ -3,8 +3,8 @@
 namespace App\Repositories\Purchases\Interfaces;
 
 /**
- * Interface MainSaleRepositoryInterface
- * @package App\Repositories\Sales\Interfaces
+ * Interface MainPurchaseRepositoryInterface
+ * @package App\Repositories\Purchases\Interfaces
  */
 interface MainPurchaseRepositoryInterface
 {

@@ -42,7 +42,9 @@ use App\Repositories\Sales\Interfaces\MainSaleRepositoryInterface;
 use App\Repositories\Sales\Interfaces\SalePaymentRepositoryInterface;
 use App\Repositories\Sales\Interfaces\SaleProductRepositoryInterface;
 use App\Repositories\Sales\Interfaces\SaleRepositoryInterface;
+use App\UsesCases\Interfaces\PurchasesUseCaseInterface;
 use App\UsesCases\Interfaces\SalesUseCaseInterface;
+use App\UsesCases\PurchasesUseCase;
 use App\UsesCases\SalesUseCase;
 use Illuminate\Support\ServiceProvider;
 
@@ -79,6 +81,7 @@ class AppServiceProvider extends ServiceProvider
         PurchaseProductRepositoryInterface::class => EloquentPurchaseProductRepository::class,
         PurchasePaymentRepositoryInterface::class => EloquentPurchasePaymentRepository::class,
         MainPurchaseRepositoryInterface::class => EloquentMainPurchaseRepository::class,
+        PurchasesUseCaseInterface::class => PurchasesUseCase::class,
 
 
         //UsesCases
