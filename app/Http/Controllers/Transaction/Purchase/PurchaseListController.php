@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Transaction\Purchase;
 
 use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
+use App\Models\Purchase;
 use App\UsesCases\Interfaces\PurchasesUseCaseInterface;
 use App\UsesCases\Interfaces\SalesUseCaseInterface;
 use Illuminate\Http\Request;
+use JamesDordoy\LaravelVueDatatable\Http\Resources\DataTableCollectionResource;
 
 /**
  * Class PurchaseListController
@@ -39,6 +41,7 @@ class PurchaseListController extends Controller
 
         $userSessionCanCreate = $this->hasPermission(PermissionsConstants::PURCHASE_CREATE);
         $userSessionCanView = $this->hasPermission(PermissionsConstants::PURCHASE_VIEW);
+        $userSessionCanEdit = $this->hasPermission(PermissionsConstants::PURCHASE_EDIT);
         $userSessionCanCancel = $this->hasPermission(PermissionsConstants::PURCHASE_CANCEL);
 
         return view(
@@ -46,47 +49,33 @@ class PurchaseListController extends Controller
             compact(
                 'userSessionCanCreate',
                 'userSessionCanView',
+                'userSessionCanEdit',
                 'userSessionCanCancel'
             )
         );
     }
 
-
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|DataTableCollectionResource
+     */
     public function list(Request $request)
     {
-        if (!$this->hasPermission(PermissionsConstants::SALE_LIST)) {
+        if (!$this->hasPermission(PermissionsConstants::PURCHASE_LIST)) {
             abort(404);
         }
 
-        $filers = $request->validate([
-            'consecutive' => 'string|nullable',
-            'client_name' => 'string|nullable',
-            'status' => 'string|nullable'
-        ]);
+        $length = $request->input('length', '');
+        $orderBy = $request->input('column', ''); //Index
+        $orderByDir = $request->input('dir', 'asc');
+        $searchValue = (!empty($request->input('search', ''))) ? $request->input('search') : '';
 
-        $sales = $this->purchasesUseCase->getPagination(10, $filers);
+        $data = $this->purchasesUseCase->getPagination($length, $orderBy, $orderByDir, $searchValue);
 
-
-        if (empty($sales)) {
-            return $this->response(404, 'Ventas no encontrados');
+        if (empty($data)) {
+            return $this->response(404);
         }
 
-        $response = [
-            'data' => $sales['data'],
-            'pagination' => [
-                'current_page' => $sales['current_page'],
-                'first_page_url' => $sales['first_page_url'],
-                'from' => $sales['from'],
-                'last_page' => $sales['last_page'],
-                'last_page_url' => $sales['last_page_url'],
-                'next_page_url' => $sales['next_page_url'],
-                'per_page' => $sales['per_page'],
-                'prev_page_url' => $sales['prev_page_url'],
-                'to' => $sales['to'],
-                'total' => $sales['total']
-            ],
-        ];
-
-        return response()->json($response, 200);
+        return new DataTableCollectionResource($data);
     }
 }

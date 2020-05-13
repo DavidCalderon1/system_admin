@@ -24,4 +24,9 @@ class PurchaseProduct extends Model
         'withholding_tax_percentage',
         'total',
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\UsesCases\Interfaces\PurchasesUseCaseInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -31,6 +32,19 @@ class Purchase extends Model
         'file',
         'date',
     ];
+
+    /**
+     * @var string[]
+     */
+    protected $appends = ['invoice_number'];
+
+    /**
+     * @return string
+     */
+    public function getInvoiceNumberAttribute(): string
+    {
+        return $this->prefix . '-' . $this->consecutive;
+    }
 
     /**
      * @return HasMany

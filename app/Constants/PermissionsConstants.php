@@ -77,7 +77,7 @@ class PermissionsConstants
      */
     public const PURCHASE_LIST = 'purchase-list';
     public const PURCHASE_VIEW = 'purchase-view';
+    public const PURCHASE_EDIT = 'purchase-edit';
     public const PURCHASE_CREATE = 'purchase-create';
     public const PURCHASE_CANCEL = 'purchase-cancel';
-
 }

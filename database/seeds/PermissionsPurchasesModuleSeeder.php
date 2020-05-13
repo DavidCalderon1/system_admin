@@ -33,6 +33,10 @@ class PermissionsPurchasesModuleSeeder extends Seeder
                 'slug' => 'purchase-view',
             ],
             [
+                'name' => 'Purchase Edit',
+                'slug' => 'purchase-edit',
+            ],
+            [
                 'name' => 'Purchase Create',
                 'slug' => 'purchase-create',
             ],

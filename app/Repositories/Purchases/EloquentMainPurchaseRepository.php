@@ -110,6 +110,74 @@ class EloquentMainPurchaseRepository implements MainPurchaseRepositoryInterface
     }
 
     /**
+     * @param int $purchaseId
+     * @param array $purchaseData
+     * @param array $purchaseProducts
+     * @param array $purchasePayments
+     * @return array
+     */
+    public function update(int $purchaseId, array $purchaseData, array $purchaseProducts, array $purchasePayments): array
+    {
+        try {
+            DB::beginTransaction();
+
+            $purchase = $this->purchaseRepository->get($purchaseId);
+
+            $productsCanceled = $this->cancelProductsQuantity($purchase['purchase_products']);
+            $productsDeleted = $this->purchaseProductRepository->deleteProductsByPurchaseId($purchaseId);
+            $paymentsDeleted = $this->purchasePaymentRepository->deletePaymentsByPurchaseId($purchaseId);
+
+            if (!$productsCanceled || !$productsDeleted || !$paymentsDeleted) {
+                throw new \Exception('Ha ocurrido un error actualizando la factura de compra.', 500);
+                DB::rollBack();
+            }
+
+            $purchaseData['prefix_consecutive'] = $purchase['prefix'] . '-' . $purchase['consecutive'];
+            $headerUpdate = $this->purchaseRepository->update($purchaseId, $purchaseData);
+
+            if (empty($headerUpdate)) {
+                throw new \Exception('Ha ocurrido un error actualizando la factura de compra.', 500);
+                DB::rollBack();
+            }
+
+            $purchaseProducts = $this->getPurchaseProductsWithRelationId($purchaseId, $purchaseProducts);
+            $purchasePayments = $this->getPurchasePaymentsWithRelationId($purchaseId, $purchasePayments, $purchaseData['date']);
+            $purchaseProductSaved = $this->purchaseProductRepository->create($purchaseProducts);
+            $purchasePaymentSaved = $this->purchasePaymentRepository->create($purchasePayments);
+
+            if (empty($purchaseProductSaved) || empty($purchasePaymentSaved)) {
+                throw new \Exception('Ha ocurrido un error actualizando la factura de compra.', 500);
+                DB::rollBack();
+            }
+
+            foreach ($purchaseProducts as $key => $purchaseProduct) {
+                $purchaseProducts[$key]['purchase_id'] = $purchaseId;
+
+                $this->productRepository->updatePivotSumQuantity(
+                    $purchaseProduct['product_id'],
+                    $purchaseProduct['warehouse_id'],
+                    $purchaseProduct['quantity']
+                );
+            }
+
+            DB::commit();
+
+            return [
+                'status' => true,
+                'message' => 'Compra actializada correctamente',
+                'code' => 200,
+                'purchase' => [
+                    'id' => $purchaseId,
+                    'prefix_consecutive' => $purchaseData['prefix_consecutive']
+                ]
+            ];
+
+        } catch (\Throwable $exception) {
+            return ['status' => false, 'message' => $exception->getMessage(), 'code' => $exception->getCode()];
+        }
+    }
+
+    /**
      * @param $purchaseId
      * @return array
      */
@@ -120,21 +188,15 @@ class EloquentMainPurchaseRepository implements MainPurchaseRepositoryInterface
 
             $purchase = $this->purchaseRepository->get($purchaseId);
 
-            foreach ($purchase['purchase_products'] as $key => $purchaseProduct) {
-                $response = $this->productRepository->updatePivotSubtractQuantity(
-                    $purchaseProduct['product_id'],
-                    $purchaseProduct['warehouse_id'],
-                    $purchaseProduct['quantity']
-                );
-
-                if (!$response) {
-                    throw new \Exception('Ha ocurrido un error anulando la factura de compra.', 500);
-                    DB::rollBack();
-                }
+            if ($purchase['status'] === 'Anulada') {
+                throw new \Exception('La factura ya se encuentra anulada.', 500);
+                DB::rollBack();
             }
+
+            $productsCanceled = $this->cancelProductsQuantity($purchase['purchase_products']);
             $response = $this->purchaseRepository->changeStatus($purchase['id'], 'Anulada');
 
-            if (!$response) {
+            if (!$response || !$productsCanceled) {
                 throw new \Exception('Ha ocurrido un error anulando la factura de compra.', 500);
                 DB::rollBack();
             }
@@ -146,6 +208,28 @@ class EloquentMainPurchaseRepository implements MainPurchaseRepositoryInterface
         } catch (\Throwable $exception) {
             return ['status' => false, 'message' => $exception->getMessage(), 'code' => $exception->getCode()];
         }
+    }
+
+    /**
+     * @param array $purchaseProducts
+     * @return bool
+     */
+    private function cancelProductsQuantity(array $purchaseProducts): bool
+    {
+        foreach ($purchaseProducts as $key => $purchaseProduct) {
+
+            $response = $this->productRepository->updatePivotSubtractQuantity(
+                $purchaseProduct['product_id'],
+                $purchaseProduct['warehouse_id'],
+                $purchaseProduct['quantity']
+            );
+
+            if (!$response) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

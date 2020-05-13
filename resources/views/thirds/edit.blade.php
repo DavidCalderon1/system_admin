@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Crear Tercero')
+@section('title', 'Editar Tercero')
 
 @section('content')
     <form-edit-third-component

@@ -3,6 +3,7 @@
 namespace App\Repositories\Purchases\Interfaces;
 
 use App\Models\Purchase;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Interface InvoiceRepositoryInterface
@@ -11,11 +12,13 @@ use App\Models\Purchase;
 interface PurchaseRepositoryInterface
 {
     /**
-     * @param int $perPage
-     * @param array $filers
-     * @return array
+     * @param int $length
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param string $searchValue
+     * @return LengthAwarePaginator
      */
-    public function getPagination(int $perPage, array $filers = []):array;
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue=''): LengthAwarePaginator;
 
     /**
      * @param $purchaseId
@@ -33,6 +36,13 @@ interface PurchaseRepositoryInterface
      * @return Purchase
      */
     public function create(array $data): Purchase;
+
+    /**
+     * @param int $id
+     * @param array $data
+     * @return bool
+     */
+    public function update(int $id, array $data):bool ;
 
     /**
      * @param int $id

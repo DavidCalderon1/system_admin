@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Transaction\Purchase;
 
+use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\PaymentMethodRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
@@ -66,6 +67,10 @@ class PurchaseCreateController extends Controller
      */
     public function create(): View
     {
+        if (!$this->hasPermission(PermissionsConstants::PURCHASE_CREATE)) {
+            abort(404);
+        }
+
         $paymentsMethods = $this->methodRepository->all();
 
         return view('transactions.purchases.create', compact('paymentsMethods'));
@@ -99,6 +104,10 @@ class PurchaseCreateController extends Controller
      */
     public function store(Request $request)
     {
+        if (!$this->hasPermission(PermissionsConstants::PURCHASE_CREATE)) {
+            abort(404);
+        }
+
         $request->merge(['products' => json_decode($request['products'], true)]);
         $request->merge(['payments' => json_decode($request['payments'], true)]);
 

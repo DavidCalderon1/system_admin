@@ -13,4 +13,10 @@ interface PurchasePaymentRepositoryInterface
      * @return bool
      */
     public function create(array $data): bool;
+
+    /**
+     * @param int $purchaseId
+     * @return bool
+     */
+    public function deletePaymentsByPurchaseId(int $purchaseId):bool;
 }

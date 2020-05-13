@@ -61,9 +61,18 @@
             },
             value: function (value) {
                 $(this.$el).select2({
+                    placeholder: "Click to see options",
                     data: response,
                     dropdownAutoWidth:'true'
                 }).val(value).trigger("change");
+            },
+            options: function (options) {
+                $(this.$el).select2({
+                    placeholder: "Click to see options",
+                    data: options,
+                    ajax: this.ajaxOptions,
+                    dropdownAutoWidth:'true'
+                });
             }
         },
 

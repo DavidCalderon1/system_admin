@@ -162,12 +162,14 @@
                                             </a>
                                         </li>
                                     @endif
-                                    <li class="nav-item">
-                                        <a href="pages/charts/chartjs.html" class="nav-link">
-                                            <i class="fas fa-shopping-cart"></i>
-                                            <p>Compras/ gastos</p>
-                                        </a>
-                                    </li>
+                                    @if(auth()->user()->can(\App\Constants\PermissionsConstants::PURCHASE_LIST))
+                                        <li class="nav-item">
+                                            <a href="{{route('transactions.purchases.index')}}" class="nav-link">
+                                                <i class="fas fa-shopping-cart"></i>
+                                                <p>Compras/ gastos</p>
+                                            </a>
+                                        </li>
+                                    @endif
                                     <li class="nav-item">
                                         <a href="pages/charts/flot.html" class="nav-link">
                                             <i class="fas fa-cash-register"></i>

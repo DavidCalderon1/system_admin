@@ -191,7 +191,7 @@
                            v-if="validate('description')">{{errors.description[0]}}</small>
                 </div>
             </div>
-            <button class="btn btn-success btn-sm">Crear</button>
+            <button class="btn btn-success btn-sm">Editar</button>
         </form>
         <button class="btn btn-danger ml-1 btn-sm" @click="back">Cancelar</button>
     </div>

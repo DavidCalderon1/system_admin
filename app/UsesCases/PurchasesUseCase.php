@@ -2,9 +2,10 @@
 
 namespace App\UsesCases;
 
+use App\Repositories\Interfaces\ProductWarehouseRepositoryInterface;
 use App\Repositories\Purchases\Interfaces\PurchaseRepositoryInterface;
 use App\UsesCases\Interfaces\PurchasesUseCaseInterface;
-use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class PurchasesUseCase
@@ -13,15 +14,49 @@ use Carbon\Carbon;
 class PurchasesUseCase implements PurchasesUseCaseInterface
 {
 
+    /**
+     * @var PurchaseRepositoryInterface
+     */
     protected $purchaseRepository;
+
+    /**
+     * @var ProductWarehouseRepositoryInterface
+     */
+    protected $productWarehouseRepository;
 
     /**
      * PurchasesUseCase constructor.
      * @param PurchaseRepositoryInterface $purchaseRepository
+     * @param ProductWarehouseRepositoryInterface $productWarehouseRepository
      */
-    public function __construct(PurchaseRepositoryInterface $purchaseRepository)
+    public function __construct(
+        PurchaseRepositoryInterface $purchaseRepository,
+        ProductWarehouseRepositoryInterface $productWarehouseRepository
+    )
     {
         $this->purchaseRepository = $purchaseRepository;
+        $this->productWarehouseRepository = $productWarehouseRepository;
+    }
+
+    /**
+     * @param $purchaseId
+     * @return array
+     */
+    public function getByIdForEdit($purchaseId): array
+    {
+        $purchase = $this->purchaseRepository->get($purchaseId);
+        $purchase['text'] = $purchase['provider_identity_number'] . ' - ' . $purchase['provider_name'];
+
+        foreach ($purchase['purchase_products'] as $key => $purchaseProduct) {
+            $purchase['purchase_products'][$key]['code'] = $purchaseProduct['product']['code'];
+            $purchase['purchase_products'][$key]['reference'] = $purchaseProduct['product']['reference'];
+            $purchase['purchase_products'][$key]['text'] = $purchaseProduct['product']['code'] . ' - ' . $purchaseProduct['product']['reference'];
+            $purchase['purchase_products'][$key]['warehouses'] = $purchaseProduct['product']['warehouses'];
+        }
+
+        $purchase['purchase_products'] = $this->productWarehouseRepository->getProductForSelect($purchase['purchase_products']);
+
+        return $purchase;
     }
 
     /**
@@ -40,29 +75,37 @@ class PurchasesUseCase implements PurchasesUseCaseInterface
     }
 
     /**
-     * @param int $perPages
-     * @param array $filters
-     * @return array
+     * @param int $length
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param string $searchValue
+     * @return LengthAwarePaginator
      */
-    public function getPagination(int $perPages, array $filters = []): array
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue): LengthAwarePaginator
     {
-        $sales = $this->purchaseRepository->getPagination($perPages, $filters);
-        foreach ($sales['data'] as $key => $datum) {
-            $sales['data'][$key]['sale_products'] = $this->getProductsWhitTotal($datum['sale_products']);
-            $sales['data'][$key]['totals'] = $this->getTotalValues($datum['sale_products']);
+        $purchases = $this->purchaseRepository->getPagination($length, $orderBy, $orderByDir, $searchValue);
+
+        foreach ($purchases->items() as $key => $item) {
+            $purchases->items()[$key]['totals'] = $this->getTotalValues($item->purchaseProducts->toArray());
         }
 
-        return $sales;
+        return $purchases;
     }
 
-    private function getProductsTotalFormatted(array $products): array {
-        return array_map(function ($product){
+    /**
+     * @param array $products
+     * @return array
+     */
+    private function getProductsTotalFormatted(array $products): array
+    {
+        return array_map(function ($product) {
             return [
                 'id' => $product['id'],
                 'purchase_id' => $product['purchase_id'],
                 'product_id' => $product['product_id'],
                 'warehouse_id' => $product['warehouse_id'],
                 'name' => $product['name'],
+                'text' => $product['name'],
                 'description' => $product['description'],
                 'quantity' => $product['quantity'],
                 'vat' => $product['vat'],
@@ -73,76 +116,27 @@ class PurchasesUseCase implements PurchasesUseCaseInterface
         }, $products);
     }
 
-    /**
-     * @param array $saleProducts
-     * @return array[]
-     */
-    private function getProductsWhitTotal(array $saleProducts)
-    {
-        return array_map(function ($saleProduct) {
-            $total = $this->getProductTotal(
-                $saleProduct['price'],
-                $saleProduct['vat'],
-                $saleProduct['discount_percentage'],
-                $saleProduct['quantity']
-            );
-
-            return [
-                'id' => $saleProduct['id'],
-                'sale_id' => $saleProduct['sale_id'],
-                'product_id' => $saleProduct['product_id'],
-                'warehouse_id' => $saleProduct['warehouse_id'],
-                'name' => $saleProduct['name'],
-                'price' => $saleProduct['price'],
-                'price_formatted' => numberFormat($saleProduct['price']),
-                'quantity' => $saleProduct['quantity'],
-                'discount_percentage' => $saleProduct['discount_percentage'],
-                'vat' => $saleProduct['vat'],
-                'description' => $saleProduct['description'],
-                'total' => $total,
-                'total_formatted' => numberFormat($total),
-            ];
-        }, $saleProducts);
-    }
-
-    /**
-     * @param float $price
-     * @param float $vat
-     * @param float $discountPercentage
-     * @param int $quantity
-     * @return float
-     */
-    private function getProductTotal(float $price, float $vat, float $discountPercentage, int $quantity): float
-    {
-        $vat = $price * $vat / 100;
-
-        $discount = $price * $discountPercentage / 100;
-
-        $total = ($price - $discount + $vat) * $quantity;
-
-        return round($total, 2);
-    }
 
     /**
      * @param array $purchaseProducts
      * @return array
      */
-    private function getTotalValues(array $purchaseProducts): array
+    public function getTotalValues(array $purchaseProducts): array
     {
         $totalGross = 0;
-        $subTotal=0;
+        $subTotal = 0;
         $totalTaxes = 0;
         $totalVat = 0;
 
         array_walk($purchaseProducts, function ($purchaseProduct)
-        use (&$totalGross, &$subTotal, &$totalTaxes, &$totalVat ) {
+        use (&$totalGross, &$subTotal, &$totalTaxes, &$totalVat) {
             $totalGross += $this->getProductGross($purchaseProduct['total'], $purchaseProduct['vat']);
             $subTotal += $this->getProductSubtotal($purchaseProduct['total'], $purchaseProduct['vat']);
             $totalTaxes += $this->getProductTax($purchaseProduct['total'], $purchaseProduct['withholding_tax_percentage']);
             $totalVat += $this->getProductVat($purchaseProduct['total'], $purchaseProduct['vat']);
         });
 
-        $total = round($subTotal + $totalVat,2);
+        $total = round($subTotal + $totalVat, 2);
 
         return [
             'total_gross' => $totalGross,
@@ -177,7 +171,7 @@ class PurchasesUseCase implements PurchasesUseCaseInterface
      */
     private function getProductSubtotal(float $total, float $vat): float
     {
-        $subTotal = $total- $this->getProductVat($total, $vat);
+        $subTotal = $total - $this->getProductVat($total, $vat);
 
         return round($subTotal, 2);
     }

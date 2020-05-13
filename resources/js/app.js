@@ -9,12 +9,11 @@ require('../../node_modules/bootstrap-select/dist/js/bootstrap-select');
 
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 import VueAlertify from 'vue-alertify';
-import select2 from 'select2'
+import DataTable from 'laravel-vue-datatable';
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import "bootstrap-select/sass/bootstrap-select.scss";
-
 
 
 window.Vue = require('vue');
@@ -38,6 +37,8 @@ Vue.use(VueAlertify,{
         cancel: 'Cancelar',
     },
 });
+Vue.use(DataTable);
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -66,6 +67,8 @@ Vue.component('create-purchase-component', require('./components/CreatePurchaseC
 Vue.component('currency-input-component', require('./components/CurrencyInputComponent').default);
 Vue.component('sales-component', require('./components/SalesComponent').default);
 Vue.component('select2-ajax', require('./components/Select2Ajax').default);
+Vue.component('purchases-component', require('./components/PurchasesComponent').default);
+Vue.component('edit-purchase-component', require('./components/EditPurchaseComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

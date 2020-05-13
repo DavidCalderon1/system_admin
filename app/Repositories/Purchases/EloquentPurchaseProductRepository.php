@@ -33,4 +33,13 @@ class EloquentPurchaseProductRepository implements PurchaseProductRepositoryInte
     {
         return $this->purchaseProduct->insert($data);
     }
+
+    /**
+     * @param $purchaseId
+     * @return bool
+     */
+    public function deleteProductsByPurchaseId($purchaseId): bool
+    {
+        return $this->purchaseProduct->where('purchase_id', $purchaseId)->delete();
+    }
 }

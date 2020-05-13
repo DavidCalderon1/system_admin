@@ -226,6 +226,8 @@
             <div class="col-md-12">
                 <label>Adjuntar Archivo</label>
                 <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
+                <small class="form-text text-danger"
+                       v-if="validate('file')">{{errors['file'][0]}}</small>
             </div>
         </div>
         <hr>
@@ -541,9 +543,9 @@
                         }
                     })
                     .catch(error => {
-                        console.log(error.response)
                         if (error.response.status === 422) {
                             this.errors = error.response.data.errors;
+                            this.$alertify.error('Por favor verifica los datos ingresados.');
                         } else if (typeof error.response.data.errors.message != 'undefined') {
                             this.$alertify.error(error.response.data.errors.message);
                         } else {

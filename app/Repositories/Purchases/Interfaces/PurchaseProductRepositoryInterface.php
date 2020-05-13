@@ -13,4 +13,10 @@ interface PurchaseProductRepositoryInterface
      * @return bool
      */
     public function create(array $data): bool;
+
+    /**
+     * @param $purchaseId
+     * @return bool
+     */
+    public function deleteProductsByPurchaseId($purchaseId): bool;
 }

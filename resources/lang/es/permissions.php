@@ -35,6 +35,7 @@ return [
         PermissionsConstants::SALE_CANCEL => 'Anular Ventas',
         PermissionsConstants::PURCHASE_LIST => 'Listar Compras',
         PermissionsConstants::PURCHASE_VIEW => 'Ver Detalles de Compras',
+        PermissionsConstants::PURCHASE_EDIT => 'Editar Compras',
         PermissionsConstants::PURCHASE_CREATE => 'Crear Compras',
         PermissionsConstants::PURCHASE_CANCEL => 'Cancelar Compras',
     ]

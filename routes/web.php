@@ -226,11 +226,20 @@ Route::group(['prefix' => 'transactions'], function () {
         Route::get('/view/{purchase_id}', 'Transaction\Purchase\PurchaseViewController')
             ->name('transactions.purchases.view');
 
+        Route::get('/edit/{id}', 'Transaction\Purchase\PurchaseEditController@edit')
+            ->name('transactions.purchases.edit');
+
+        Route::post('/edit/{purchase}', 'Transaction\Purchase\PurchaseEditController@update')
+            ->name('transactions.purchases.update');
+
         Route::get('/download/{purchase_id}', 'Transaction\Purchase\PurchaseExportPdfController@download')
             ->name('transactions.purchases.download');
 
         Route::get('/print/{purchase_id}', 'Transaction\Purchase\PurchaseExportPdfController@print')
             ->name('transactions.purchases.print');
+
+        Route::delete('/cancel/{purchase_id}', 'Transaction\Purchase\PurchaseCancelController')
+            ->name('transactions.purchases.cancel');
     });
 });
 

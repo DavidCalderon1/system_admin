@@ -4,7 +4,9 @@ namespace App\Repositories\Purchases;
 
 use App\Models\Purchase;
 use App\Repositories\Purchases\Interfaces\PurchaseRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 
 /**
@@ -28,32 +30,27 @@ class EloquentPurchaseRepository implements PurchaseRepositoryInterface
     }
 
     /**
-     * @param int $perPage
-     * @param array $filers
-     * @return array
+     * @param int $length
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param string $searchValue
+     * @return LengthAwarePaginator
      */
-    public function getPagination(int $perPage, array $filers = []): array
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue = ''): LengthAwarePaginator
     {
-        $purchases = $this->purchase->with(['purchaseProducts']);
-
-        if (!empty($filers['consecutive'])) {
-
-            $invoiceNumberData = explode('-', $filers['consecutive']);
-
-            if (count($invoiceNumberData) == 2) {
-                $purchases->where('prefix', "LIKE", "%{$invoiceNumberData[0]}%");
-                $purchases->where('consecutive', "LIKE", "%{$invoiceNumberData[1]}%");
-            } else {
-                $purchases->where('prefix', "LIKE", "%{$invoiceNumberData[0]}%");
-                $purchases->orWhere('consecutive', "LIKE", "%{$invoiceNumberData[0]}%");
-            }
-        } elseif (!empty($filers['provider_name'])) {
-            $purchases->orWhere('client_name', "LIKE", "%{$filers['provider_name']}%");
-        } elseif (!empty($filers['status'])) {
-            $purchases->orWhere('status', "LIKE", "%{$filers['status']}%");
+        if ($orderBy == 'invoice_number') {
+            $orderBy = 'consecutive';
         }
 
-        return $purchases->paginate($perPage)->toArray();
+        $purchases = $this->purchase->with(['purchaseProducts'])
+            ->where(DB::raw("CONCAT(`prefix`, '-', `consecutive`)"), 'LIKE', "%{$searchValue}%")
+            ->orWhere('provider_name', "LIKE", "%{$searchValue}%")
+            ->orWhere('provider_invoice_number', "LIKE", "%{$searchValue}%")
+            ->orWhere('status', "LIKE", "%{$searchValue}%")
+            ->orWhere('date', "LIKE", "%{$searchValue}%")
+            ->orderBy($orderBy, $orderByDir);
+
+        return $purchases->paginate($length);
     }
 
     /**
@@ -62,7 +59,9 @@ class EloquentPurchaseRepository implements PurchaseRepositoryInterface
      */
     public function get($purchaseId): array
     {
-        $purchase = $this->purchase->with(['purchaseProducts', 'purchasePayments'])->where('id', $purchaseId)->first();
+        $purchase = $this->purchase->with(['purchaseProducts', 'purchasePayments', 'purchaseProducts.product.warehouses'])
+            ->where('id', $purchaseId)
+            ->first();
 
         return (!empty($purchase)) ? $purchase->toArray() : [];
     }
@@ -88,6 +87,33 @@ class EloquentPurchaseRepository implements PurchaseRepositoryInterface
             'provider_location' => $data['provider_location'],
             'description' => $data['description'],
             'status' => $data['status'],
+            'include_taxes' => $data['include_taxes'],
+            'date' => $data['date'],
+            'file' => (!empty($data['file']) && $data['file'] instanceof UploadedFile)
+                ? $data['file']->storePubliclyAs('public/purchases', $purchaseNumber . '.' . $data['file']->getClientOriginalExtension())
+                : '',
+        ]);
+    }
+
+    /**
+     * @param int $id
+     * @param array $data
+     * @return bool
+     */
+    public function update(int $id, array $data): bool
+    {
+        $purchaseNumber = $data['prefix_consecutive'];
+
+        return $this->purchase->where('id', $id)->update([
+            'provider_id' => $data['provider_id'],
+            'provider_invoice_number' => $data['provider_invoice_number'],
+            'provider_name' => $data['provider_name'],
+            'provider_identity_number' => $data['provider_identity_number'],
+            'provider_identity_type' => $data['provider_identity_type'],
+            'provider_address' => $data['provider_address'],
+            'provider_phone_number' => $data['provider_phone_number'],
+            'provider_location' => $data['provider_location'],
+            'description' => $data['description'],
             'include_taxes' => $data['include_taxes'],
             'date' => $data['date'],
             'file' => (!empty($data['file']) && $data['file'] instanceof UploadedFile)

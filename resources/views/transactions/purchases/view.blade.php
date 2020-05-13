@@ -159,7 +159,7 @@
                 alertify.confirm('Esta seguro de anular la factura?', 'Esta acción es irreversible.',
                     function () {
                         $.ajax({
-                            url: "{{route('transactions.sales.cancel', $purchase['id'])}}",
+                            url: "{{route('transactions.purchases.cancel', $purchase['id'])}}",
                             data: {"_token": "{{ csrf_token() }}"},
                             type: 'DELETE',
                         }).done(function (response) {
