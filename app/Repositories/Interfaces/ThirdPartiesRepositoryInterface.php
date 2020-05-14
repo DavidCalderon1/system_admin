@@ -47,4 +47,10 @@ interface ThirdPartiesRepositoryInterface
      * @return array
      */
     public function filterClientByIdentityNumber(string $filter): array;
+
+    /**
+     * @param string $filter
+     * @return array
+     */
+    public function filterProviderByIdentityNumberOrName(string $filter): array;
 }

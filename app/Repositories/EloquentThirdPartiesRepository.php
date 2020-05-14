@@ -146,12 +146,38 @@ class EloquentThirdPartiesRepository implements ThirdPartiesRepositoryInterface
             ->where('identity_number', 'LIKE', "%{$filter}%")
             ->get();
 
-        if(empty($persons)){
+        if (empty($persons)) {
             return [];
         }
 
-        $persons =$persons->toArray();
+        return $this->transformThirdDataSelect($persons->toArray());
+    }
 
+    /**
+     * @param string $filter
+     * @return array
+     */
+    public function filterProviderByIdentityNumberOrName(string $filter): array
+    {
+        $persons = $this->thirdParties->with('country','city')->where('type', 'provider')
+            ->where(function ($query) use ($filter){
+                $query ->where('identity_number', 'LIKE', "%{$filter}%")
+                    ->orWhere('name', 'LIKE', "%{$filter}%");
+            })->get();
+
+        if (empty($persons)) {
+            return [];
+        }
+
+        return $this->transformThirdDataSelect($persons->toArray());
+    }
+
+    /**
+     * @param array $persons
+     * @return array
+     */
+    private function transformThirdDataSelect(array $persons): array
+    {
         foreach ($persons as $key => $person) {
             $persons[$key]['text'] = $person['identity_number'] . ' - ' . $person['name'] . ' ' . $person['last_name'];
             $ext = (!empty($person['phone_extension'])) ? ' Ext: ' . $person['phone_extension'] : '';

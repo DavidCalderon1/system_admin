@@ -25,97 +25,247 @@ Route::group(['prefix' => 'config'], function () {
 
 //Users CRUD
     Route::group(['prefix' => 'users'], function () {
-        Route::get('/', 'User\UserListController@index')->name('users.index');
-        Route::get('/list', 'User\UserListController@list')->name('user.list');
-        Route::get('/create', 'User\UserCreateController@create')->name('user.create');
-        Route::post('/store', 'User\UserCreateController@store')->name('user.store');
-        Route::get('/edit/{userId}', 'User\UserUpdateController@edit')->name('user.edit');
-        Route::post('/update/{user}', 'User\UserUpdateController@update')->name('user.update');
-        Route::delete('/destroy/{user}', 'User\UserDeleteController')->name('user.destroy');
+        Route::get('/', 'User\UserListController@index')
+            ->name('users.index');
+
+        Route::get('/list', 'User\UserListController@list')
+            ->name('user.list');
+
+        Route::get('/create', 'User\UserCreateController@create')
+            ->name('user.create');
+
+        Route::post('/store', 'User\UserCreateController@store')
+            ->name('user.store');
+
+        Route::get('/edit/{userId}', 'User\UserUpdateController@edit')
+            ->name('user.edit');
+
+        Route::post('/update/{user}', 'User\UserUpdateController@update')
+            ->name('user.update');
+
+        Route::delete('/destroy/{user}', 'User\UserDeleteController')
+            ->name('user.destroy');
+
     });
 
     //Roles CRUD
     Route::group(['prefix' => 'roles'], function () {
-        Route::get('/', 'Role\RoleListController@index')->name('roles.index');
-        Route::get('/list', 'Role\RoleListController@list')->name('roles.list');
-        Route::get('/create', 'Role\RoleCreateController@create')->name('roles.create');
-        Route::post('/store', 'Role\RoleCreateController@store')->name('roles.store');
-        Route::get('/edit/{roleId}', 'Role\RoleUpdateController@edit')->name('roles.edit');
-        Route::post('/update/{role}', 'Role\RoleUpdateController@update')->name('roles.update');
-        Route::delete('/destroy/{role}', 'Role\RoleDeleteController')->name('roles.destroy');
+        Route::get('/', 'Role\RoleListController@index')
+            ->name('roles.index');
+
+        Route::get('/list', 'Role\RoleListController@list')
+            ->name('roles.list');
+
+        Route::get('/create', 'Role\RoleCreateController@create')
+            ->name('roles.create');
+
+        Route::post('/store', 'Role\RoleCreateController@store')
+            ->name('roles.store');
+
+        Route::get('/edit/{roleId}', 'Role\RoleUpdateController@edit')
+            ->name('roles.edit');
+
+        Route::post('/update/{role}', 'Role\RoleUpdateController@update')
+            ->name('roles.update');
+
+        Route::delete('/destroy/{role}', 'Role\RoleDeleteController')
+            ->name('roles.destroy');
+
     });
 });
 
 //Terceros CRUD
 Route::group(['prefix' => 'thirds'], function () {
-    Route::get('/', 'Third\ThirdListController@index')->name('thirds.index');
-    Route::get('/list', 'Third\ThirdListController@list')->name('thirds.list');
-    Route::get('/create', 'Third\ThirdCreateController@create')->name('thirds.create');
-    Route::post('/store', 'Third\ThirdCreateController@store')->name('thirds.store');
-    Route::get('/edit/{thirdId}', 'Third\ThirdEditController@edit')->name('thirds.edit');
-    Route::post('/update/{third}', 'Third\ThirdEditController@update')->name('thirds.update');
-    Route::delete('/destroy/{third}', 'Third\ThirdDeleteController')->name('thirds.destroy');
+    Route::get('/', 'Third\ThirdListController@index')
+        ->name('thirds.index');
+
+    Route::get('/list', 'Third\ThirdListController@list')
+        ->name('thirds.list');
+
+    Route::get('/create', 'Third\ThirdCreateController@create')
+        ->name('thirds.create');
+
+    Route::post('/store', 'Third\ThirdCreateController@store')
+        ->name('thirds.store');
+
+    Route::get('/edit/{thirdId}', 'Third\ThirdEditController@edit')
+        ->name('thirds.edit');
+
+    Route::post('/update/{third}', 'Third\ThirdEditController@update')
+        ->name('thirds.update');
+
+    Route::delete('/destroy/{third}', 'Third\ThirdDeleteController')
+        ->name('thirds.destroy');
+
 });
 
 //Location
 Route::group(['prefix' => 'location'], function () {
     Route::get('/countries', 'Location\LocationController@getAllCountries')
         ->name('countries.all');
+
     Route::get('/statesByCountryCode/{country_code}', 'Location\LocationController@getStatesByCountryCode')
         ->name('states.statesByCountryCode');
+
     Route::get('/citiesByStateId/{state_id}', 'Location\LocationController@getCitiesByStateId')
         ->name('cities.citiesByStateId');
+
 });
 
 //Inventory
 Route::group(['prefix' => 'inventory'], function () {
     //Products Category
     Route::group(['prefix' => 'categories'], function () {
-        Route::get('/', 'Inventory\Category\CategoryListController@index')->name('inventory.category.index');
-        Route::get('/list', 'Inventory\Category\CategoryListController@list')->name('inventory.category.list');
-        Route::get('/all', 'Inventory\Category\CategoryListController@getAllCategories')->name('inventory.category.all');
-        Route::get('/create', 'Inventory\Category\CategoryCreateController@create')->name('inventory.category.create');
-        Route::post('/store', 'Inventory\Category\CategoryCreateController@store')->name('inventory.category.store');
-        Route::get('/edit/{id}', 'Inventory\Category\CategoryEditController@edit')->name('inventory.category.edit');
-        Route::post('/update/{category}', 'Inventory\Category\CategoryEditController@update')->name('inventory.category.update');
-        Route::delete('/destroy/{id}', 'Inventory\Category\CategoryDeleteController')->name('inventory.category.destroy');
+        Route::get('/', 'Inventory\Category\CategoryListController@index')
+            ->name('inventory.category.index');
+
+        Route::get('/list', 'Inventory\Category\CategoryListController@list')
+            ->name('inventory.category.list');
+
+        Route::get('/all', 'Inventory\Category\CategoryListController@getAllCategories')
+            ->name('inventory.category.all');
+
+        Route::get('/create', 'Inventory\Category\CategoryCreateController@create')
+            ->name('inventory.category.create');
+
+        Route::post('/store', 'Inventory\Category\CategoryCreateController@store')
+            ->name('inventory.category.store');
+
+        Route::get('/edit/{id}', 'Inventory\Category\CategoryEditController@edit')
+            ->name('inventory.category.edit');
+
+        Route::post('/update/{category}', 'Inventory\Category\CategoryEditController@update')
+            ->name('inventory.category.update');
+
+        Route::delete('/destroy/{id}', 'Inventory\Category\CategoryDeleteController')
+            ->name('inventory.category.destroy');
+
     });
 
     //Products
     Route::group(['prefix' => 'products'], function () {
-        Route::get('/', 'Inventory\Product\ProductListController@index')->name('inventory.products.index');
-        Route::get('/list', 'Inventory\Product\ProductListController@list')->name('inventory.products.list');
-        Route::get('/create', 'Inventory\Product\ProductCreateController@create')->name('inventory.products.create');
-        Route::post('/store', 'Inventory\Product\ProductCreateController@store')->name('inventory.products.store');
-        Route::get('/edit/{id}', 'Inventory\Product\ProductEditController@edit')->name('inventory.products.edit');
-        Route::post('/update/{category}', 'Inventory\Product\ProductEditController@update')->name('inventory.products.update');
-        Route::delete('/destroy/{id}', 'Inventory\Product\ProductDeleteController')->name('inventory.products.destroy');
+        Route::get('/', 'Inventory\Product\ProductListController@index')
+            ->name('inventory.products.index');
+
+        Route::get('/list', 'Inventory\Product\ProductListController@list')
+            ->name('inventory.products.list');
+
+        Route::get('/create', 'Inventory\Product\ProductCreateController@create')
+            ->name('inventory.products.create');
+
+        Route::post('/store', 'Inventory\Product\ProductCreateController@store')
+            ->name('inventory.products.store');
+
+        Route::get('/edit/{id}', 'Inventory\Product\ProductEditController@edit')
+            ->name('inventory.products.edit');
+
+        Route::post('/update/{category}', 'Inventory\Product\ProductEditController@update')
+            ->name('inventory.products.update');
+
+        Route::delete('/destroy/{id}', 'Inventory\Product\ProductDeleteController')
+            ->name('inventory.products.destroy');
+
     });
 });
 
 Route::group(['prefix' => 'transactions'], function () {
-    Route::group(['prefix' => 'sales'], function () {
-        Route::get('/', 'Transaction\Sale\SaleListController@index')->name('transactions.sales.index');
-        Route::get('/list', 'Transaction\Sale\SaleListController@list')->name('transactions.sales.list');
-        Route::get('/create', 'Transaction\Sale\SaleCreateController@create')->name('transactions.sales.create');
-        Route::get('/filterClientsAjax', 'Transaction\Sale\SaleCreateController@filterClientsAjax')->name('transactions.sales.filterClientsAjax');
-        Route::get('/filterProductsAjax', 'Transaction\Sale\SaleCreateController@filterProductsAjax')->name('transactions.sales.filterProductsAjax');
-        Route::post('/store/', 'Transaction\Sale\SaleCreateController@store')->name('transactions.sales.store');
-        Route::get('/view/{sale_id}', 'Transaction\Sale\SaleViewController')->name('transactions.sales.view');
-        Route::get('/download/{sale_id}', 'Transaction\Sale\SaleExportPdfController@download')->name('transactions.sales.download');
-        Route::get('/print/{sale_id}', 'Transaction\Sale\SaleExportPdfController@print')->name('transactions.sales.print');
-        Route::delete('/cancel/{id}', 'Transaction\Sale\SaleCancelController')->name('transactions.sales.cancel');
 
+    Route::group(['prefix' => 'sales'], function () {
+
+        Route::get('/', 'Transaction\Sale\SaleListController@index')
+            ->name('transactions.sales.index');
+
+        Route::get('/list', 'Transaction\Sale\SaleListController@list')
+            ->name('transactions.sales.list');
+
+        Route::get('/create', 'Transaction\Sale\SaleCreateController@create')
+            ->name('transactions.sales.create');
+
+        Route::get('/filterClientsAjax', 'Transaction\Sale\SaleCreateController@filterClientsAjax')
+            ->name('transactions.sales.filterClientsAjax');
+
+        Route::get('/filterProductsAjax', 'Transaction\Sale\SaleCreateController@filterProductsAjax')
+            ->name('transactions.sales.filterProductsAjax');
+
+        Route::post('/store', 'Transaction\Sale\SaleCreateController@store')
+            ->name('transactions.sales.store');
+
+        Route::get('/view/{sale_id}', 'Transaction\Sale\SaleViewController')
+            ->name('transactions.sales.view');
+
+        Route::get('/download/{sale_id}', 'Transaction\Sale\SaleExportPdfController@download')
+            ->name('transactions.sales.download');
+
+        Route::get('/print/{sale_id}', 'Transaction\Sale\SaleExportPdfController@print')
+            ->name('transactions.sales.print');
+
+        Route::delete('/cancel/{id}', 'Transaction\Sale\SaleCancelController')
+            ->name('transactions.sales.cancel');
+
+    });
+    Route::group(['prefix' => 'purchases'], function () {
+
+        Route::get('/', 'Transaction\Purchase\PurchaseListController@index')
+            ->name('transactions.purchases.index');
+
+        Route::get('/list', 'Transaction\Purchase\PurchaseListController@list')
+            ->name('transactions.purchases.list');
+
+        Route::get('/create', 'Transaction\Purchase\PurchaseCreateController@create')
+            ->name('transactions.purchases.create');
+
+        Route::get('/filterProvidersAjax', 'Transaction\Purchase\PurchaseCreateController@filterProvidersAjax')
+            ->name('transactions.purchases.filterProvidersAjax');
+
+        Route::get('/filterProductsAjax', 'Transaction\Purchase\PurchaseCreateController@filterProductsAjax')
+            ->name('transactions.purchases.filterProductsAjax');
+
+        Route::post('/store', 'Transaction\Purchase\PurchaseCreateController@store')
+            ->name('transactions.purchases.store');
+
+        Route::get('/view/{purchase_id}', 'Transaction\Purchase\PurchaseViewController')
+            ->name('transactions.purchases.view');
+
+        Route::get('/edit/{id}', 'Transaction\Purchase\PurchaseEditController@edit')
+            ->name('transactions.purchases.edit');
+
+        Route::post('/edit/{purchase}', 'Transaction\Purchase\PurchaseEditController@update')
+            ->name('transactions.purchases.update');
+
+        Route::get('/download/{purchase_id}', 'Transaction\Purchase\PurchaseExportPdfController@download')
+            ->name('transactions.purchases.download');
+
+        Route::get('/print/{purchase_id}', 'Transaction\Purchase\PurchaseExportPdfController@print')
+            ->name('transactions.purchases.print');
+
+        Route::delete('/cancel/{purchase_id}', 'Transaction\Purchase\PurchaseCancelController')
+            ->name('transactions.purchases.cancel');
     });
 });
 
 Route::group(['prefix' => 'warehouses'], function () {
-    Route::get('/', 'Warehouse\WarehouseListController@index')->name('warehouses.index');
-    Route::get('/list', 'Warehouse\WarehouseListController@list')->name('warehouses.list');
-    Route::get('/all', 'Warehouse\WarehouseListController@getAllWarehouses')->name('warehouses.all');
-    Route::get('/create', 'Warehouse\WarehouseCreateController@create')->name('warehouses.create');
-    Route::post('/store', 'Warehouse\WarehouseCreateController@store')->name('warehouses.store');
-    Route::get('/edit/{id}', 'Warehouse\WarehouseEditController@edit')->name('warehouses.edit');
-    Route::post('/update/{category}', 'Warehouse\WarehouseEditController@update')->name('warehouses.update');
-    Route::delete('/destroy/{id}', 'Warehouse\WarehouseDeleteController')->name('warehouses.destroy');
+    Route::get('/', 'Warehouse\WarehouseListController@index')
+        ->name('warehouses.index');
+
+    Route::get('/list', 'Warehouse\WarehouseListController@list')
+        ->name('warehouses.list');
+
+    Route::get('/all', 'Warehouse\WarehouseListController@getAllWarehouses')
+        ->name('warehouses.all');
+
+    Route::get('/create', 'Warehouse\WarehouseCreateController@create')
+        ->name('warehouses.create');
+
+    Route::post('/store', 'Warehouse\WarehouseCreateController@store')
+        ->name('warehouses.store');
+
+    Route::get('/edit/{id}', 'Warehouse\WarehouseEditController@edit')
+        ->name('warehouses.edit');
+
+    Route::post('/update/{category}', 'Warehouse\WarehouseEditController@update')
+        ->name('warehouses.update');
+
+    Route::delete('/destroy/{id}', 'Warehouse\WarehouseDeleteController')
+        ->name('warehouses.destroy');
+
 });

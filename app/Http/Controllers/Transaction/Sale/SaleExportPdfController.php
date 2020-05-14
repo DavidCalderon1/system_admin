@@ -31,7 +31,7 @@ class SaleExportPdfController extends Controller
     {
         $sale = $this->salesUseCase->getById($saleId);
 
-        $pdf = PDF::loadView('transactions.sales.template_pdf', ['sale' => $sale]);
+        $pdf = PDF::loadView('transactions.sales.template_sale_pdf', ['sale' => $sale]);
 
         return $pdf->download($sale['prefix'] . '-' . $sale['consecutive'] . '.pdf');
     }
@@ -44,7 +44,7 @@ class SaleExportPdfController extends Controller
     {
         $sale = $this->salesUseCase->getById($saleId);
 
-        $pdf = PDF::loadView('transactions.sales.template_pdf', ['sale' => $sale]);
+        $pdf = PDF::loadView('transactions.sales.template_sale_pdf', ['sale' => $sale]);
 
         return $pdf->stream($sale['prefix'] . '-' . $sale['consecutive'] . '.pdf');
     }

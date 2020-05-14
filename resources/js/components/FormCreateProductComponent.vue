@@ -163,7 +163,7 @@
             </div>
             <hr>
 
-            <button class="btn btn-success btn-sm" v-bind:disabled="isDisabled">Crear</button>
+            <button class="btn btn-success btn-sm" v-bind:disabled="isDisabled">Guardar</button>
         </form>
         <button class="btn btn-danger ml-1 btn-sm" @click="back">Cancelar</button>
         <button class="btn btn-info btn-sm" @click="clearRequest" v-if="typeof productToEdit == 'undefined'">
