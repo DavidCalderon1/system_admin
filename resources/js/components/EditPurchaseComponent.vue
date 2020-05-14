@@ -304,6 +304,7 @@
                     products: [
                         {
                             id: 0,
+                            product_id : 0,
                             name: '',
                             description: '',
                             warehouse_id: 0,
@@ -440,6 +441,7 @@
                 response.data.filter(item => {
                     if (item.id == response.selected) {
                         product.id = item.id;
+                        product.product_id = item.id;
                         product.text = item.text
                         product.name = item.text
                         product.description = item.description
@@ -502,6 +504,7 @@
             addProductRow(index) {
                 this.request.products.push({
                     id: 0,
+                    product_id: 0,
                     name: '',
                     description: '',
                     warehouse_id: 0,

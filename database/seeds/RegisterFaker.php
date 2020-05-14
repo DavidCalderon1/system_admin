@@ -11,11 +11,8 @@ class RegisterFaker extends Seeder
      */
     public function run()
     {
-        factory(\App\Models\ThirdParties::class,20)->create([
-            'type' => 'client'
-        ]);
+        factory(\App\Models\ThirdParties::class,20)->create();
         factory(\App\Models\Product::class,20)->create();
         factory(\App\Models\Warehouse::class,20)->create();
-
     }
 }

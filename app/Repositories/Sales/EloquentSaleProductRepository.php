@@ -33,4 +33,13 @@ class EloquentSaleProductRepository implements SaleProductRepositoryInterface
     {
         return $this->saleProduct->insert($data);
     }
+
+    /**
+     * @param int $saleId
+     * @return bool
+     */
+    public function deleteProductsBySaleId(int $saleId): bool
+    {
+        return $this->saleProduct->where('sale_id', $saleId)->delete();
+    }
 }

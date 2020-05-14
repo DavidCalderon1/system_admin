@@ -33,4 +33,14 @@ class EloquentSalePaymentRepository implements SalePaymentRepositoryInterface
     {
         return $this->salePayment->insert($data);
     }
+
+    /**
+     * @param int $saleId
+     * @return bool
+     */
+    public function deletePaymentsBySaleId(int $saleId): bool
+    {
+        return $this->salePayment->where('sale_id', $saleId)->delete();
+    }
+
 }

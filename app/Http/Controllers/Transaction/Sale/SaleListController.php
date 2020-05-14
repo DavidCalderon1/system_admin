@@ -42,19 +42,24 @@ class SaleListController extends Controller
             'userSessionCanView',
             'userSessionCanEdit',
             'userSessionCanCancel'
-            ));
+        ));
     }
 
 
+    /**
+     * @param Request $request
+     * @return array|\Illuminate\Http\JsonResponse
+     */
     public function list(Request $request)
     {
         if (!$this->hasPermission(PermissionsConstants::SALE_LIST)) {
-            abort(404);
+            return $this->response(404);
         }
 
         $length = $request->input('length', '');
         $orderBy = $request->input('column', ''); //Index
         $orderByDir = $request->input('dir', 'asc');
+        $draw = $request->input('draw', 0);
         $searchValue = (!empty($request->input('search', ''))) ? $request->input('search') : '';
 
         $data = $this->salesUseCase->getPagination($length, $orderBy, $orderByDir, $searchValue);
@@ -63,6 +68,6 @@ class SaleListController extends Controller
             return $this->response(404);
         }
 
-        return new DataTableCollectionResource($data);
+        return responseDataTable($data, $length, $orderBy, $orderByDir, $draw, $searchValue);
     }
 }

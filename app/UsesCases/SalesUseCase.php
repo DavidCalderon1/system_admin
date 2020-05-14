@@ -2,10 +2,9 @@
 
 namespace App\UsesCases;
 
+use App\Repositories\Interfaces\ProductWarehouseRepositoryInterface;
 use App\Repositories\Sales\Interfaces\SaleRepositoryInterface;
 use App\UsesCases\Interfaces\SalesUseCaseInterface;
-use Carbon\Carbon;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class SalesUseCase
@@ -14,17 +13,27 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class SalesUseCase implements SalesUseCaseInterface
 {
     /**
-     * @var
+     * @var SaleRepositoryInterface
      */
     protected $saleRepository;
 
     /**
-     * SaleExportPdfController constructor.
-     * @param SaleRepositoryInterface $saleRepository
+     * @var ProductWarehouseRepositoryInterface
      */
-    public function __construct(SaleRepositoryInterface $saleRepository)
+    protected $productWarehouseRepository;
+
+    /**
+     * SalesUseCase constructor.
+     * @param SaleRepositoryInterface $saleRepository
+     * @param ProductWarehouseRepositoryInterface $productWarehouseRepository
+     */
+    public function __construct(
+        SaleRepositoryInterface $saleRepository,
+        ProductWarehouseRepositoryInterface $productWarehouseRepository
+    )
     {
         $this->saleRepository = $saleRepository;
+        $this->productWarehouseRepository = $productWarehouseRepository;
     }
 
     /**
@@ -43,17 +52,45 @@ class SalesUseCase implements SalesUseCaseInterface
     }
 
     /**
+     * @param int $saleId
+     * @return array
+     */
+    public function getByIdForEdit(int $saleId): array
+    {
+        $sale = $this->saleRepository->get($saleId);
+
+        $sale['text'] = $sale['client_identity_number'] . ' - ' . $sale['client_name'];
+        $ext = (!empty($sale['client']['phone_extension'])) ? ' Ext: ' . $sale['client']['phone_extension'] : '';
+        $sale['options_client_contact'] = [
+            $sale['client']['phone_number'] . $ext,
+            $sale['client']['email']
+        ];
+
+        foreach ($sale['sale_products'] as $key => $saleProduct) {
+            $sale['sale_products'][$key]['code'] = $saleProduct['product']['code'];
+            $sale['sale_products'][$key]['reference'] = $saleProduct['product']['reference'];
+            $sale['sale_products'][$key]['text'] = $saleProduct['product']['code'] . ' - ' . $saleProduct['product']['reference'];
+            $sale['sale_products'][$key]['warehouses'] = $saleProduct['product']['warehouses'];
+        }
+
+        $sale['sale_products'] = $this->productWarehouseRepository->getProductForSelect($sale['sale_products']);
+
+        return $sale;
+    }
+
+    /**
      * @param int $length
      * @param string $orderBy
      * @param string $orderByDir
      * @param string $searchValue
-     * @return LengthAwarePaginator
+     * @return array
      */
-    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue): LengthAwarePaginator
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue): array
     {
         $sales = $this->saleRepository->getPagination($length, $orderBy, $orderByDir, $searchValue);
-        foreach ($sales->items() as $key => $item) {
-            $sales->items()[$key]['totals'] = $this->getTotalValues($item->saleProducts->toArray());
+
+        foreach ($sales['data'] as $key => $item) {
+            $sales['data'] [$key]['totals'] = $this->getTotalValues($item['sale_products']);
         }
 
         return $sales;

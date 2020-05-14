@@ -16,9 +16,9 @@ interface SaleRepositoryInterface
      * @param string $orderBy
      * @param string $orderByDir
      * @param string $searchValue
-     * @return LengthAwarePaginator
+     * @return array
      */
-    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue = ''): LengthAwarePaginator;
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue = ''): array;
 
     /**
      * @param $saleId
@@ -36,6 +36,14 @@ interface SaleRepositoryInterface
      * @return Sale
      */
     public function create(array $data): Sale;
+
+
+    /**
+     * @param int $id
+     * @param array $data
+     * @return bool
+     */
+    public function update(int $id, array $data): bool;
 
     /**
      * @param int $id

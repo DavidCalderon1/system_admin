@@ -2,7 +2,6 @@
 
 namespace App\UsesCases\Interfaces;
 
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Interface SalesUseCaseInterface
@@ -17,11 +16,17 @@ interface SalesUseCaseInterface
     public function getById(int $saleId):array;
 
     /**
+     * @param int $saleId
+     * @return mixed
+     */
+    public function getByIdForEdit(int $saleId):array;
+
+    /**
      * @param int $length
      * @param string $orderBy
      * @param string $orderByDir
      * @param string $searchValue
-     * @return LengthAwarePaginator
+     * @return array
      */
-    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue): LengthAwarePaginator;
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue): array ;
 }

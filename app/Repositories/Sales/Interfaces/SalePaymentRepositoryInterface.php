@@ -2,7 +2,6 @@
 
 namespace App\Repositories\Sales\Interfaces;
 
-use App\Models\SalePayment;
 
 /**
  * Interface SalePaymentRepositoryInterface
@@ -15,4 +14,10 @@ interface SalePaymentRepositoryInterface
      * @return bool
      */
     public function create(array $data): bool;
+
+    /**
+     * @param int $saleId
+     * @return bool
+     */
+    public function deletePaymentsBySaleId(int $saleId): bool;
 }

@@ -34,16 +34,21 @@ class EloquentSaleRepository implements SaleRepositoryInterface
      * @param string $orderBy
      * @param string $orderByDir
      * @param string $searchValue
-     * @return LengthAwarePaginator
+     * @return array
      */
-    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue = ''): LengthAwarePaginator
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue = ''): array
     {
+        if ($orderBy == 'invoice_number') {
+            $orderBy = 'consecutive';
+        }
+
         $sales = $this->sale->with(['saleProducts'])
             ->where(DB::raw("CONCAT(`prefix`, '-', `consecutive`)"), 'LIKE', "%{$searchValue}%")
             ->orWhere('client_name', "LIKE", "%{$searchValue}%")
-            ->orWhere('status', "LIKE", "%{$searchValue}%");
+            ->orWhere('status', "LIKE", "%{$searchValue}%")
+            ->orderBy($orderBy, $orderByDir);
 
-        return $sales->paginate($length);
+        return $sales->paginate($length)->toArray();
     }
 
     /**
@@ -52,7 +57,9 @@ class EloquentSaleRepository implements SaleRepositoryInterface
      */
     public function get($saleId): array
     {
-        $sale = $this->sale->with(['saleProducts', 'salePayments'])->where('id', $saleId)->first();
+        $sale = $this->sale->with(['saleProducts', 'saleProducts.product.warehouses', 'salePayments', 'client'])
+            ->where('id', $saleId)
+            ->first();
 
         return (!empty($sale)) ? $sale->toArray() : [];
     }
@@ -83,6 +90,32 @@ class EloquentSaleRepository implements SaleRepositoryInterface
                 : '',
         ]);
     }
+
+    /**
+     * @param int $id
+     * @param array $data
+     * @return bool
+     */
+    public function update(int $id, array $data): bool
+    {
+        $saleNumber = $data['prefix_consecutive'];
+
+        return $this->sale->where('id', $id)->update([
+            'client_id' => $data['client_id'],
+            'client_name' => $data['client_name'],
+            'client_last_name' => $data['client_last_name'],
+            'client_identity_number' => $data['client_identity_number'],
+            'client_identity_type' => $data['client_identity_type'],
+            'client_contact' => $data['client_contact'],
+            'seller_code' => $data['seller_code'],
+            'date' => $data['date'],
+            'description' => $data['description'],
+            'file' => (!empty($data['file']) && $data['file'] instanceof UploadedFile)
+                ? $data['file']->storePubliclyAs('public/sales', $saleNumber . '.' . $data['file']->getClientOriginalExtension())
+                : '',
+        ]);
+    }
+
 
     /**
      * @return int
