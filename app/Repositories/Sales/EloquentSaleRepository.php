@@ -4,7 +4,9 @@ namespace App\Repositories\Sales;
 
 use App\Models\Sale;
 use App\Repositories\Sales\Interfaces\SaleRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 
 /**
@@ -28,32 +30,20 @@ class EloquentSaleRepository implements SaleRepositoryInterface
     }
 
     /**
-     * @param int $perPage
-     * @param array $filers
-     * @return array
+     * @param int $length
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param string $searchValue
+     * @return LengthAwarePaginator
      */
-    public function getPagination(int $perPage, array $filers = []): array
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue = ''): LengthAwarePaginator
     {
-        $sales = $this->sale->with(['saleProducts']);
+        $sales = $this->sale->with(['saleProducts'])
+            ->where(DB::raw("CONCAT(`prefix`, '-', `consecutive`)"), 'LIKE', "%{$searchValue}%")
+            ->orWhere('client_name', "LIKE", "%{$searchValue}%")
+            ->orWhere('status', "LIKE", "%{$searchValue}%");
 
-        if (!empty($filers['consecutive'])) {
-
-            $invoiceNumberData = explode('-', $filers['consecutive']);
-
-            if (count($invoiceNumberData) == 2) {
-                $sales->where('prefix', "LIKE", "%{$invoiceNumberData[0]}%");
-                $sales->where('consecutive', "LIKE", "%{$invoiceNumberData[1]}%");
-            } else {
-                $sales->where('prefix', "LIKE", "%{$invoiceNumberData[0]}%");
-                $sales->orWhere('consecutive', "LIKE", "%{$invoiceNumberData[0]}%");
-            }
-        } elseif (!empty($filers['client_name'])) {
-            $sales->orWhere('client_name', "LIKE", "%{$filers['client_name']}%");
-        } elseif (!empty($filers['status'])) {
-            $sales->orWhere('status', "LIKE", "%{$filers['status']}%");
-        }
-
-        return $sales->paginate($perPage)->toArray();
+        return $sales->paginate($length);
     }
 
     /**

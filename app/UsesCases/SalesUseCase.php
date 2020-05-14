@@ -5,6 +5,7 @@ namespace App\UsesCases;
 use App\Repositories\Sales\Interfaces\SaleRepositoryInterface;
 use App\UsesCases\Interfaces\SalesUseCaseInterface;
 use Carbon\Carbon;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Class SalesUseCase
@@ -36,22 +37,23 @@ class SalesUseCase implements SalesUseCaseInterface
         $sale['sale_products'] = $this->getProductsWhitTotal($sale['sale_products']);
         $sale['sale_payments'] = $this->getPaymentsTrans($sale['sale_payments']);
         $sale['totals'] = $this->getTotalValues($sale['sale_products']);
-        $sale['totals']['total_payment'] =  numberFormat(getTotalPayments($sale['sale_payments']));
+        $sale['totals']['total_payment'] = numberFormat(getTotalPayments($sale['sale_payments']));
 
         return $sale;
     }
 
     /**
-     * @param int $perPages
-     * @param array $filters
-     * @return array
+     * @param int $length
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param string $searchValue
+     * @return LengthAwarePaginator
      */
-    public function getPagination(int $perPages, array $filters = []): array
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue): LengthAwarePaginator
     {
-        $sales = $this->saleRepository->getPagination($perPages, $filters);
-        foreach ($sales['data'] as $key => $datum) {
-            $sales['data'][$key]['sale_products'] = $this->getProductsWhitTotal($datum['sale_products']);
-            $sales['data'][$key]['totals'] = $this->getTotalValues($datum['sale_products']);
+        $sales = $this->saleRepository->getPagination($length, $orderBy, $orderByDir, $searchValue);
+        foreach ($sales->items() as $key => $item) {
+            $sales->items()[$key]['totals'] = $this->getTotalValues($item->saleProducts->toArray());
         }
 
         return $sales;
@@ -64,7 +66,7 @@ class SalesUseCase implements SalesUseCaseInterface
     private function getProductsWhitTotal(array $saleProducts)
     {
         return array_map(function ($saleProduct) {
-            $total =  $this->getProductTotal(
+            $total = $this->getProductTotal(
                 $saleProduct['price'],
                 $saleProduct['vat'],
                 $saleProduct['discount_percentage'],
@@ -78,12 +80,12 @@ class SalesUseCase implements SalesUseCaseInterface
                 'warehouse_id' => $saleProduct['warehouse_id'],
                 'name' => $saleProduct['name'],
                 'price' => $saleProduct['price'],
-                'price_formatted' =>  numberFormat($saleProduct['price']),
+                'price_formatted' => numberFormat($saleProduct['price']),
                 'quantity' => $saleProduct['quantity'],
                 'discount_percentage' => $saleProduct['discount_percentage'],
                 'vat' => $saleProduct['vat'],
                 'description' => $saleProduct['description'],
-                'total' =>$total,
+                'total' => $total,
                 'total_formatted' => numberFormat($total),
             ];
         }, $saleProducts);

@@ -69,6 +69,7 @@ class PermissionsConstants
      */
     public const SALE_LIST = 'sale-list';
     public const SALE_VIEW = 'sale-view';
+    public const SALE_EDIT = 'sale-edit';
     public const SALE_CREATE = 'sale-create';
     public const SALE_CANCEL = 'sale-cancel';
 

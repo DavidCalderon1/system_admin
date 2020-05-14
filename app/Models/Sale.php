@@ -28,6 +28,19 @@ class Sale extends Model
     ];
 
     /**
+     * @var string[]
+     */
+    protected $appends = ['invoice_number'];
+
+    /**
+     * @return string
+     */
+    public function getInvoiceNumberAttribute(): string
+    {
+        return $this->prefix . '-' . $this->consecutive;
+    }
+
+    /**
      * @return HasMany
      */
     public function saleProducts():HasMany
