@@ -17,6 +17,15 @@ interface MainSaleRepositoryInterface
     public function create(array $saleData, array $saleProducts, array $salePayments): array;
 
     /**
+     * @param int $saleId
+     * @param array $saleData
+     * @param array $saleProducts
+     * @param array $salePayments
+     * @return array
+     */
+    public function update(int $saleId, array $saleData, array $saleProducts, array $salePayments): array;
+
+    /**
      * @param $saleId
      * @return array
      */

@@ -4,7 +4,9 @@ namespace App\Repositories\Sales;
 
 use App\Models\Sale;
 use App\Repositories\Sales\Interfaces\SaleRepositoryInterface;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
 
 /**
@@ -28,32 +30,25 @@ class EloquentSaleRepository implements SaleRepositoryInterface
     }
 
     /**
-     * @param int $perPage
-     * @param array $filers
+     * @param int $length
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param string $searchValue
      * @return array
      */
-    public function getPagination(int $perPage, array $filers = []): array
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue = ''): array
     {
-        $sales = $this->sale->with(['saleProducts']);
-
-        if (!empty($filers['consecutive'])) {
-
-            $invoiceNumberData = explode('-', $filers['consecutive']);
-
-            if (count($invoiceNumberData) == 2) {
-                $sales->where('prefix', "LIKE", "%{$invoiceNumberData[0]}%");
-                $sales->where('consecutive', "LIKE", "%{$invoiceNumberData[1]}%");
-            } else {
-                $sales->where('prefix', "LIKE", "%{$invoiceNumberData[0]}%");
-                $sales->orWhere('consecutive', "LIKE", "%{$invoiceNumberData[0]}%");
-            }
-        } elseif (!empty($filers['client_name'])) {
-            $sales->orWhere('client_name', "LIKE", "%{$filers['client_name']}%");
-        } elseif (!empty($filers['status'])) {
-            $sales->orWhere('status', "LIKE", "%{$filers['status']}%");
+        if ($orderBy == 'invoice_number') {
+            $orderBy = 'consecutive';
         }
 
-        return $sales->paginate($perPage)->toArray();
+        $sales = $this->sale->with(['saleProducts'])
+            ->where(DB::raw("CONCAT(`prefix`, '-', `consecutive`)"), 'LIKE', "%{$searchValue}%")
+            ->orWhere('client_name', "LIKE", "%{$searchValue}%")
+            ->orWhere('status', "LIKE", "%{$searchValue}%")
+            ->orderBy($orderBy, $orderByDir);
+
+        return $sales->paginate($length)->toArray();
     }
 
     /**
@@ -62,7 +57,9 @@ class EloquentSaleRepository implements SaleRepositoryInterface
      */
     public function get($saleId): array
     {
-        $sale = $this->sale->with(['saleProducts', 'salePayments'])->where('id', $saleId)->first();
+        $sale = $this->sale->with(['saleProducts', 'saleProducts.product.warehouses', 'salePayments', 'client'])
+            ->where('id', $saleId)
+            ->first();
 
         return (!empty($sale)) ? $sale->toArray() : [];
     }
@@ -93,6 +90,32 @@ class EloquentSaleRepository implements SaleRepositoryInterface
                 : '',
         ]);
     }
+
+    /**
+     * @param int $id
+     * @param array $data
+     * @return bool
+     */
+    public function update(int $id, array $data): bool
+    {
+        $saleNumber = $data['prefix_consecutive'];
+
+        return $this->sale->where('id', $id)->update([
+            'client_id' => $data['client_id'],
+            'client_name' => $data['client_name'],
+            'client_last_name' => $data['client_last_name'],
+            'client_identity_number' => $data['client_identity_number'],
+            'client_identity_type' => $data['client_identity_type'],
+            'client_contact' => $data['client_contact'],
+            'seller_code' => $data['seller_code'],
+            'date' => $data['date'],
+            'description' => $data['description'],
+            'file' => (!empty($data['file']) && $data['file'] instanceof UploadedFile)
+                ? $data['file']->storePubliclyAs('public/sales', $saleNumber . '.' . $data['file']->getClientOriginalExtension())
+                : '',
+        ]);
+    }
+
 
     /**
      * @return int

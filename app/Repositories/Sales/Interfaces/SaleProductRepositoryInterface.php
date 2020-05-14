@@ -15,4 +15,10 @@ interface SaleProductRepositoryInterface
      * @return bool
      */
     public function create(array $data): bool;
+
+    /**
+     * @param int $saleId
+     * @return bool
+     */
+    public function deleteProductsBySaleId(int $saleId): bool;
 }

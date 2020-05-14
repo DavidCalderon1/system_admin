@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\UsesCases\Interfaces\SalesUseCaseInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use JamesDordoy\LaravelVueDatatable\Http\Resources\DataTableCollectionResource;
 
 class SaleListController extends Controller
 {
@@ -33,51 +34,40 @@ class SaleListController extends Controller
 
         $userSessionCanCreate = $this->hasPermission(PermissionsConstants::SALE_CREATE);
         $userSessionCanView = $this->hasPermission(PermissionsConstants::SALE_VIEW);
+        $userSessionCanEdit = $this->hasPermission(PermissionsConstants::SALE_EDIT);
         $userSessionCanCancel = $this->hasPermission(PermissionsConstants::SALE_CANCEL);
 
         return view('transactions.sales.index', compact(
             'userSessionCanCreate',
             'userSessionCanView',
+            'userSessionCanEdit',
             'userSessionCanCancel'
-            ));
+        ));
     }
 
 
+    /**
+     * @param Request $request
+     * @return array|\Illuminate\Http\JsonResponse
+     */
     public function list(Request $request)
     {
         if (!$this->hasPermission(PermissionsConstants::SALE_LIST)) {
-            abort(404);
+            return $this->response(404);
         }
 
-        $filers = $request->validate([
-            'consecutive' => 'string|nullable',
-            'client_name' => 'string|nullable',
-            'status' => 'string|nullable'
-        ]);
+        $length = $request->input('length', '');
+        $orderBy = $request->input('column', ''); //Index
+        $orderByDir = $request->input('dir', 'asc');
+        $draw = $request->input('draw', 0);
+        $searchValue = (!empty($request->input('search', ''))) ? $request->input('search') : '';
 
-        $sales = $this->salesUseCase->getPagination(10, $filers);
+        $data = $this->salesUseCase->getPagination($length, $orderBy, $orderByDir, $searchValue);
 
-
-        if (empty($sales)) {
-            return $this->response(404, 'Ventas no encontrados');
+        if (empty($data)) {
+            return $this->response(404);
         }
 
-        $response = [
-            'data' => $sales['data'],
-            'pagination' => [
-                'current_page' => $sales['current_page'],
-                'first_page_url' => $sales['first_page_url'],
-                'from' => $sales['from'],
-                'last_page' => $sales['last_page'],
-                'last_page_url' => $sales['last_page_url'],
-                'next_page_url' => $sales['next_page_url'],
-                'per_page' => $sales['per_page'],
-                'prev_page_url' => $sales['prev_page_url'],
-                'to' => $sales['to'],
-                'total' => $sales['total']
-            ],
-        ];
-
-        return response()->json($response, 200);
+        return responseDataTable($data, $length, $orderBy, $orderByDir, $draw, $searchValue);
     }
 }

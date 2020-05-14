@@ -6,6 +6,10 @@ use App\Constants\PermissionsConstants;
 use App\Models\Permission;
 use App\Models\Role;
 
+/**
+ * Trait HasPermissionsTrait
+ * @package App\Traits\Permissions
+ */
 trait HasPermissionsTrait
 {
     /**

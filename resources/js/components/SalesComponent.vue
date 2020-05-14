@@ -1,68 +1,36 @@
 <template>
-    <div class="container" id="grid-sales">
-        <form v-on:submit.prevent>
-            <div class="form-group row">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <select class="form-control col-md-3" id="opcion" name="opcion" v-model="filter"
-                                @change="getData">
-                            <option value="consecutive">Consecutivo</option>
-                            <option value="client_name">Cliente</option>
-                            <option value="status">Estado</option>
-                        </select>
-                        <input type="text" id="texto" name="texto" class="form-control" v-model="search"
-                               v-on:keyup.enter="getData"
-                               placeholder="Buscar">
-                        <button type="button" class="btn btn-primary" @click="getData"><i
-                            class="fa fa-search"></i>
-                        </button>
-                    </div>
+    <data-table
+        :columns="columns"
+        :url="listRoute"
+        :translate="{ nextButton: 'Siguiente', previousButton: 'Atrás', placeholderSearch: 'Buscar...'}"
+        ref="dataTable">
+        <div slot="filters" slot-scope="{ tableData, perPage }">
+            <div class="row mb-2">
+                <div class="col-md-6" id="content-filter">
+                    <select class="form-control" v-model="tableData.length" id="select-length-data-table">
+                        <option :key="page" v-for="page in perPage">{{ page }}</option>
+                    </select>
+                    <input
+                        name="name"
+                        class="form-control"
+                        v-model="tableData.search"
+                        placeholder="Buscar"
+                        id="search"
+                    >
                 </div>
                 <div class="col-md-6" v-if="userCanCreate == 1">
-                    <a v-bind:href="createRoute" class="btn btn-success btn-md pull-right">
+                    <a v-bind:href="createRoute" class="btn btn-success btn-sm pull-right">
                         <i class="fa fa-plus">Nuevo</i>
                     </a>
                 </div>
             </div>
-        </form>
-        <div class="table-responsive">
-
-            <table class="table table-striped table-hover table-bordered table-sm" ref="table">
-                <thead class="thead-light">
-                <tr class="text-center">
-                    <th v-for="field in fields">{{field.label}}</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(body) in data" class="text-center">
-                    <td>{{body.prefix}}-{{body.consecutive}}</td>
-                    <td> {{body.client_name}}</td>
-                    <td> {{body.client_contact}}</td>
-                    <td> ${{formatPrice(body.totals.total)}}</td>
-                    <td> {{body.date}}</td>
-                    <td> {{body.status}}</td>
-                    <td>
-                        <a v-if="userCanView == 1" v-bind:href="getRouteWithId(viewRoute, body.id)" title="Ver"
-                           class="btn btn-success btn-sm">
-                            <i class="fas fa-eye"></i>
-                        </a>
-                        <a v-if="userCanCancel == 1 && body.status !== 'Anulada'" href="javascript:;" title="Anular"
-                           v-on:click="cancel(body.id)"
-                           class="btn btn-danger btn-sm">
-                            <i class="fas fa-ban"></i>
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <pagination-component :pagination="pagination" @paginate="getData()" :offset="1">
-            </pagination-component>
         </div>
-    </div>
+    </data-table>
 </template>
 
 <script>
+    import ButtonDataTable from "./ButtonDataTable";
+
     export default {
         name: 'products-component',
         props: {
@@ -90,6 +58,10 @@
                 type: String,
                 required: true
             },
+            userCanEdit: {
+                type: String,
+                required: true
+            },
             userCanCancel: {
                 type: String,
                 required: true
@@ -97,63 +69,105 @@
         },
         data() {
             return {
-                fields: [
-                    {key: 'invoice_number', label: 'Consecutivo'},
-                    {key: 'client_name', label: 'Cliente'},
-                    {key: 'client_contact', label: 'Contacto'},
-                    {key: 'total', label: 'Total'},
-                    {key: 'date', label: 'Fecha'},
-                    {key: 'status', label: 'Estado'},
+                columns: [
+                    {
+                        label: 'Numero',
+                        name: 'invoice_number',
+                        orderable: true,
+                    },
+                    {
+                        label: 'Cliente',
+                        name: 'client_name',
+                        orderable: true,
+                    },
+                    {
+                        label: 'Contacto',
+                        name: 'client_contact',
+                        orderable: true,
+                    },
+                    {
+                        label: 'Estado',
+                        name: 'status',
+                        orderable: true,
+                    },
+                    {
+                        label: 'Total',
+                        name: 'totals.total_formatted',
+                        orderable: false,
+                    },
+                    {
+                        label: 'Fecha',
+                        name: 'date',
+                        orderable: true,
+                    },
+                    {
+                        label: '',
+                        name: '',
+                        orderable: false,
+                        classes: {
+                            view: {
+                                userCanView: this.userCanView,
+                                ico: {
+                                    'fa fa-eye': true
+                                },
+                                'btn': true,
+                                'btn-success': true,
+                                'btn-sm': true,
+                            },
+                            edit: {
+                                userCanEdit: this.userCanEdit,
+                                ico: {
+                                    'fa fa-pencil': true
+                                },
+                                'btn': true,
+                                'btn-primary': true,
+                                'btn-sm': true,
+                            },
+                            cancel: {
+                                userCanCancel: this.userCanCancel,
+                                ico: {
+                                    'fas fa-ban': true
+                                },
+                                'btn': true,
+                                'btn-danger': true,
+                                'btn-sm': true,
+                            }
+
+                        },
+                        event: "click",
+                        handler: this.view,
+                        component: ButtonDataTable,
+                    },
                 ],
-                data: {},
-                pagination: {
-                    current_page: 1
-                },
-                filter: 'consecutive',
-                search: ''
             }
         },
-        mounted() {
-            this.getData()
-        },
         methods: {
-            getUrl() {
-                let pathFilter = `&${this.filter}=${this.search}`;
-                let url = `${this.listRoute}?page=${this.pagination.current_page}` + pathFilter
-                return url;
+            view(data, action) {
+                switch (action) {
+                    case 'view':
+                        window.location.href = this.getRouteWithId(this.viewRoute, data.id);
+                        break;
+                    case 'edit':
+                        window.location.href = this.getRouteWithId(this.updateRoute, data.id);
+                        break;
+                    case 'cancel':
+                        this.cancel(data.id);
+                        break;
+                }
             },
-            getData() {
-                axios.get(this.getUrl())
-                    .then((response) => {
-                        this.data = response.data.data;
-                        this.pagination = response.data.pagination;
-                        this.$forceUpdate();
-                    })
-                    .catch((error) => {
-                        if (error.response.status === 404) {
-                            if (this.pagination.current_page > 1) {
-                                this.pagination.current_page = 1;
-                                this.getData();
-                                return false;
-                            }
-                            this.data = {};
-                        } else {
-                            alert('handle server error from here');
-                        }
-                    });
-            },
-            cancel(roleId) {
+            cancel(id) {
                 this.$alertify.confirm(
                     'Estas seguro que deseas Anular la factura de venta?',
                     () => {
-                        let url = this.getRouteWithId(this.cancelRoute, roleId);
+                        let url = this.getRouteWithId(this.cancelRoute, id);
                         axios.delete(url)
                             .then(resp => {
                                 this.$alertify.success(resp.data.message);
-                                this.getData();
+                                this.$refs.dataTable.getData()
                             })
                             .catch(error => {
                                 this.$alertify.error(error.response.data.message);
+                                this.$refs.dataTable.getData()
                             })
                     },
                 );
@@ -161,16 +175,32 @@
             getRouteWithId: function (route, id) {
                 return route.replace('__ID__', id);
             },
-            formatPrice(value) {
-                let val = (value / 1).toFixed(2).replace('.', ',')
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            },
-
         },
     }
 </script>
 <style>
-    #grid-sales table > tbody {
+    td.laravel-vue-datatable-td {
+        border: 2px solid #dee2e6 !important;
         font-size: 12px;
+        text-align: center;
+        padding: 5px;
+    }
+
+    th.laravel-vue-datatable-th {
+        text-align: center;
+        border: 1px solid #dee2e6 !important;
+    }
+
+    #select-length-data-table {
+        width: 75px;
+        margin-right: 10px;
+    }
+
+    div#content-filter {
+        display: flex;
+    }
+
+    #search {
+        width: 50%;
     }
 </style>

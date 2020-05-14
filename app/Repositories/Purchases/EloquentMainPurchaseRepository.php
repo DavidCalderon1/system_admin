@@ -173,6 +173,7 @@ class EloquentMainPurchaseRepository implements MainPurchaseRepositoryInterface
             ];
 
         } catch (\Throwable $exception) {
+            DB::rollBack();
             return ['status' => false, 'message' => $exception->getMessage(), 'code' => $exception->getCode()];
         }
     }

@@ -18,4 +18,12 @@ class SaleProduct extends Model
         'vat',
         'description',
     ];
+
+    /**
+     * @return BelongsTo
+     */
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
 }

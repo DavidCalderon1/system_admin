@@ -16,6 +16,7 @@
                     cancel-route="{{route('transactions.sales.cancel','__ID__')}}"
                     user-can-create="{{$userSessionCanCreate}}"
                     user-can-view="{{$userSessionCanView}}"
+                    user-can-edit="{{$userSessionCanEdit}}"
                     user-can-cancel="{{$userSessionCanCancel}}"
                 ></sales-component>
             </div>

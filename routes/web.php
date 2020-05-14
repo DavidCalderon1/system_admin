@@ -193,6 +193,12 @@ Route::group(['prefix' => 'transactions'], function () {
         Route::get('/view/{sale_id}', 'Transaction\Sale\SaleViewController')
             ->name('transactions.sales.view');
 
+        Route::get('/edit/{id}', 'Transaction\Sale\SaleEditController@edit')
+            ->name('transactions.sales.edit');
+
+        Route::post('/update/{sale}', 'Transaction\Sale\SaleEditController@update')
+            ->name('transactions.sales.update');
+
         Route::get('/download/{sale_id}', 'Transaction\Sale\SaleExportPdfController@download')
             ->name('transactions.sales.download');
 

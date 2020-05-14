@@ -6,20 +6,20 @@
         ref="dataTable">
         <div slot="filters" slot-scope="{ tableData, perPage }">
             <div class="row mb-2">
-                <div class="col-md-2">
-                    <select class="form-control" v-model="tableData.length">
+                <div class="col-md-6" id="content-filter">
+                    <select class="form-control" v-model="tableData.length" id="select-length-data-table">
                         <option :key="page" v-for="page in perPage">{{ page }}</option>
                     </select>
-                </div>
-                <div class="col-md-4">
                     <input
                         name="name"
                         class="form-control"
                         v-model="tableData.search"
-                        placeholder="Buscar">
+                        placeholder="Buscar"
+                        id="search"
+                    >
                 </div>
                 <div class="col-md-6" v-if="userCanCreate == 1">
-                    <a v-bind:href="createRoute" class="btn btn-success btn-md pull-right">
+                    <a v-bind:href="createRoute" class="btn btn-success btn-sm pull-right">
                         <i class="fa fa-plus">Nuevo</i>
                     </a>
                 </div>
@@ -169,6 +169,19 @@
     th.laravel-vue-datatable-th {
         text-align: center;
         border: 1px solid #dee2e6 !important;
+    }
+
+    #select-length-data-table {
+        width: 75px;
+        margin-right: 10px;
+    }
+
+    div#content-filter {
+        display: flex;
+    }
+
+    #search {
+        width: 50%;
     }
 
 </style>

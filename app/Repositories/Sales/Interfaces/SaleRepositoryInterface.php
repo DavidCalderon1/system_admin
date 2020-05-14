@@ -3,6 +3,7 @@
 namespace App\Repositories\Sales\Interfaces;
 
 use App\Models\Sale;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 /**
  * Interface InvoiceRepositoryInterface
@@ -11,11 +12,13 @@ use App\Models\Sale;
 interface SaleRepositoryInterface
 {
     /**
-     * @param int $perPage
-     * @param array $filers
+     * @param int $length
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param string $searchValue
      * @return array
      */
-    public function getPagination(int $perPage, array $filers = []):array;
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue = ''): array;
 
     /**
      * @param $saleId
@@ -33,6 +36,14 @@ interface SaleRepositoryInterface
      * @return Sale
      */
     public function create(array $data): Sale;
+
+
+    /**
+     * @param int $id
+     * @param array $data
+     * @return bool
+     */
+    public function update(int $id, array $data): bool;
 
     /**
      * @param int $id

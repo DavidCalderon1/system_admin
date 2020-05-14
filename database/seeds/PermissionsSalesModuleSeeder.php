@@ -33,6 +33,10 @@ class PermissionsSalesModuleSeeder extends Seeder
                 'slug' => 'sale-view',
             ],
             [
+                'name' => 'Sale Edit',
+                'slug' => 'sale-edit',
+            ],
+            [
                 'name' => 'Sale Create',
                 'slug' => 'sale-create',
             ],

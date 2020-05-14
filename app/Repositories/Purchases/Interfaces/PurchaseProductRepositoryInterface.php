@@ -18,5 +18,5 @@ interface PurchaseProductRepositoryInterface
      * @param $purchaseId
      * @return bool
      */
-    public function deleteProductsByPurchaseId($purchaseId): bool;
+    public function deleteProductsByPurchaseId(int $purchaseId): bool;
 }
