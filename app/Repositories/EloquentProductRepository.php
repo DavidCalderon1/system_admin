@@ -29,29 +29,23 @@ class EloquentProductRepository implements ProductRepositoryInterface
     }
 
     /**
-     * @param int $perPage
-     * @param array $filers
+     * @param int $length
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param string $searchValue
      * @return array
      */
-    public function getPagination(int $perPage, array $filers = []): array
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue): array
     {
-        $products = $this->product->with('category');
+        $products = $this->product->with('category')
+            ->where('code', 'LIKE', "%{$searchValue}%")
+            ->orWhere('reference', "LIKE", "%{$searchValue}%")
+            ->orWhere('vat', "LIKE", "%{$searchValue}%")
+            ->orWhereHas('category', function ($query) use ($searchValue,$orderBy, $orderByDir) {
+                $query->where('name', 'LIKE', "%{$searchValue}%");
+            })->orderBy($orderBy, $orderByDir);
 
-        if (!empty($filers['code'])) {
-            $products->where('code', 'LIKE', "%{$filers['code']}%");
-        }
-
-        if (!empty($filers['reference'])) {
-            $products->where('reference', 'LIKE', "%{$filers['reference']}%");
-        }
-
-        if (!empty($filers['category'])) {
-            $products->whereHas('category', function ($query) use ($filers) {
-                $query->where('name', 'LIKE', "%{$filers['category']}%");
-            });
-        }
-
-        return $products->paginate($perPage)->toArray();
+        return $products->paginate($length)->toArray();
     }
 
     /**
@@ -134,14 +128,6 @@ class EloquentProductRepository implements ProductRepositoryInterface
             $product->save();
         }
 
-        if (!empty($data['warehouses_quantity'])) {
-            foreach ($data['warehouses_quantity'] as $datum) {
-                $product->warehouses()->attach($datum['warehouse_id'], [
-                    'product_id' => $product->id,
-                    'quantity' => $datum['quantity']
-                ]);
-            }
-        }
         return $product->refresh();
     }
 
@@ -175,16 +161,6 @@ class EloquentProductRepository implements ProductRepositoryInterface
             );
         }
 
-        if (!empty($data['warehouses_quantity'])) {
-            $product->warehouses()->detach();
-            foreach ($data['warehouses_quantity'] as $datum) {
-                $product->warehouses()->attach($datum['warehouse_id'], [
-                    'product_id' => $product->id,
-                    'quantity' => $datum['quantity']
-                ]);
-            }
-        }
-
         return $product->save();
     }
 
@@ -204,8 +180,9 @@ class EloquentProductRepository implements ProductRepositoryInterface
     public function destroy(int $id): bool
     {
         $product = $this->product->where('id', $id)->first();
+        $deleted = $product->delete();
         Storage::delete([$product->image]);
-        return $product->delete();
+        return $deleted;
     }
 
     /**

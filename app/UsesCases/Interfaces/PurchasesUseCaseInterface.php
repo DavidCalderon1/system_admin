@@ -27,7 +27,7 @@ interface PurchasesUseCaseInterface
      * @param string $orderBy
      * @param string $orderByDir
      * @param string $searchValues
-     * @return LengthAwarePaginator
+     * @return array
      */
-    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValues): LengthAwarePaginator;
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValues): array ;
 }

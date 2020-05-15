@@ -12,6 +12,7 @@
                 <sales-component
                     list-route="{{route('transactions.sales.list')}}"
                     create-route="{{route('transactions.sales.create')}}"
+                    edit-route="{{route('transactions.sales.edit','__ID__')}}"
                     view-route="{{route('transactions.sales.view','__ID__')}}"
                     cancel-route="{{route('transactions.sales.cancel','__ID__')}}"
                     user-can-create="{{$userSessionCanCreate}}"

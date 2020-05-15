@@ -4,11 +4,8 @@ namespace App\Http\Controllers\Transaction\Purchase;
 
 use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
-use App\Models\Purchase;
 use App\UsesCases\Interfaces\PurchasesUseCaseInterface;
-use App\UsesCases\Interfaces\SalesUseCaseInterface;
 use Illuminate\Http\Request;
-use JamesDordoy\LaravelVueDatatable\Http\Resources\DataTableCollectionResource;
 
 /**
  * Class PurchaseListController
@@ -57,7 +54,7 @@ class PurchaseListController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse|DataTableCollectionResource
+     * @return array|\Illuminate\Http\JsonResponse
      */
     public function list(Request $request)
     {
@@ -69,6 +66,8 @@ class PurchaseListController extends Controller
         $orderBy = $request->input('column', ''); //Index
         $orderByDir = $request->input('dir', 'asc');
         $searchValue = (!empty($request->input('search', ''))) ? $request->input('search') : '';
+        $draw = $request->input('draw', 0);
+
 
         $data = $this->purchasesUseCase->getPagination($length, $orderBy, $orderByDir, $searchValue);
 
@@ -76,6 +75,6 @@ class PurchaseListController extends Controller
             return $this->response(404);
         }
 
-        return new DataTableCollectionResource($data);
+        return responseDataTable($data, $length, $orderBy, $orderByDir, $draw, $searchValue);
     }
 }

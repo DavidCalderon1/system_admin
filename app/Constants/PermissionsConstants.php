@@ -35,6 +35,7 @@ class PermissionsConstants
      * Permisos crud modulo de Terceros
      */
     public const THIRD_LIST = 'third-list';
+    public const THIRD_VIEW = 'third-view';
     public const THIRD_CREATE = 'third-create';
     public const THIRD_UPDATE = 'third-update';
     public const THIRD_DELETE = 'third-delete';
@@ -60,6 +61,7 @@ class PermissionsConstants
      * Permisos crud modulo de productos
      */
     public const PRODUCT_LIST = 'products-list';
+    public const PRODUCT_VIEW = 'products-view';
     public const PRODUCT_CREATE = 'products-create';
     public const PRODUCT_UPDATE = 'products-update';
     public const PRODUCT_DELETE = 'products-delete';

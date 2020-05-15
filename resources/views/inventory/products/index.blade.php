@@ -11,11 +11,13 @@
             <div class="col-md-12">
                 <products-component
                     list-route="{{route('inventory.products.list')}}"
+                    view-route="{{route('inventory.products.view','__ID__')}}"
                     create-route="{{route('inventory.products.create')}}"
-                    edit-route="{{route('inventory.products.edit','__ID__')}}"
-                    destroy-route="{{route('inventory.products.destroy','__ID__')}}"
+                    update-route="{{route('inventory.products.edit','__ID__')}}"
+                    delete-route="{{route('inventory.products.destroy','__ID__')}}"
                     user-can-create="{{$userSessionCanCreate}}"
-                    user-can-update="{{$userSessionCanUpdate}}"
+                    user-can-view="{{$userSessionCanView}}"
+                    user-can-edit="{{$userSessionCanUpdate}}"
                     user-can-delete="{{$userSessionCanDelete}}"
                 ></products-component>
             </div>

@@ -79,14 +79,14 @@ class PurchasesUseCase implements PurchasesUseCaseInterface
      * @param string $orderBy
      * @param string $orderByDir
      * @param string $searchValue
-     * @return LengthAwarePaginator
+     * @return array
      */
-    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue): LengthAwarePaginator
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue): array
     {
         $purchases = $this->purchaseRepository->getPagination($length, $orderBy, $orderByDir, $searchValue);
 
-        foreach ($purchases->items() as $key => $item) {
-            $purchases->items()[$key]['totals'] = $this->getTotalValues($item->purchaseProducts->toArray());
+        foreach ($purchases['data'] as $key => $item) {
+            $purchases['data'][$key]['totals'] = $this->getTotalValues($item['purchase_products']);
         }
 
         return $purchases;

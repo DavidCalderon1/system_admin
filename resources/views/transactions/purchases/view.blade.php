@@ -16,7 +16,10 @@
             <div class="col-lg-12">
                 @if($purchase['status'] !=='Anulada')
                     <button class="btn btn-danger btn-sm pull-right ml-2" id="cancel">Anular</button>
+                    <a href="{{route('transactions.purchases.edit', $purchase['id'])}}"
+                       class="btn btn-info btn-sm pull-right ml-2">Editar</a>
                 @endif
+
                 <a href="{{route('transactions.purchases.print', $purchase['id'])}}" target="_blank"
                    class="btn btn-primary btn-sm pull-right ml-2">Imprimir</a>
 
@@ -31,7 +34,8 @@
                     <div class="card">
                         <div class="card-header">
                             <label>PROVEEDR: </label> {{$purchase['provider_name']}}<br>
-                            <label>{{$purchase['provider_identity_type']}}: </label> {{$purchase['provider_identity_number']}}<br>
+                            <label>{{$purchase['provider_identity_type']}}
+                                : </label> {{$purchase['provider_identity_number']}}<br>
                             <label>TELÉFONO: </label> {{$purchase['provider_phone_number']}}<br>
                             <label>DIRECCIÓN: </label> {{$purchase['provider_address']}}<br>
                             <label>CIUDAD: </label> {{$purchase['provider_location']}}<br>

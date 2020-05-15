@@ -16,9 +16,9 @@ interface PurchaseRepositoryInterface
      * @param string $orderBy
      * @param string $orderByDir
      * @param string $searchValue
-     * @return LengthAwarePaginator
+     * @return array
      */
-    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue = ''): LengthAwarePaginator;
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue = ''): array ;
 
     /**
      * @param $purchaseId

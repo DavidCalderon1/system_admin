@@ -29,6 +29,10 @@ class PermissionsProductsModuleSeeder extends Seeder
                 'slug' => 'products-list',
             ],
             [
+                'name' => 'Products View',
+                'slug' => 'products-view',
+            ],
+            [
                 'name' => 'Products Create',
                 'slug' => 'products-create',
             ],

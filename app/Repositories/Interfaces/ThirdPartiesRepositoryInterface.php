@@ -30,11 +30,13 @@ interface ThirdPartiesRepositoryInterface
     public function deactivate(int $id): bool;
 
     /**
-     * @param int $perPage
-     * @param array $filer
+     * @param int $length
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param string $searchValue
      * @return array
      */
-    public function getPagination(int $perPage, array $filer = []): array;
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue): array;
 
     /**
      * @param $data

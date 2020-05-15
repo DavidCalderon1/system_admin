@@ -123,32 +123,6 @@
                 </div>
             </div>
             <hr>
-            <h5>Cantidad en Bodega:</h5>
-            <div class="form-row">
-
-                <small class="form-text text-danger"
-                       v-if="request.warehouses_quantity.length === 0">
-                    Debe crear alguna bodega para poder almacenar el producto.
-                </small>
-
-                <div class="form-group col-md-2" v-for="(warehouse, index) in warehouses">
-                    <label>{{warehouse.name}} </label>
-
-                    <input type="text" class="form-control form-control-sm"
-                           v-model="request.warehouses_quantity[index].quantity"
-                           v-bind:class="{'is-invalid': validate('warehouses_quantity.'+warehouse.id+'.quantity')}"
-                    >
-                    <small class="form-text text-danger"
-                           v-if="validate('warehouses_quantity.'+index+'.quantity')">
-                        {{errors['warehouses_quantity.'+warehouse.id+'.quantity'][0]}}
-                    </small>
-                </div>
-            </div>
-            <div class="form-group col-md-2 text-center">
-                <label class="totals">Total Cantidades:</label>
-                <div>{{totalQuantityWarehouses}}</div>
-            </div>
-            <hr>
             <h5>Descripción:</h5>
             <div class="form-row">
                 <textarea class="form-control form-control-sm"
@@ -201,7 +175,6 @@
                     price: 0,
                     image: '',
                     description: '',
-                    warehouses_quantity: []
                 },
                 errors: {},
                 totalValueSale: 0.0,
@@ -218,32 +191,12 @@
                 alert('handle server error from here');
             });
 
-            axios.get(this.routeAllWarehouses).then((response) => {
-                this.warehouses = response.data;
-                this.setRequestWarehousesQuantity();
-
-                if (this.productToEdit !== undefined) {
-                    this.setRequest();
-                }
-
-            }).catch((error) => {
-                alert('handle server error from here');
-            });
-
+            if (this.productToEdit !== undefined) {
+                this.setRequest();
+            }
         },
         computed: {
             isDisabled() {
-
-                if (this.request.warehouses_quantity.length === 0) {
-                    return true;
-                }
-
-                for (let i in this.request.warehouses_quantity) {
-                    if (this.request.warehouses_quantity[i].quantity === '') {
-                        return true;
-                    }
-                }
-
                 return (this.request.category_id === 0 || typeof this.request.category_id === undefined)
                     || this.request.reference === ''
                     || this.request.base_price === '' || isNaN(this.request.base_price)
@@ -276,23 +229,8 @@
 
                 return this.totalUtility / this.request.price * 100;
             },
-            totalQuantityWarehouses() {
-                let total = 0;
-                for (let index in this.request.warehouses_quantity) {
-                    total = total + parseInt(this.request.warehouses_quantity[index].quantity);
-                }
-                return total;
-            }
         },
         methods: {
-            setRequestWarehousesQuantity() {
-                for (let warehouse in this.warehouses) {
-                    this.request.warehouses_quantity.push({
-                        warehouse_id: this.warehouses[warehouse].id,
-                        quantity: 0
-                    });
-                }
-            },
             formatPrice(value) {
                 let val = (value / 1).toFixed(2).replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
@@ -319,21 +257,7 @@
                 this.request.description = productDataToEdit.description
                 this.request.image = productDataToEdit.image
                 this.url= productDataToEdit.image
-
-                this.updateWarehousesQuantityRequest(productDataToEdit.warehouses_quantity)
-
-                console.log(this.request)
             },
-            updateWarehousesQuantityRequest(productDataToEditWarehousesQuantity) {
-                for (let warehouse in productDataToEditWarehousesQuantity) {
-                    this.request.warehouses_quantity.filter(item => {
-                        if (item.warehouse_id === productDataToEditWarehousesQuantity[warehouse].warehouse_id) {
-                            item.quantity = productDataToEditWarehousesQuantity[warehouse].quantity;
-                        }
-                    })
-                }
-            },
-
             getRouteWithId: function (route, id) {
                 return route.replace('__ID__', id);
             },
@@ -355,7 +279,6 @@
                 formData.append('price', this.request.price);
                 formData.append('image', this.request.image);
                 formData.append('description', this.request.description);
-                formData.append('warehouses_quantity', JSON.stringify(this.request.warehouses_quantity));
 
                 console.log(this.request)
 
@@ -394,9 +317,7 @@
                     price: 0,
                     image: '',
                     description: '',
-                    warehouses_quantity: []
                 }
-                this.setRequestWarehousesQuantity();
                 this.totalValueSale = 0.0;
                 this.totalCostPurchase = 0.0;
                 this.totalUtility = 0.0;

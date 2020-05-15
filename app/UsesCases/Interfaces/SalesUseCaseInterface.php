@@ -13,13 +13,13 @@ interface SalesUseCaseInterface
      * @param int $saleId
      * @return array
      */
-    public function getById(int $saleId):array;
+    public function getById(int $saleId): array;
 
     /**
      * @param int $saleId
      * @return mixed
      */
-    public function getByIdForEdit(int $saleId):array;
+    public function getByIdForEdit(int $saleId): array;
 
     /**
      * @param int $length
@@ -28,5 +28,5 @@ interface SalesUseCaseInterface
      * @param string $searchValue
      * @return array
      */
-    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue): array ;
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue): array;
 }

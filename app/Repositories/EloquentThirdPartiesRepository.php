@@ -75,41 +75,32 @@ class EloquentThirdPartiesRepository implements ThirdPartiesRepositoryInterface
     }
 
     /**
-     * @param int $perPage
-     * @param array $filers
+     * @param int $length
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param string $searchValue
      * @return array
      */
-    public function getPagination(int $perPage, array $filers = []): array
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue): array
     {
-        $thirds = $this->thirdParties->select('id', 'name', 'last_name', 'identity_number', 'email', 'phone_number', 'identity_type')
-            ->where('status', 1);
-
-        if (!empty($filers['name'])) {
-            $thirds->where('name', 'like', "%{$filers['name']}%");
-            $thirds->orWhere('last_name', 'like', "%{$filers['name']}%");
-            $names = explode(' ', $filers['name']);
-
-            if (count($names) > 1) {
-                foreach ($names as $name) {
-                    $thirds->orWhere('name', 'like', "%{$name}%");
-                    $thirds->orWhere('last_name', 'like', "%{$name}%");
-                }
-            }
-        } elseif (!empty($filers['last_name'])) {
-            $thirds->where('last_name', 'like', "%{$filers['last_name']}%");
-        } elseif (!empty($filers['identity_number'])) {
-            $thirds->where('identity_number', 'like', "%{$filers['identity_number']}%");
-        } elseif (!empty($filers['email'])) {
-            $thirds->where('email', 'like', "%{$filers['email']}%");
-        } elseif (!empty($filers['phone_number'])) {
-            $thirds->where('phone_number', 'like', "%{$filers['phone_number']}%");
-        } elseif (!empty($filers['identity_type'])) {
-            $thirds->where('identity_type', 'like', "%{$filers['identity_type']}%");
+        if($orderBy === 'type_trans'){
+            $orderBy = 'type';
         }
 
-        $thirds = $thirds->orderBy('id', 'asc')->paginate($perPage)->toArray();
+        $thirds = $this->thirdParties->select('id', 'name', 'type', 'last_name', 'identity_number', 'email', 'phone_number', 'identity_type', 'status')
+            ->where('status', 1)
+            ->where(function ($query) use ($searchValue) {
+                $query->orwhere('name', 'LIKE', "%{$searchValue}%")
+                    ->orWhere('last_name', "LIKE", "%{$searchValue}%")
+                    ->orWhere('identity_number', "LIKE", "%{$searchValue}%")
+                    ->orWhere('identity_type', "LIKE", "%{$searchValue}%")
+                    ->orWhere('email', "LIKE", "%{$searchValue}%")
+                    ->orWhere('phone_number', "LIKE", "%{$searchValue}%")
+                    ->orWhere('type', "LIKE", "%{$searchValue}%");
+            })
+            ->orderBy($orderBy, $orderByDir);
 
-        return (!empty($thirds['data'])) ? $thirds : [];
+        return $thirds->paginate($length)->toArray();
     }
 
     /**
@@ -159,9 +150,9 @@ class EloquentThirdPartiesRepository implements ThirdPartiesRepositoryInterface
      */
     public function filterProviderByIdentityNumberOrName(string $filter): array
     {
-        $persons = $this->thirdParties->with('country','city')->where('type', 'provider')
-            ->where(function ($query) use ($filter){
-                $query ->where('identity_number', 'LIKE', "%{$filter}%")
+        $persons = $this->thirdParties->with('country', 'city')->where('type', 'provider')
+            ->where(function ($query) use ($filter) {
+                $query->where('identity_number', 'LIKE', "%{$filter}%")
                     ->orWhere('name', 'LIKE', "%{$filter}%");
             })->get();
 

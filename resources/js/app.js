@@ -54,7 +54,7 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 Vue.component('pagination-component', require('./components/PaginationComponent').default);
 Vue.component('users-component', require('./components/UsersComponent.vue').default);
 Vue.component('roles-component', require('./components/RolesComponent.vue').default);
-Vue.component('grid-component', require('./components/GridComponent').default);
+Vue.component('thirds-component', require('./components/ThirdsComponent').default);
 Vue.component('form-create-third-component', require('./components/FormCreateThirdComponent').default);
 Vue.component('form-edit-third-component', require('./components/FormEditThirdComponent').default);
 Vue.component('inventory-categories-component', require('./components/InventoryCategoriesComponent').default);

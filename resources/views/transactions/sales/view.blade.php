@@ -16,6 +16,8 @@
             <div class="col-lg-12">
                 @if($sale['status'] !=='Anulada')
                     <button class="btn btn-danger btn-sm pull-right ml-2" id="cancel">Anular</button>
+                    <a href="{{route('transactions.sales.edit', $sale['id'])}}"
+                       class="btn btn-info btn-sm pull-right ml-2">Editar</a>
                 @endif
                 <a href="{{route('transactions.sales.print', $sale['id'])}}" target="_blank"
                    class="btn btn-primary btn-sm pull-right ml-2">Imprimir</a>

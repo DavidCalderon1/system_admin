@@ -40,7 +40,7 @@ class ProductDeleteController extends Controller
 
             return $this->response(200, 'Producto eliminado correctamente.');
         } catch (\Exception $exception) {
-            return $this->response(500, $exception->getMessage());
+            return $this->response(500, 'No se ha podido eliminar el producto, es posible que este asociado a una factura o a una bodega');
         }
     }
 }
