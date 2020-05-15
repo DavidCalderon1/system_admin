@@ -11,6 +11,7 @@
             <div class="col-md-12">
                 <thirds-component
                     list-route="{{route('thirds.list')}}"
+                    view-route="{{route('thirds.view','__ID__')}}"
                     create-route="{{route('thirds.create')}}"
                     edit-route="{{route('thirds.edit','__ID__')}}"
                     destroy-route="{{route('thirds.destroy','__ID__')}}"

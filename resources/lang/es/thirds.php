@@ -9,4 +9,6 @@ return [
     'client' => 'Cliente',
     'provider' => 'Proveedor',
     'other' => 'Otro',
+    'juridical' => 'Jurídica',
+    'natural' => 'Natural',
 ];
