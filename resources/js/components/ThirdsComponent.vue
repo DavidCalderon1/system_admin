@@ -270,7 +270,7 @@
                         $('#thirdInfoModal').modal('show')
                     })
                     .catch(error => {
-                        this.$alertify.error('Ha ocurrido un error obteniendo el producto');
+                        this.$alertify.error('Ha ocurrido un error obteniendo el tercero');
                     })
             },
             cancel(id) {
