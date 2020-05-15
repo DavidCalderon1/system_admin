@@ -63,10 +63,10 @@
                 <th style="width:200px">Producto</th>
                 <th style="width:250px">Descripción</th>
                 <th style="width:200px">Bodega</th>
-                <th style="width:70px;">Cant.</th>
+                <th style="width:150px;">Cant.</th>
                 <th style="width:70px;">% Iva</th>
                 <th style="width:auto;">Ret. en la fuente</th>
-                <th style="width:130px;">Total</th>
+                <th style="width:180px;">Total</th>
                 <th style="width:48px;"></th>
             </tr>
             </thead>
@@ -94,7 +94,8 @@
                             v-bind:options="product.warehouses"
                             v-model="product.warehouse_id"
                             :settings="{dropdownAutoWidth:'true', width: 'resolve',}"
-                            v-bind:id='"select_warehouse_"+k'/>
+                            v-bind:id='"select_warehouse_"+k'
+                            style="width: 100%"/>
                     </div>
                     <small class="form-text text-danger"
                            v-if="validate('products.'+k+'.warehouse_id')">{{errors['products.'+k+'.warehouse_id'][0]}}</small>

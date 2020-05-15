@@ -60,10 +60,10 @@
                 <th style="width:200px">Producto</th>
                 <th style="width:250px">Descripción</th>
                 <th style="width:200px">Bodega</th>
-                <th style="width:70px;">Cant.</th>
+                <th style="width:150px;">Cant.</th>
                 <th style="width:70px;">% Iva</th>
                 <th style="width:auto;">Ret. en la fuente</th>
-                <th style="width:130px;">Total</th>
+                <th style="width:180px;">Total</th>
                 <th style="width:48px;"></th>
             </tr>
             </thead>
