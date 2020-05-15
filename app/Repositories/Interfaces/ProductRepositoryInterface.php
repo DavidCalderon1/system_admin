@@ -10,12 +10,13 @@ interface ProductRepositoryInterface
 {
 
     /**
-     * @param int $perPage
-     * @param array $filers
-     * @return mixed
+     * @param int $length
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param string $searchValues
+     * @return array
      */
-    public function getPagination(int $perPage, array $filers = []);
-
+    public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValues): array;
 
     /**
      * @return array

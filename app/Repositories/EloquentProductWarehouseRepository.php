@@ -128,4 +128,31 @@ class EloquentProductWarehouseRepository implements ProductWarehouseRepositoryIn
         }
         return $products;
     }
+
+    public function mergeWarehousesProduct(array $product): array
+    {
+        $warehouses = $this->warehousesRepository->getAll();
+        $this->pushWarehousesDiff($product['warehouses'], $warehouses);
+
+        $product['warehouses'] =  array_map(function ($warehouse) {
+            $quantity = (empty($warehouse['pivot'])) ? 0 : $warehouse['pivot']['quantity'];
+
+            return [
+                'id' => $warehouse['id'],
+                'name' => $warehouse['name'],
+                'country_id' => $warehouse['country_id'],
+                'state_id' => $warehouse['state_id'],
+                'city_id' => $warehouse['city_id'],
+                'address' => $warehouse['address'],
+                'phone_number' => $warehouse['phone_number'],
+                'created_at' => $warehouse['created_at'],
+                'updated_at' => $warehouse['updated_at'],
+                'quantity' => $quantity,
+            ];
+        }, $product['warehouses']);
+
+        usort($product['warehouses'], [self::class, 'cmp']);
+
+        return $product;
+    }
 }

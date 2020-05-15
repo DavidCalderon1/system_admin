@@ -61,6 +61,7 @@ class PermissionsConstants
      * Permisos crud modulo de productos
      */
     public const PRODUCT_LIST = 'products-list';
+    public const PRODUCT_VIEW = 'products-view';
     public const PRODUCT_CREATE = 'products-create';
     public const PRODUCT_UPDATE = 'products-update';
     public const PRODUCT_DELETE = 'products-delete';

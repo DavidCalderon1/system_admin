@@ -13,4 +13,17 @@ interface ProductWarehouseRepositoryInterface
      * @return array
      */
     public function filterForSelect($filter): array;
+
+    /**
+     * @param array $products
+     * @return array
+     */
+    public function getProductForSelect(array $products): array;
+
+    /**
+     * @param array $product
+     * @return array
+     */
+    public function mergeWarehousesProduct(array $product): array;
+
 }

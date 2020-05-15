@@ -1,177 +1,274 @@
 <template>
-    <div class="container" id="grid-products">
-        <form v-on:submit.prevent>
-            <div class="form-group row">
-                <div class="col-md-6">
-                    <div class="input-group">
-                        <select class="form-control col-md-3" id="opcion" name="opcion" v-model="filter" @change="getData">
-                            <option value="code">Código</option>
-                            <option value="reference">Referencia</option>
-                            <option value="category">Categoría</option>
+    <div>
+        <data-table
+            :columns="columns"
+            :url="listRoute"
+            :translate="{ nextButton: 'Siguiente', previousButton: 'Atrás', placeholderSearch: 'Buscar...'}"
+            ref="dataTable">
+            <div slot="filters" slot-scope="{ tableData, perPage }">
+                <div class="row mb-2">
+                    <div class="col-md-6" id="content-filter">
+                        <select class="form-control" v-model="tableData.length" id="select-length-data-table">
+                            <option :key="page" v-for="page in perPage">{{ page }}</option>
                         </select>
-                        <input type="text" id="texto" name="texto" class="form-control" v-model="search"
-                               v-on:keyup.enter="getData"
-                               placeholder="Buscar">
-                        <button type="button" class="btn btn-primary" @click="getData"><i
-                            class="fa fa-search"></i>
-                        </button>
+                        <input
+                            name="name"
+                            class="form-control"
+                            v-model="tableData.search"
+                            placeholder="Buscar"
+                            id="search"
+                        >
+                    </div>
+                    <div class="col-md-6" v-if="userCanCreate == 1">
+                        <a v-bind:href="createRoute" class="btn btn-success btn-sm pull-right">
+                            <i class="fa fa-plus">Nuevo</i>
+                        </a>
                     </div>
                 </div>
-                <div class="col-md-6" v-if="userCanCreate == 1">
-                    <a v-bind:href="createRoute" class="btn btn-success btn-md pull-right">
-                        <i class="fa fa-plus">Nuevo</i>
-                    </a>
+            </div>
+        </data-table>
+
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+             id="productInfoModal"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">{{productViewData.code}} -
+                            {{productViewData.reference}}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6"
+                                 v-if="productViewData.image !== '' && typeof productViewData !== 'undefined'">
+                                <div class="form-group">
+                                    <img v-bind:src="productViewData.image" width="80%" height="80%" class="ml-5">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>Código: </label> {{productViewData.code}} <br>
+                                    <label>Referencia: </label> {{productViewData.reference}}<br>
+                                    <label>Ctegoría: </label> {{productViewData.categoryName}}<br>
+                                    <label>Costo: </label> ${{productViewData.base_price}}<br>
+                                    <label>Precio: </label> ${{productViewData.price}}<br>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <h4>Existencias en bodegas</h4>
+                        <div class="form-row">
+                            <table class="table table-bordered" width="100%">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Bodega</th>
+                                    <th scope="col">Cantidad</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="warehouse in productViewData.warehouses">
+                                    <td>{{warehouse.name}}</td>
+                                    <td>{{warehouse.quantity}} Unidades</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </form>
-        <div class="table-responsive">
-
-            <table class="table table-striped table-hover table-bordered table-sm" ref="table">
-                <thead class="thead-light">
-                <tr class="text-center">
-                    <th v-for="field in fields">{{field.label}}</th>
-                    <th>Acciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="(body) in data" class="text-center">
-                    <td><img v-bind:src="body.image" alt="" width="50px" height="50px"></td>
-                    <td> {{body.code}}</td>
-                    <td> {{body.reference}}</td>
-                    <td> ${{formatPrice(body.base_price)}}</td>
-                    <td> ${{formatPrice(body.price)}}</td>
-                    <td> {{body.category.name}}</td>
-
-                    <td>
-                        <a v-if="userCanUpdate == 1" v-bind:href="getRouteWithId(editRoute, body.id)"
-                           class="btn btn-warning btn-sm">
-                            <i class="fa fa-pencil"></i>
-                        </a>
-                        <a v-if="userCanDelete == 1" href="javascript:;"
-                           v-on:click="destroy(body.id)"
-                           class="btn btn-danger btn-sm">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-            <pagination-component :pagination="pagination" @paginate="getData()" :offset="1">
-            </pagination-component>
         </div>
     </div>
 </template>
 
 <script>
+    import ButtonDataTable from "./ButtonDataTable";
+    import ImageDataTableComponent from "./ImageDataTableComponent";
+
     export default {
-        name: 'products-component',
+        name: "PurchasesComponent",
         props: {
-            listRoute: {
-                type: String,
-                required: true
-            },
-            createRoute: {
-                type: String,
-                required: true
-            },
-            editRoute: {
-                type: String,
-                required: true
-            },
-            destroyRoute: {
-                type: String,
-                required: true
-            },
-            userCanCreate: {
-                type: String,
-                required: true
-            },
-            userCanUpdate: {
-                type: String,
-                required: true
-            },
-            userCanDelete: {
-                type: String,
-                required: true
-            },
+            listRoute: String,
+            viewRoute: String,
+            createRoute: String,
+            updateRoute: String,
+            deleteRoute: String,
+            userCanCreate: String,
+            userCanView: String,
+            userCanEdit: String,
+            userCanDelete: String,
         },
         data() {
             return {
-                fields: [
-                    {key: 'image', label: 'Imagen'},
-                    {key: 'code', label: 'Código'},
-                    {key: 'reference', label: 'Referencia'},
-                    {key: 'base_price', label: 'Costo'},
-                    {key: 'price', label: 'Valor'},
-                    {key: 'category', label: 'Categoría'},
+                columns: [
+                    {
+                        label: 'Imagen',
+                        name: 'image',
+                        orderable: true,
+                        component: ImageDataTableComponent,
+                    },
+                    {
+                        label: 'Código',
+                        name: 'code',
+                        orderable: true,
+                    },
+                    {
+                        label: 'Referencia',
+                        name: 'reference',
+                        orderable: true,
+                    },
+                    {
+                        label: 'Costo',
+                        name: 'base_price',
+                        orderable: true,
+                    },
+                    {
+                        label: 'Precio',
+                        name: 'price',
+                        orderable: true,
+                    },
+                    {
+                        label: 'Iva',
+                        name: 'vat',
+                        orderable: true,
+                    },
+                    {
+                        label: 'Categoría',
+                        name: 'category.name',
+                        orderable: false,
+                    },
+                    {
+                        label: '',
+                        name: '',
+                        orderable: false,
+                        classes: {
+                            view: {
+                                userCanView: this.userCanView,
+                                ico: {
+                                    'fa fa-eye': true
+                                },
+                                'btn': true,
+                                'btn-success': true,
+                                'btn-sm': true,
+                            },
+                            edit: {
+                                userCanEdit: this.userCanEdit,
+                                ico: {
+                                    'fa fa-pencil': true
+                                },
+                                'btn': true,
+                                'btn-primary': true,
+                                'btn-sm': true,
+                            },
+                            cancel: {
+                                userCanCancel: this.userCanDelete,
+                                ico: {
+                                    'fa fa-trash': true
+                                },
+                                'btn': true,
+                                'btn-danger': true,
+                                'btn-sm': true,
+                            }
+
+                        },
+                        event: "click",
+                        handler: this.view,
+                        component: ButtonDataTable,
+                    },
                 ],
-                data: {},
-                pagination: {
-                    current_page: 1
-                },
-                filter: 'code',
-                search: ''
+                productViewData: {
+                    image: '',
+                    code: '',
+                    reference: '',
+                    categoryName: '',
+                    base_price: '',
+                    price: '',
+                    warehouses: []
+                }
             }
         },
-        mounted() {
-            this.getData()
-        },
         methods: {
-            getUrl() {
-                let pathFilter = `&${this.filter}=${this.search}`;
-                let url = `${this.listRoute}?page=${this.pagination.current_page}` + pathFilter
-                return url;
+            view(data, action) {
+                switch (action) {
+                    case 'view':
+                        this.showInfoProduct(data.id)
+                        break;
+                    case 'edit':
+                        window.location.href = this.getRouteWithId(this.updateRoute, data.id);
+                        break;
+                    case 'cancel':
+                        this.cancel(data.id);
+                        break;
+                }
             },
-            getData() {
-                axios.get(this.getUrl())
-                    .then((response) => {
-                        this.data = response.data.data;
-                        this.pagination = response.data.pagination;
-                        this.$forceUpdate();
+            showInfoProduct(id) {
+                axios.get(this.getRouteWithId(this.viewRoute, id))
+                    .then(resp => {
+                        this.productViewData.image = resp.data.image
+                        this.productViewData.code = resp.data.code
+                        this.productViewData.reference = resp.data.reference
+                        this.productViewData.categoryName = resp.data.category.name
+                        this.productViewData.base_price = resp.data.base_price
+                        this.productViewData.price = resp.data.price
+                        this.productViewData.warehouses = resp.data.warehouses
+
+                        $('#productInfoModal').modal('show')
                     })
-                    .catch((error) => {
-                        if (error.response.status === 404) {
-                            if (this.pagination.current_page > 1) {
-                                this.pagination.current_page = 1;
-                                this.getData();
-                                return false;
-                            }
-                            this.data = {};
-                        } else {
-                            alert('handle server error from here');
-                        }
-                    });
+                    .catch(error => {
+                        this.$alertify.error('Ha ocurrido un error obteniendo el producto');
+                    })
             },
-            destroy(roleId) {
+            cancel(id) {
                 this.$alertify.confirm(
-                    'Estas seguro que deseas borrar el registro?',
+                    'Estas seguro que deseas eliminar el producto?',
                     () => {
-                        let url = this.getRouteWithId(this.destroyRoute, roleId);
+                        let url = this.getRouteWithId(this.deleteRoute, id);
                         axios.delete(url)
                             .then(resp => {
                                 this.$alertify.success(resp.data.message);
-                                this.getData();
+                                this.$refs.dataTable.getData()
                             })
                             .catch(error => {
                                 this.$alertify.error(error.response.data.message);
+                                this.$refs.dataTable.getData()
+
                             })
                     },
-
                 );
             },
             getRouteWithId: function (route, id) {
                 return route.replace('__ID__', id);
             },
-            formatPrice(value) {
-                let val = (value / 1).toFixed(2).replace('.', ',')
-                return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            },
-
         },
     }
 </script>
+
 <style>
-    #grid-products table > tbody {
+    td.laravel-vue-datatable-td {
+        border: 2px solid #dee2e6 !important;
         font-size: 12px;
+        text-align: center;
+        padding: 5px;
     }
+
+    th.laravel-vue-datatable-th {
+        text-align: center;
+        border: 1px solid #dee2e6 !important;
+    }
+
+    #select-length-data-table {
+        width: 75px;
+        margin-right: 10px;
+    }
+
+    div#content-filter {
+        display: flex;
+    }
+
+    #search {
+        width: 50%;
+    }
+
 </style>

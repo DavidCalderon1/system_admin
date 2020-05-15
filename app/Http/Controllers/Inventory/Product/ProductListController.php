@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Inventory\Product;
 use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
+use App\Repositories\Interfaces\ProductWarehouseRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Session\Store as SessionStore;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -22,16 +22,26 @@ class ProductListController extends Controller
      */
     protected $productRepository;
 
-    /**
-     * ProductCreateController constructor.
-     * @param ProductRepositoryInterface $productRepository
+    /**+
+     * @var ProductWarehouseRepositoryInterface
      */
-    public function __construct(ProductRepositoryInterface $productRepository)
+    protected $productWarehouseRepository;
+
+    /**
+     * ProductListController constructor.
+     * @param ProductRepositoryInterface $productRepository
+     * @param ProductWarehouseRepositoryInterface $productWarehouseRepository
+     */
+    public function __construct(ProductRepositoryInterface $productRepository, ProductWarehouseRepositoryInterface $productWarehouseRepository)
     {
         $this->middleware('auth');
         $this->productRepository = $productRepository;
+        $this->productWarehouseRepository = $productWarehouseRepository;
     }
 
+    /**
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         if (!$this->hasPermission(PermissionsConstants::PRODUCT_LIST)) {
@@ -39,11 +49,13 @@ class ProductListController extends Controller
         }
 
         $userSessionCanCreate = $this->hasPermission(PermissionsConstants::PRODUCT_CREATE);
+        $userSessionCanView = $this->hasPermission(PermissionsConstants::PRODUCT_VIEW);
         $userSessionCanUpdate = $this->hasPermission(PermissionsConstants::PRODUCT_UPDATE);
         $userSessionCanDelete = $this->hasPermission(PermissionsConstants::PRODUCT_DELETE);
 
         return view('inventory.products.index', compact(
             'userSessionCanCreate',
+            'userSessionCanView',
             'userSessionCanUpdate',
             'userSessionCanDelete'));
 
@@ -51,7 +63,7 @@ class ProductListController extends Controller
 
     /**
      * @param Request $request
-     * @return JsonResponse
+     * @return array|JsonResponse
      */
     public function list(Request $request)
     {
@@ -59,42 +71,48 @@ class ProductListController extends Controller
             abort(404);
         }
 
-        $filers = $request->validate([
-            'code' => 'string|nullable',
-            'reference' => 'string|nullable',
-            'category' => 'string|nullable'
-        ]);
+        $length = $request->input('length', '');
+        $orderBy = $request->input('column', ''); //Index
+        $orderByDir = $request->input('dir', 'asc');
+        $searchValue = (!empty($request->input('search', ''))) ? $request->input('search') : '';
+        $draw = $request->input('draw', 0);
 
-        $products = $this->productRepository->getPagination(10, $filers);
+        $products = $this->productRepository->getPagination($length, $orderBy, $orderByDir, $searchValue);
 
         if (empty($products)) {
-            return $this->response(404, 'productos no encontrados');
+            return $this->response(404);
         }
 
-        foreach ($products['data'] as $key => $datum) {
-            if (empty($datum['image'])) {
+        foreach ($products['data'] as $key => $product) {
+            if (empty($product['image'])) {
                 continue;
             }
-
-            $products['data'][$key]['image'] = asset(Storage::url($datum['image']));
+            $products['data'][$key]['image'] = asset(Storage::url($product['image']));
+            $products['data'][$key]['base_price'] = '$' . numberFormat($product['base_price']);
+            $products['data'][$key]['price'] = '$' . numberFormat($product['price']);
         }
 
-        $response = [
-            'data' => $products['data'],
-            'pagination' => [
-                'current_page' => $products['current_page'],
-                'first_page_url' => $products['first_page_url'],
-                'from' => $products['from'],
-                'last_page' => $products['last_page'],
-                'last_page_url' => $products['last_page_url'],
-                'next_page_url' => $products['next_page_url'],
-                'per_page' => $products['per_page'],
-                'prev_page_url' => $products['prev_page_url'],
-                'to' => $products['to'],
-                'total' => $products['total']
-            ],
-        ];
+        return responseDataTable($products, $length, $orderBy, $orderByDir, $draw, $searchValue);
+    }
 
-        return response()->json($response, 200);
+    /**
+     * @param int $id
+     * @return array
+     */
+    public function view(int $id)
+    {
+        if (!$this->hasPermission(PermissionsConstants::PRODUCT_VIEW)) {
+            abort(404);
+        }
+
+        $product = $this->productRepository->get($id);
+
+        $product['price'] = numberFormat($product['price']);
+        $product['base_price'] = numberFormat($product['base_price']);
+        if (!empty($product['image'])) {
+            $product['image'] = asset(Storage::url($product['image']));
+        }
+
+        return $this->productWarehouseRepository->mergeWarehousesProduct($product);
     }
 }

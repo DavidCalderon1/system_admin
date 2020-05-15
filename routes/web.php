@@ -150,6 +150,9 @@ Route::group(['prefix' => 'inventory'], function () {
         Route::get('/list', 'Inventory\Product\ProductListController@list')
             ->name('inventory.products.list');
 
+        Route::get('/view/{id}', 'Inventory\Product\ProductListController@view')
+            ->name('inventory.products.view');
+
         Route::get('/create', 'Inventory\Product\ProductCreateController@create')
             ->name('inventory.products.create');
 
