@@ -35,7 +35,7 @@ class ThirdParties extends Model
     /**
      * @var string[]
      */
-    protected $appends = ['type_trans'];
+    protected $appends = ['type_trans','type_person_trans'];
 
     /**
      * @return string
@@ -43,6 +43,14 @@ class ThirdParties extends Model
     public function getTypeTransAttribute(): string
     {
         return __('thirds.' . $this->type);
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypePersonTransAttribute(): string
+    {
+        return __('thirds.' . $this->type_person);
     }
 
     /**

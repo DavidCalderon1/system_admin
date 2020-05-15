@@ -82,6 +82,9 @@ Route::group(['prefix' => 'thirds'], function () {
     Route::get('/list', 'Third\ThirdListController@list')
         ->name('thirds.list');
 
+    Route::get('/view/{third}', 'Third\ThirdViewController')
+        ->name('thirds.view');
+
     Route::get('/create', 'Third\ThirdCreateController@create')
         ->name('thirds.create');
 
