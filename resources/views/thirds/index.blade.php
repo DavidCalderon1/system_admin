@@ -9,15 +9,16 @@
         @endif
         <div class="row justify-content-center">
             <div class="col-md-12">
-                <grid-component
+                <thirds-component
                     list-route="{{route('thirds.list')}}"
                     create-route="{{route('thirds.create')}}"
                     edit-route="{{route('thirds.edit','__ID__')}}"
                     destroy-route="{{route('thirds.destroy','__ID__')}}"
                     user-can-create="{{$userSessionCanCreate}}"
-                    user-can-update="{{$userSessionCanUpdate}}"
+                    user-can-view="{{$userSessionCanView}}"
+                    user-can-edit="{{$userSessionCanUpdate}}"
                     user-can-delete="{{$userSessionCanDelete}}"
-                ></grid-component>
+                ></thirds-component>
             </div>
         </div>
     </div>

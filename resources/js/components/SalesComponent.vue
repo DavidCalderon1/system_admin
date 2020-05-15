@@ -42,6 +42,10 @@
                 type: String,
                 required: true
             },
+            editRoute: {
+                type: String,
+                required: true
+            },
             viewRoute: {
                 type: String,
                 required: true
@@ -148,7 +152,7 @@
                         window.location.href = this.getRouteWithId(this.viewRoute, data.id);
                         break;
                     case 'edit':
-                        window.location.href = this.getRouteWithId(this.updateRoute, data.id);
+                        window.location.href = this.getRouteWithId(this.editRoute, data.id);
                         break;
                     case 'cancel':
                         this.cancel(data.id);

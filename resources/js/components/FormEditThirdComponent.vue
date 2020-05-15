@@ -191,7 +191,7 @@
                            v-if="validate('description')">{{errors.description[0]}}</small>
                 </div>
             </div>
-            <button class="btn btn-success btn-sm">Editar</button>
+            <button class="btn btn-success btn-sm" v-bind:disabled="isDisabled">Editar</button>
         </form>
         <button class="btn btn-danger ml-1 btn-sm" @click="back">Cancelar</button>
     </div>
@@ -277,7 +277,21 @@
                     alert('handle server error from here');
                 });
         },
-        computed: {},
+        computed: {
+            isDisabled() {
+                return (this.request.identity_type === '' || typeof this.request.identity_type == 'undefined')
+                    || (this.request.identity_number === '' || typeof this.request.identity_number == 'undefined')
+                    || (this.request.type_person === '' || typeof this.request.type_person == 'undefined')
+                    || (this.request.type === '' || typeof this.request.type == 'undefined')
+                    || (this.request.name === '' || typeof this.request.name == 'undefined')
+                    || (this.request.address === '' || typeof this.request.address == 'undefined')
+                    || (this.request.country_code === '' || typeof this.request.country_code == 'undefined')
+                    || (this.request.state_id == '0' || typeof this.request.state_id == 'undefined')
+                    || (this.request.city_id == '0' || typeof this.request.city_id == 'undefined')
+                    || (this.request.phone_number === '' || typeof this.request.phone_number == 'undefined')
+                    || (this.request.email === '' || typeof this.request.email == 'undefined')
+            }
+        },
         methods: {
             getStatesByCountryCode() {
 

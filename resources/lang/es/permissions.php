@@ -14,6 +14,7 @@ return [
         PermissionsConstants::ROLE_UPDATE => 'Actualizar roles',
         PermissionsConstants::ROLE_DELETE => 'Eliminar roles',
         PermissionsConstants::THIRD_LIST => 'Listar Terceros',
+        PermissionsConstants::THIRD_VIEW => 'Ver detalles de Terceros',
         PermissionsConstants::THIRD_CREATE => 'Crear Terceros',
         PermissionsConstants::THIRD_UPDATE => 'Actualizar Terceros',
         PermissionsConstants::THIRD_DELETE => 'Eliminar Terceros',

@@ -33,9 +33,22 @@ class ThirdParties extends Model
     ];
 
     /**
+     * @var string[]
+     */
+    protected $appends = ['type_trans'];
+
+    /**
+     * @return string
+     */
+    public function getTypeTransAttribute(): string
+    {
+        return __('thirds.' . $this->type);
+    }
+
+    /**
      * @return BelongsTo
      */
-    public function country():BelongsTo
+    public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }

@@ -29,6 +29,10 @@ class PermissionsThirdsModuleSeeder extends Seeder
                 'slug' => 'third-list',
             ],
             [
+                'name' => 'Thirds view',
+                'slug' => 'third-view',
+            ],
+            [
                 'name' => 'Thirds Create',
                 'slug' => 'third-create',
             ],

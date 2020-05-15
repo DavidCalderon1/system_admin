@@ -14,6 +14,7 @@ return [
         PermissionsConstants::ROLE_UPDATE => 'Update roles',
         PermissionsConstants::ROLE_DELETE => 'Delete roles',
         PermissionsConstants::THIRD_LIST => 'List Third Parties',
+        PermissionsConstants::THIRD_VIEW => 'view details of Third Parties',
         PermissionsConstants::THIRD_CREATE => 'Create Third Parties',
         PermissionsConstants::THIRD_UPDATE => 'Update Third Parties',
         PermissionsConstants::THIRD_DELETE => 'Delete Third Parties',

@@ -5,5 +5,8 @@ return [
     'save_success' => 'Third successfully created.',
     'update_success' => 'Third updated satisfactorily.',
     'register_not_found' => 'Record not found',
-    'success_delete' => 'Third successfully removed'
+    'success_delete' => 'Third successfully removed',
+    'client' => 'Client',
+    'provider' => 'Provider',
+    'other' => 'Other',
 ];
