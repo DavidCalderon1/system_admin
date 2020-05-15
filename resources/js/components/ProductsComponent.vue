@@ -73,6 +73,10 @@
                                     <td>{{warehouse.name}}</td>
                                     <td>{{warehouse.quantity}} Unidades</td>
                                 </tr>
+                                <tr>
+                                    <th colspan="1">TOTAL CANTIDADES</th>
+                                    <th>{{totalQuantityWarehouses}} Unidades</th>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -185,8 +189,21 @@
                     categoryName: '',
                     base_price: '',
                     price: '',
-                    warehouses: []
+                    warehouses: [
+                        {
+                            quantity: 0,
+                        }
+                    ]
                 }
+            }
+        },
+        computed: {
+            totalQuantityWarehouses() {
+                let total = 0;
+                for (let i in this.productViewData.warehouses) {
+                    total += this.productViewData.warehouses[i].quantity
+                }
+                return total;
             }
         },
         methods: {

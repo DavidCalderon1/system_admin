@@ -128,14 +128,6 @@ class EloquentProductRepository implements ProductRepositoryInterface
             $product->save();
         }
 
-        if (!empty($data['warehouses_quantity'])) {
-            foreach ($data['warehouses_quantity'] as $datum) {
-                $product->warehouses()->attach($datum['warehouse_id'], [
-                    'product_id' => $product->id,
-                    'quantity' => $datum['quantity']
-                ]);
-            }
-        }
         return $product->refresh();
     }
 
@@ -167,16 +159,6 @@ class EloquentProductRepository implements ProductRepositoryInterface
             $product->image = $data['image']->storePubliclyAs(
                 'public/products', $product->code . '.' . $data['image']->getClientOriginalExtension()
             );
-        }
-
-        if (!empty($data['warehouses_quantity'])) {
-            $product->warehouses()->detach();
-            foreach ($data['warehouses_quantity'] as $datum) {
-                $product->warehouses()->attach($datum['warehouse_id'], [
-                    'product_id' => $product->id,
-                    'quantity' => $datum['quantity']
-                ]);
-            }
         }
 
         return $product->save();

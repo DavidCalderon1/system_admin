@@ -62,21 +62,10 @@ class ProductCreateController extends Controller
             return $this->response(401);
         }
 
-        $warehousesQuantity = Validator::make($productRequest->all(), [
-            'warehouses_quantity.*.warehouse_id' => 'numeric|min:1|required',
-            'warehouses_quantity.*.quantity' => 'numeric|min:0|required'
-        ], [
-            'warehouses_quantity.*.quantity.required' => 'Este campo es requerido.',
-            'warehouses_quantity.*.quantity.numeric' => 'Este campo debe ser numerico (valor mínimo 0).',
-            'warehouses_quantity.*.quantity.min' => 'El valor minimo de este campo es 0.',
-        ]);
-
-        $warehousesQuantity = $warehousesQuantity->validated();
         $productRequest = $productRequest->validated();
 
         try {
             $productRequest['description'] = (!empty($productRequest['description'])) ? $productRequest['description'] : '';
-            $productRequest['warehouses_quantity'] = $warehousesQuantity['warehouses_quantity'];
 
             $saved = $this->productRepository->store($productRequest);
 
