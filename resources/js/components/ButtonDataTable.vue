@@ -13,7 +13,7 @@
         </span>
             {{ name }}
         </button>
-        <button :class="classes.cancel" @click="click(data, 'cancel')" title="Anular"
+        <button :class="classes.cancel" @click="click(data, 'cancel')"
                 v-if="classes.cancel.userCanCancel==1 && data.status !== 'Anulada'">
         <span>
             <i :class="classes.cancel.ico" aria-hidden="true"></i>
