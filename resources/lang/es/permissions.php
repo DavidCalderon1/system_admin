@@ -40,7 +40,7 @@ return [
         PermissionsConstants::PURCHASE_VIEW => 'Ver Detalles de Compras',
         PermissionsConstants::PURCHASE_EDIT => 'Editar Compras',
         PermissionsConstants::PURCHASE_CREATE => 'Crear Compras',
-        PermissionsConstants::PURCHASE_CANCEL => 'Cancelar Compras',
+        PermissionsConstants::PURCHASE_CANCEL => 'Anular Compras',
 
         PermissionsConstants::CONFIG_TAXES_LIST => 'Listar Impuestos',
         PermissionsConstants::CONFIG_TAXES_CREATE => 'Crear Impuestos',

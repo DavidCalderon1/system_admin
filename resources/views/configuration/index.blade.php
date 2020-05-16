@@ -28,10 +28,10 @@
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title">Autenticacion y permisos</h5>
-                                    @if(auth()->user()->can(\App\Constants\PermissionsConstants::USER_LIST))
+                                    @if(auth()->user()->can(\App\Constants\PermissionsConstants::ROLE_LIST))
                                         <a href="{{route('roles.index')}}" class="card-link">Roles</a><br>
                                     @endif
-                                    @if(auth()->user()->can(\App\Constants\PermissionsConstants::ROLE_LIST))
+                                    @if(auth()->user()->can(\App\Constants\PermissionsConstants::USER_LIST))
                                         <a href="{{route('users.index')}}" class="card-link">Usuarios</a><br>
                                     @endif
                                 </div>
