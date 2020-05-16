@@ -27,30 +27,18 @@ class CategoryEditController extends Controller
         $this->inventoryCategory = $inventoryCategory;
     }
 
-
-    /**
-     * @param int $id
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function edit(int $id)
-    {
-        $currentInventoryCategory = $this->inventoryCategory->get($id);
-
-        return view('inventory.categories.edit', compact('currentInventoryCategory'));
-    }
-
-    public function update(CategoryRequest $categoryRequest, int $id)
+    public function update(CategoryRequest $categoryRequest)
     {
         $data = $categoryRequest->validated();
-        $data['description'] = (!empty($data['description'])) ? $data['description'] : '';
+        $id = $categoryRequest->get('id', 0);
 
-        $response = $this->inventoryCategory->update($id, $data);
+        $updated = $this->inventoryCategory->update($id, $data);
 
-        if (empty($response)) {
-            return redirect()->back()->withInput()->withErrors(["Ah ocurrido un error actualizando la categoria"]);
+        if (empty($updated)) {
+            return $this->response(500, 'Ha ocurrido un error actualizando la categoría');
         }
 
-        return redirect(route('inventory.category.index'))->with('message', 'Categoría actualizada correctamente');
+        return $this->response(200, 'Categoría actualizada correctamente');
 
     }
 }

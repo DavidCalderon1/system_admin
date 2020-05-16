@@ -137,9 +137,9 @@ class CostCenterController extends Controller
         $deleted = $this->costCenterRepository->delete($id);
 
         if (!$deleted) {
-            return $this->response(500, 'Ha ocurrido un error eliminando el impuesto');
+            return $this->response(500, 'Ha ocurrido un error eliminando el centro de costos');
         }
 
-        return $this->response(200, 'Impuesto eliminado correctamente');
+        return $this->response(200, 'centro de costos eliminado correctamente');
     }
 }

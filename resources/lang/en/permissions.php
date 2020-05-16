@@ -45,10 +45,14 @@ return [
         PermissionsConstants::CONFIG_TAXES_CREATE => 'Create taxes',
         PermissionsConstants::CONFIG_TAXES_UPDATE => 'Edit taxes',
         PermissionsConstants::CONFIG_TAXES_DELETE => 'Delete taxes',
-
         PermissionsConstants::COST_CENTER_LIST => 'List Cost Center',
         PermissionsConstants::COST_CENTER_CREATE => 'Create Cost Center',
         PermissionsConstants::COST_CENTER_UPDATE => 'Edit Cost Center',
         PermissionsConstants::COST_CENTER_DELETE => 'Delete Cost Center',
+
+        PermissionsConstants::CONCEPT_LIST => 'List Concept',
+        PermissionsConstants::CONCEPT_CREATE => 'Create Concept',
+        PermissionsConstants::CONCEPT_UPDATE => 'Edit Concept',
+        PermissionsConstants::CONCEPT_DELETE => 'Delete Concept',
     ]
 ];

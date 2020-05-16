@@ -111,6 +111,24 @@ Route::group(['prefix' => 'config'], function () {
         Route::delete('/delete/{id}', 'CostCenter\CostCenterController@delete')
             ->name('costCenter.delete');
     });
+
+    //Concepts CRUD
+    Route::group(['prefix' => 'concepts'], function () {
+        Route::get('/', 'Concept\ConceptController@index')
+            ->name('concepts.index');
+
+        Route::get('/list', 'Concept\ConceptController@list')
+            ->name('concepts.list');
+
+        Route::post('/create', 'Concept\ConceptController@create')
+            ->name('concepts.create');
+
+        Route::post('/update', 'Concept\ConceptController@update')
+            ->name('concepts.update');
+
+        Route::delete('/delete/{id}', 'Concept\ConceptController@delete')
+            ->name('concepts.delete');
+    });
 });
 
 //Terceros CRUD
@@ -167,16 +185,10 @@ Route::group(['prefix' => 'inventory'], function () {
         Route::get('/all', 'Inventory\Category\CategoryListController@getAllCategories')
             ->name('inventory.category.all');
 
-        Route::get('/create', 'Inventory\Category\CategoryCreateController@create')
-            ->name('inventory.category.create');
-
         Route::post('/store', 'Inventory\Category\CategoryCreateController@store')
             ->name('inventory.category.store');
 
-        Route::get('/edit/{id}', 'Inventory\Category\CategoryEditController@edit')
-            ->name('inventory.category.edit');
-
-        Route::post('/update/{category}', 'Inventory\Category\CategoryEditController@update')
+        Route::post('/update', 'Inventory\Category\CategoryEditController@update')
             ->name('inventory.category.update');
 
         Route::delete('/destroy/{id}', 'Inventory\Category\CategoryDeleteController')

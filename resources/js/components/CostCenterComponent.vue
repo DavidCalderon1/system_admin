@@ -203,7 +203,7 @@
             },
             delete(id) {
                 this.$alertify.confirm(
-                    'Estas seguro que deseas eliminar el impuesto?',
+                    'Estas seguro que deseas eliminar el Centro de Costos?',
                     () => {
                         let url = this.getRouteWithId(this.deleteRoute, id);
                         axios.delete(url)

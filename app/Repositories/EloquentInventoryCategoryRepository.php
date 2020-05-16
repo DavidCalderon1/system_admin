@@ -31,24 +31,24 @@ class EloquentInventoryCategoryRepository implements InventoryCategoryRepository
     }
 
     /**
-     * @param int $perPage
-     * @param array $filers
+     * @param int $length
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param string $searchValues
      * @return array
      */
-    public function getPagination(int $perPage, array $filers = []): array
+    public function getPagination(
+        int $length,
+        string $orderBy,
+        string $orderByDir,
+        string $searchValues
+    ): array
     {
-        $inventoryCategory = $this->inventoryCategory->select('*');
-
-        if (!empty($filers['name'])) {
-            $inventoryCategory->where('name', 'like', "%{$filers['name']}%");
-        } else if (!empty($filers['description'])) {
-            $inventoryCategory->where('description', 'like', "%{$filers['description']}%");
-        }
-
-        $inventoryCategory = $inventoryCategory->orderBy('name', 'asc')->paginate($perPage)->toArray();
-
-        return (!empty($inventoryCategory['data'])) ? $inventoryCategory : [];
-
+        return $this->inventoryCategory->where('name', 'like', "%{$searchValues}%")
+            ->orWhere('description', 'LIKE', "%{$searchValues}%")
+            ->orderBy($orderBy, $orderByDir)
+            ->paginate($length)
+            ->toArray();
     }
 
     /**

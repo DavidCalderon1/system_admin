@@ -26,7 +26,7 @@ Vue.use(VueAlertify,{
         // default position
         position: 'top-right',
         // adds a close button to notifier messages
-        closeButton: false,
+        closeButton: true,
     },
     glossary: {
         // dialogs default title
@@ -72,6 +72,7 @@ Vue.component('edit-purchase-component', require('./components/EditPurchaseCompo
 Vue.component('edit-sale-component', require('./components/EditSaleComponent').default);
 Vue.component('taxes-component', require('./components/TaxesComponent').default);
 Vue.component('cost-center-component', require('./components/CostCenterComponent').default);
+Vue.component('concepts-component', require('./components/ConceptsComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

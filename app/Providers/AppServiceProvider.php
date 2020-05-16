@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Repositories\EloquentCityRepository;
+use App\Repositories\EloquentConceptRepository;
 use App\Repositories\EloquentCostCenterRepository;
 use App\Repositories\EloquentCountryRepository;
 use App\Repositories\EloquentInventoryCategoryRepository;
@@ -17,6 +18,7 @@ use App\Repositories\EloquentThirdPartiesRepository;
 use App\Repositories\EloquentUserRepository;
 use App\Repositories\EloquentWarehousesRepository;
 use App\Repositories\Interfaces\CityRepositoryInterface;
+use App\Repositories\Interfaces\ConceptRepositoryInterface;
 use App\Repositories\Interfaces\CostCenterRepositoryInterface;
 use App\Repositories\Interfaces\CountryRepositoryInterface;
 use App\Repositories\Interfaces\InventoryCategoryRepositoryInterface;
@@ -90,6 +92,7 @@ class AppServiceProvider extends ServiceProvider
         //config repositories
         TaxesRepositoryInterface::class => EloquentTaxesRepository::class,
         CostCenterRepositoryInterface::class => EloquentCostCenterRepository::class,
+        ConceptRepositoryInterface::class => EloquentConceptRepository::class,
 
         //UsesCases
 

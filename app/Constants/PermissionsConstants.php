@@ -48,6 +48,14 @@ class PermissionsConstants
     public const COST_CENTER_DELETE = 'cost-center-delete';
 
     /**
+     * Permisos crud modulo de conceptos de gastos en la configuracion
+     */
+    public const CONCEPT_LIST = 'concept-list';
+    public const CONCEPT_CREATE = 'concept-create';
+    public const CONCEPT_UPDATE = 'concept-update';
+    public const CONCEPT_DELETE = 'concept-delete';
+
+    /**
      * Permisos crud modulo de Terceros
      */
     public const THIRD_LIST = 'third-list';

@@ -46,7 +46,7 @@ class CategoryListController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return array|JsonResponse
      */
     public function list(Request $request)
     {
@@ -54,33 +54,19 @@ class CategoryListController extends Controller
             return $this->response(401);
         }
 
-        $filer = $request->validate([
-            'name' => 'string',
-        ]);
+        $length = $request->input('length', '');
+        $orderBy = $request->input('column', ''); //Index
+        $orderByDir = $request->input('dir', 'asc');
+        $searchValue = (!empty($request->input('search', ''))) ? $request->input('search') : '';
+        $draw = $request->input('draw', 0);
 
-        $categories = $this->inventoryCategory->getPagination(10, $filer);
+        $categories = $this->inventoryCategory->getPagination($length, $orderBy, $orderByDir, $searchValue);
 
         if (empty($categories)) {
             return $this->response(404, __('users.users_not_found'));
         }
 
-        $response = [
-            'data' => $categories['data'],
-            'pagination' => [
-                'current_page' => $categories['current_page'],
-                'first_page_url' => $categories['first_page_url'],
-                'from' => $categories['from'],
-                'last_page' => $categories['last_page'],
-                'last_page_url' => $categories['last_page_url'],
-                'next_page_url' => $categories['next_page_url'],
-                'per_page' => $categories['per_page'],
-                'prev_page_url' => $categories['prev_page_url'],
-                'to' => $categories['to'],
-                'total' => $categories['total']
-            ],
-        ];
-
-        return response()->json($response, 200);
+        return responseDataTable($categories, $length, $orderBy, $orderByDir, $draw, $searchValue);
     }
 
     /**

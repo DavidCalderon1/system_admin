@@ -14,11 +14,18 @@ interface InventoryCategoryRepositoryInterface
     public function getAll(): array;
 
     /**
-     * @param int $perPage
-     * @param array $filer
+     * @param int $length
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param string $searchValues
      * @return array
      */
-    public function getPagination(int $perPage, array $filer = []): array;
+    public function getPagination(
+        int $length,
+        string $orderBy,
+        string $orderByDir,
+        string $searchValues
+    ): array;
 
     /**
      * @param int $id

@@ -17,7 +17,6 @@ class CreateConceptsTable extends Migration
             $table->increments('id')->index();
             $table->string('name');
             $table->string('code');
-            $table->string('type');
             $table->timestamps();
         });
     }
