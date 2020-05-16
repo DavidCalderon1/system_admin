@@ -205,7 +205,8 @@
                             </li>
                             @if(auth()->user()->can(\App\Constants\PermissionsConstants::USER_LIST)
                                 || auth()->user()->can(\App\Constants\PermissionsConstants::ROLE_LIST)
-                                  || auth()->user()->can(\App\Constants\PermissionsConstants::CONFIG_TAXES_LIST))
+                                || auth()->user()->can(\App\Constants\PermissionsConstants::CONFIG_TAXES_LIST)
+                                || auth()->user()->can(\App\Constants\PermissionsConstants::COST_CENTER_LIST))
                                 <li class="nav-item">
                                     <a href="{{route('configuration.index')}}" class="nav-link">
                                         <i class="nav-icon fa fa-plus-square-o"></i>

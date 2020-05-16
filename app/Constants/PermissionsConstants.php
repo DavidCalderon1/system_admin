@@ -40,6 +40,14 @@ class PermissionsConstants
     public const CONFIG_TAXES_DELETE = 'config-taxes-delete';
 
     /**
+     * Permisos crud modulo de centros de costo en la configuracion
+     */
+    public const COST_CENTER_LIST = 'cost-center-list';
+    public const COST_CENTER_CREATE = 'cost-center-create';
+    public const COST_CENTER_UPDATE = 'cost-center-update';
+    public const COST_CENTER_DELETE = 'cost-center-delete';
+
+    /**
      * Permisos crud modulo de Terceros
      */
     public const THIRD_LIST = 'third-list';

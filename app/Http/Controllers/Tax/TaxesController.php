@@ -123,7 +123,7 @@ class TaxesController extends Controller
             return $this->response(500, 'Ha ocurrido un error actualizando el impuesto');
         }
 
-        return $this->response(200, 'Impuesto creado correctamente');
+        return $this->response(200, 'Impuesto actualizando correctamente');
     }
 
     /**

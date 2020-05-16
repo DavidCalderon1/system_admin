@@ -9,7 +9,7 @@
                                v-bind:class="{'is-invalid': validate('name')}"
                                v-model="request.name">
                         <small class="form-text text-danger"
-                               v-if="validate('percentage')">{{errors.name[0]}}</small>
+                               v-if="validate('name')">{{errors.name[0]}}</small>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -21,7 +21,7 @@
                             <option v-for="taxType in taxesType">{{taxType}}</option>
                         </select>
                         <small class="form-text text-danger"
-                               v-if="validate('percentage')">{{errors.type[0]}}</small>
+                               v-if="validate('type')">{{errors.type[0]}}</small>
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -78,7 +78,7 @@
     import ButtonDataTable from "./ButtonDataTable";
 
     export default {
-        name: "PurchasesComponent",
+        name: "TaxesComponent",
         props: {
             listRoute: String,
             createRoute: String,

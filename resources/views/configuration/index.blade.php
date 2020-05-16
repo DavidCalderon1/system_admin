@@ -9,16 +9,20 @@
         @endif
 
         <ul class="nav nav-tabs" id="myTab" role="tablist">
-            @if(auth()->user()->can(\App\Constants\PermissionsConstants::USER_LIST) || auth()->user()->can(\App\Constants\PermissionsConstants::ROLE_LIST))
+            @if(auth()->user()->can(\App\Constants\PermissionsConstants::USER_LIST)
+                || auth()->user()->can(\App\Constants\PermissionsConstants::ROLE_LIST))
                 <li class="nav-item">
                     <a class="nav-link active" id="general-tab" data-toggle="tab" href="#general" role="tab"
                        aria-controls="profile" aria-selected="false">General</a>
                 </li>
             @endif
-            <li class="nav-item">
-                <a class="nav-link" id="purchases-tab" data-toggle="tab" href="#transactions" role="tab"
-                   aria-controls="home" aria-selected="true">Transacciones</a>
-            </li>
+            @if(auth()->user()->can(\App\Constants\PermissionsConstants::CONFIG_TAXES_LIST)
+                || auth()->user()->can(\App\Constants\PermissionsConstants::COST_CENTER_LIST))
+                <li class="nav-item">
+                    <a class="nav-link" id="purchases-tab" data-toggle="tab" href="#transactions" role="tab"
+                       aria-controls="home" aria-selected="true">Transacciones</a>
+                </li>
+            @endif
         </ul>
         <div class="tab-content mt-3" id="myTabContent">
             @if(auth()->user()->can(\App\Constants\PermissionsConstants::USER_LIST) || auth()->user()->can(\App\Constants\PermissionsConstants::ROLE_LIST))
@@ -59,10 +63,15 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Catalogos</h5>
-                                <a href="#" class="card-link">Centros de costo</a><br>
+
+                                @if(auth()->user()->can(\App\Constants\PermissionsConstants::COST_CENTER_LIST))
+                                    <a href="{{route('costCenter.index')}}" class="card-link" target="_blank">Centros de costo</a><br>
+                                @endif
+
                                 <a href="#" class="card-link">Conceptos de gasto</a><br>
+
                                 @if(auth()->user()->can(\App\Constants\PermissionsConstants::CONFIG_TAXES_LIST))
-                                    <a href="{{route('taxes.index')}}" class="card-link">Impuestos</a>
+                                    <a href="{{route('taxes.index')}}" class="card-link" target="_blank">Impuestos</a>
                                 @endif
                             </div>
                         </div>
@@ -82,6 +91,8 @@
 
             if (url.match('#')) {
                 $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+            } else {
+                $('.nav-tabs a').first().click()
             }
 
             // Change hash for page-reload

@@ -71,6 +71,7 @@ Vue.component('purchases-component', require('./components/PurchasesComponent').
 Vue.component('edit-purchase-component', require('./components/EditPurchaseComponent').default);
 Vue.component('edit-sale-component', require('./components/EditSaleComponent').default);
 Vue.component('taxes-component', require('./components/TaxesComponent').default);
+Vue.component('cost-center-component', require('./components/CostCenterComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

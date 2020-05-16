@@ -72,7 +72,7 @@ class EloquentTaxesRepository implements TaxesRepositoryInterface
     {
         return $this->tax->where('id', $id)
             ->update([
-                'name' => $data['name'],
+                'name' => strtoupper($data['name']),
                 'type' => $data['type'],
                 'percentage' => $data['percentage'],
             ]);

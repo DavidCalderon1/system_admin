@@ -11,10 +11,15 @@ use Illuminate\View\View;
  */
 class ConfigurationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * @return View
      */
-    public function index():View
+    public function index(): View
     {
         return view('configuration.index');
     }

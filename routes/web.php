@@ -93,6 +93,24 @@ Route::group(['prefix' => 'config'], function () {
         Route::delete('/delete/{id}', 'Tax\TaxesController@delete')
             ->name('taxes.delete');
     });
+
+    //Cost Center CRUD
+    Route::group(['prefix' => 'costCenter'], function () {
+        Route::get('/', 'CostCenter\CostCenterController@index')
+            ->name('costCenter.index');
+
+        Route::get('/list', 'CostCenter\CostCenterController@list')
+            ->name('costCenter.list');
+
+        Route::post('/create', 'CostCenter\CostCenterController@create')
+            ->name('costCenter.create');
+
+        Route::post('/update', 'CostCenter\CostCenterController@update')
+            ->name('costCenter.update');
+
+        Route::delete('/delete/{id}', 'CostCenter\CostCenterController@delete')
+            ->name('costCenter.delete');
+    });
 });
 
 //Terceros CRUD
