@@ -70,6 +70,7 @@ Vue.component('select2-ajax', require('./components/Select2Ajax').default);
 Vue.component('purchases-component', require('./components/PurchasesComponent').default);
 Vue.component('edit-purchase-component', require('./components/EditPurchaseComponent').default);
 Vue.component('edit-sale-component', require('./components/EditSaleComponent').default);
+Vue.component('taxes-component', require('./components/TaxesComponent').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -274,6 +274,10 @@
             paymentMethods: {
                 type: String,
                 required: true
+            },
+            taxes: {
+                type: String,
+                required: true
             }
         },
         data() {
@@ -313,18 +317,14 @@
                     ]
                 },
                 payment_methods: [],
-                withholding_tax_percentages: [
-                    {id: 1, name: 'RETEFUENTE 0%', percentage: 0},
-                    {id: 2, name: 'RETEFUENTE 2.5%', percentage: 2.5},
-                    {id: 3, name: 'RETEFUENTE 4%', percentage: 4},
-                    {id: 4, name: 'RETEFUENTE 10%', percentage: 10},
-                ],
+                withholding_tax_percentages: [],
                 days_to_pay_options: [15, 30, 90, 120, 360],
                 errors: {},
             }
         },
         mounted() {
             this.payment_methods = JSON.parse(this.paymentMethods);
+            this.withholding_tax_percentages = JSON.parse(this.taxes);
         },
         computed: {
             calculateGrossTotal() {

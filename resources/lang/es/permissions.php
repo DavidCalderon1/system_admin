@@ -41,5 +41,10 @@ return [
         PermissionsConstants::PURCHASE_EDIT => 'Editar Compras',
         PermissionsConstants::PURCHASE_CREATE => 'Crear Compras',
         PermissionsConstants::PURCHASE_CANCEL => 'Cancelar Compras',
+
+        PermissionsConstants::CONFIG_TAXES_LIST => 'Listar Impuestos',
+        PermissionsConstants::CONFIG_TAXES_CREATE => 'Crear Impuestos',
+        PermissionsConstants::CONFIG_TAXES_UPDATE => 'Editar Impuestos',
+        PermissionsConstants::CONFIG_TAXES_DELETE => 'Eliminar Impuestos',
     ]
 ];

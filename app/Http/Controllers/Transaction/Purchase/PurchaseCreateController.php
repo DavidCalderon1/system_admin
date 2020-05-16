@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\PaymentMethodRepositoryInterface;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Repositories\Interfaces\ProductWarehouseRepositoryInterface;
+use App\Repositories\Interfaces\TaxesRepositoryInterface;
 use App\Repositories\Interfaces\ThirdPartiesRepositoryInterface;
 use App\Repositories\Interfaces\WarehousesRepositoryInterface;
 use App\Repositories\Purchases\Interfaces\MainPurchaseRepositoryInterface;
@@ -41,17 +42,24 @@ class PurchaseCreateController extends Controller
     protected $methodRepository;
 
     /**
+     * @var TaxesRepositoryInterface
+     */
+    protected $taxesRepository;
+
+    /**
      * PurchaseCreateController constructor.
      * @param MainPurchaseRepositoryInterface $mainPurchaseRepository
      * @param ThirdPartiesRepositoryInterface $thirdPartiesRepository
      * @param ProductWarehouseRepositoryInterface $productWarehouseRepository
      * @param PaymentMethodRepositoryInterface $methodRepository
+     * @param TaxesRepositoryInterface $taxesRepository
      */
     public function __construct(
         MainPurchaseRepositoryInterface $mainPurchaseRepository,
         ThirdPartiesRepositoryInterface $thirdPartiesRepository,
         ProductWarehouseRepositoryInterface $productWarehouseRepository,
-        PaymentMethodRepositoryInterface $methodRepository
+        PaymentMethodRepositoryInterface $methodRepository,
+        TaxesRepositoryInterface $taxesRepository
     )
     {
         $this->middleware('auth');
@@ -60,6 +68,7 @@ class PurchaseCreateController extends Controller
         $this->thirdPartiesRepository = $thirdPartiesRepository;
         $this->productWarehouseRepository = $productWarehouseRepository;
         $this->methodRepository = $methodRepository;
+        $this->taxesRepository = $taxesRepository;
     }
 
     /**
@@ -72,8 +81,9 @@ class PurchaseCreateController extends Controller
         }
 
         $paymentsMethods = $this->methodRepository->all();
+        $taxes = $this->taxesRepository->all();
 
-        return view('transactions.purchases.create', compact('paymentsMethods'));
+        return view('transactions.purchases.create', compact('paymentsMethods', 'taxes'));
     }
 
     /**

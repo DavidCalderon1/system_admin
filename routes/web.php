@@ -23,7 +23,10 @@ Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 
 Route::group(['prefix' => 'config'], function () {
 
-//Users CRUD
+    Route::get('/', 'Config\ConfigurationController@index')
+        ->name('configuration.index');
+
+    //Users CRUD
     Route::group(['prefix' => 'users'], function () {
         Route::get('/', 'User\UserListController@index')
             ->name('users.index');
@@ -71,6 +74,24 @@ Route::group(['prefix' => 'config'], function () {
         Route::delete('/destroy/{role}', 'Role\RoleDeleteController')
             ->name('roles.destroy');
 
+    });
+
+    //Taxes CRUD
+    Route::group(['prefix' => 'taxes'], function () {
+        Route::get('/', 'Tax\TaxesController@index')
+            ->name('taxes.index');
+
+        Route::get('/list', 'Tax\TaxesController@list')
+            ->name('taxes.list');
+
+        Route::post('/create', 'Tax\TaxesController@create')
+            ->name('taxes.create');
+
+        Route::post('/update', 'Tax\TaxesController@update')
+            ->name('taxes.update');
+
+        Route::delete('/delete/{id}', 'Tax\TaxesController@delete')
+            ->name('taxes.delete');
     });
 });
 
@@ -279,5 +300,4 @@ Route::group(['prefix' => 'warehouses'], function () {
 
     Route::delete('/destroy/{id}', 'Warehouse\WarehouseDeleteController')
         ->name('warehouses.destroy');
-
 });

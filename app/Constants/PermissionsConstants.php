@@ -16,7 +16,7 @@ class PermissionsConstants
     public const ROLE_ADMIN_ID = 1;
 
     /**
-     * Permisos crud modulo de usuarios
+     * Permisos crud modulo de usuarios en la configuracion
      */
     public const USER_LIST = 'user-list';
     public const USER_CREATE = 'user-create';
@@ -24,12 +24,20 @@ class PermissionsConstants
     public const USER_DELETE = 'user-delete';
 
     /**
-     * Permisos crud modulo de roles
+     * Permisos crud modulo de roles en la configuracion
      */
     public const ROLE_LIST = 'role-list';
     public const ROLE_CREATE = 'role-create';
     public const ROLE_UPDATE = 'role-update';
     public const ROLE_DELETE = 'role-delete';
+
+    /**
+     * Permisos crud modulo de taxes en la configuracion
+     */
+    public const CONFIG_TAXES_LIST = 'config-taxes-list';
+    public const CONFIG_TAXES_CREATE = 'config-taxes-create';
+    public const CONFIG_TAXES_UPDATE = 'config-taxes-update';
+    public const CONFIG_TAXES_DELETE = 'config-taxes-delete';
 
     /**
      * Permisos crud modulo de Terceros

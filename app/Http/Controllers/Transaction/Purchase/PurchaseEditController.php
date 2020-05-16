@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Transaction\Purchase;
 use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\PaymentMethodRepositoryInterface;
+use App\Repositories\Interfaces\TaxesRepositoryInterface;
 use App\Repositories\Purchases\Interfaces\MainPurchaseRepositoryInterface;
 use App\UsesCases\Interfaces\PurchasesUseCaseInterface;
 use Illuminate\Http\Request;
@@ -32,20 +33,29 @@ class PurchaseEditController extends Controller
     protected $mainPurchaseRepository;
 
     /**
+     * @var TaxesRepositoryInterface
+     */
+    protected $taxesRepository;
+
+    /**
      * PurchaseEditController constructor.
      * @param PurchasesUseCaseInterface $purchasesUseCase
      * @param PaymentMethodRepositoryInterface $methodRepository
      * @param MainPurchaseRepositoryInterface $mainPurchaseRepository
+     * @param TaxesRepositoryInterface $taxesRepository
      */
     public function __construct(
         PurchasesUseCaseInterface $purchasesUseCase,
         PaymentMethodRepositoryInterface $methodRepository,
-        MainPurchaseRepositoryInterface $mainPurchaseRepository
+        MainPurchaseRepositoryInterface $mainPurchaseRepository,
+        TaxesRepositoryInterface $taxesRepository
+
     )
     {
         $this->purchasesUseCase = $purchasesUseCase;
         $this->methodRepository = $methodRepository;
         $this->mainPurchaseRepository = $mainPurchaseRepository;
+        $this->taxesRepository = $taxesRepository;
     }
 
 
@@ -66,8 +76,9 @@ class PurchaseEditController extends Controller
         }
 
         $paymentsMethods = $this->methodRepository->all();
+        $taxes = $this->taxesRepository->all();
 
-        return view('transactions.purchases.edit', compact('paymentsMethods', 'purchase'));
+        return view('transactions.purchases.edit', compact('paymentsMethods', 'taxes','purchase'));
     }
 
     public function update(Request $request)
