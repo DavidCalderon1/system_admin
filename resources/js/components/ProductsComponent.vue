@@ -283,9 +283,4 @@
     div#content-filter {
         display: flex;
     }
-
-    #search {
-        width: 50%;
-    }
-
 </style>

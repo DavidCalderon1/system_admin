@@ -17,7 +17,7 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-Auth::routes();
+Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);
 
 Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 
@@ -221,7 +221,26 @@ Route::group(['prefix' => 'inventory'], function () {
 
         Route::delete('/destroy/{id}', 'Inventory\Product\ProductDeleteController')
             ->name('inventory.products.destroy');
+    });
 
+    Route::group(['prefix' => 'warehouses'], function () {
+        Route::get('/', 'Warehouse\WarehouseListController@index')
+            ->name('warehouses.index');
+
+        Route::get('/list', 'Warehouse\WarehouseListController@list')
+            ->name('warehouses.list');
+
+        Route::get('/all', 'Warehouse\WarehouseListController@getAllWarehouses')
+            ->name('warehouses.all');
+
+        Route::post('/store', 'Warehouse\WarehouseCreateController@store')
+            ->name('warehouses.store');
+
+        Route::post('/update', 'Warehouse\WarehouseEditController@update')
+            ->name('warehouses.update');
+
+        Route::delete('/destroy/{id}', 'Warehouse\WarehouseDeleteController')
+            ->name('warehouses.destroy');
     });
 });
 
@@ -304,30 +323,4 @@ Route::group(['prefix' => 'transactions'], function () {
         Route::delete('/cancel/{purchase_id}', 'Transaction\Purchase\PurchaseCancelController')
             ->name('transactions.purchases.cancel');
     });
-});
-
-Route::group(['prefix' => 'warehouses'], function () {
-    Route::get('/', 'Warehouse\WarehouseListController@index')
-        ->name('warehouses.index');
-
-    Route::get('/list', 'Warehouse\WarehouseListController@list')
-        ->name('warehouses.list');
-
-    Route::get('/all', 'Warehouse\WarehouseListController@getAllWarehouses')
-        ->name('warehouses.all');
-
-    Route::get('/create', 'Warehouse\WarehouseCreateController@create')
-        ->name('warehouses.create');
-
-    Route::post('/store', 'Warehouse\WarehouseCreateController@store')
-        ->name('warehouses.store');
-
-    Route::get('/edit/{id}', 'Warehouse\WarehouseEditController@edit')
-        ->name('warehouses.edit');
-
-    Route::post('/update/{category}', 'Warehouse\WarehouseEditController@update')
-        ->name('warehouses.update');
-
-    Route::delete('/destroy/{id}', 'Warehouse\WarehouseDeleteController')
-        ->name('warehouses.destroy');
 });

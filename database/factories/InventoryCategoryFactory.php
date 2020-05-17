@@ -9,7 +9,7 @@ use Faker\Generator as Faker;
 $factory->define(InventoryCategory::class, function (Faker $faker) {
     return [
         'parent_id' => 0,
-        'name' => $faker->name,
-        'description' => $faker->text,
+        'name' => strtoupper($faker->name),
+        'description' => strtoupper($faker->text),
     ];
 });

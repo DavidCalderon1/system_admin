@@ -35,12 +35,12 @@
                                 <div class="card-body">
                                     <h5 class="card-title">Autenticacion y permisos</h5>
                                     @if(auth()->user()->can(\App\Constants\PermissionsConstants::ROLE_LIST))
-                                        <a href="{{route('roles.index')}}" class="card-link" target="_blank">Roles</a>
+                                        <a href="{{route('roles.index')}}" class="card-link">Roles</a>
                                         <br>
                                     @endif
                                     @if(auth()->user()->can(\App\Constants\PermissionsConstants::USER_LIST))
                                         <a href="{{route('users.index')}}" class="card-link"
-                                           target="_blank">Usuarios</a><br>
+                                        >Usuarios</a><br>
                                     @endif
                                 </div>
                             </div>
@@ -71,18 +71,18 @@
                                     <h5 class="card-title">Catalogos</h5>
 
                                     @if(auth()->user()->can(\App\Constants\PermissionsConstants::COST_CENTER_LIST))
-                                        <a href="{{route('costCenter.index')}}" class="card-link" target="_blank">Centros
+                                        <a href="{{route('costCenter.index')}}" class="card-link">Centros
                                             de
                                             costo</a><br>
                                     @endif
                                     @if(auth()->user()->can(\App\Constants\PermissionsConstants::CONCEPT_LIST))
-                                        <a href="{{route('concepts.index')}}" class="card-link" target="_blank">Conceptos
+                                        <a href="{{route('concepts.index')}}" class="card-link">Conceptos
                                             de
                                             gasto</a><br>
                                     @endif
                                     @if(auth()->user()->can(\App\Constants\PermissionsConstants::CONFIG_TAXES_LIST))
                                         <a href="{{route('taxes.index')}}" class="card-link"
-                                           target="_blank">Impuestos</a>
+                                        >Impuestos</a>
                                     @endif
                                 </div>
                             </div>

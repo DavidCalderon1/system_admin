@@ -54,75 +54,78 @@
             </div>
         </div>
         <hr>
-        <table class="table table-striped table-hover table-bordered table-sm">
-            <thead class="thead-light text-center">
-            <tr>
-                <th style="width:200px">Producto</th>
-                <th style="width:250px">Descripción</th>
-                <th style="width:200px">Bodega</th>
-                <th style="width:150px;">Cant.</th>
-                <th style="width:70px;">% Iva</th>
-                <th style="width:auto;">Ret. en la fuente</th>
-                <th style="width:180px;">Total</th>
-                <th style="width:48px;"></th>
-            </tr>
-            </thead>
-            <tbody class="text-center">
-            <tr v-for="(product,k) in request.products" :key="k">
-                <td>
-                    <div>
-                        <select2-ajax @response="loadProductData($event, product)"
-                                      :url="routeFilterProducts"
-                                      :value="product.id"
-                                      style="width: 100%"/>
-                    </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-bordered table-sm">
+                <thead class="thead-light text-center">
+                <tr>
+                    <th style="width:200px">Producto</th>
+                    <th style="width:250px">Descripción</th>
+                    <th style="width:200px">Bodega</th>
+                    <th style="width:150px;">Cant.</th>
+                    <th style="width:70px;">% Iva</th>
+                    <th style="width:auto;">Ret. en la fuente</th>
+                    <th style="width:180px;">Total</th>
+                    <th style="width:48px;"></th>
+                </tr>
+                </thead>
+                <tbody class="text-center">
+                <tr v-for="(product,k) in request.products" :key="k">
+                    <td>
+                        <div>
+                            <select2-ajax @response="loadProductData($event, product)"
+                                          :url="routeFilterProducts"
+                                          :value="product.id"
+                                          style="width: 100%"/>
+                        </div>
 
-                    <small class="form-text text-danger"
-                           v-if="validate('products.'+k+'.name')">{{errors['products.'+k+'.name'][0]}}</small>
-                </td>
-                <td>
-                    <textarea class="form-control form-control-sm" v-model="product.description" rows="1"></textarea>
-                    <small class="form-text text-danger"
-                           v-if="validate('products.'+k+'.description')">{{errors['products.'+k+'.description'][0]}}</small>
-                </td>
-                <td>
-                    <div>
-                        <Select2
-                            v-bind:options="product.warehouses"
-                            v-model="product.warehouse_id"
-                            :settings="{dropdownAutoWidth:'true', width: 'resolve',}"
-                            v-bind:id='"select_warehouse_"+k'/>
-                    </div>
-                    <small class="form-text text-danger"
-                           v-if="validate('products.'+k+'.warehouse_id')">{{errors['products.'+k+'.warehouse_id'][0]}}</small>
-                </td>
-                <td>
-                    <input type="number" class="form-control form-control-sm" min="1" v-model="product.quantity">
-                    <small class="form-text text-danger"
-                           v-if="validate('products.'+k+'.quantity')">{{errors['products.'+k+'.quantity'][0]}}</small>
-                </td>
-                <td>
-                    <input type="text" class="form-control form-control-sm" v-model="product.vat">
-                    <small class="form-text text-danger"
-                           v-if="validate('products.'+k+'.vat')">{{errors['products.'+k+'.vat'][0]}}</small>
-                </td>
-                <td>
-                    <select class="form-control form-control-sm" style="width: auto"
-                            v-model="product.withholding_tax_percentage">
-                        <option v-for="withholding_tax_percentage in withholding_tax_percentages"
-                                :value="withholding_tax_percentage.percentage">
-                            {{withholding_tax_percentage.name}}
-                        </option>
-                    </select>
-                    <small class="form-text text-danger"
-                           v-if="validate('products.'+k+'.withholding_tax_percentage')">{{errors['products.'+k+'.withholding_tax_percentage'][0]}}</small>
-                </td>
-                <td>
-                    <currency-input-component v-model="product.total" style="width: auto"></currency-input-component>
-                    <small class="form-text text-danger"
-                           v-if="validate('products.'+k+'.total')">{{errors['products.'+k+'.total'][0]}}</small>
-                </td>
-                <td>
+                        <small class="form-text text-danger"
+                               v-if="validate('products.'+k+'.name')">{{errors['products.'+k+'.name'][0]}}</small>
+                    </td>
+                    <td>
+                        <textarea class="form-control form-control-sm" v-model="product.description"
+                                  rows="1"></textarea>
+                        <small class="form-text text-danger"
+                               v-if="validate('products.'+k+'.description')">{{errors['products.'+k+'.description'][0]}}</small>
+                    </td>
+                    <td>
+                        <div>
+                            <Select2
+                                v-bind:options="product.warehouses"
+                                v-model="product.warehouse_id"
+                                :settings="{dropdownAutoWidth:'true', width: 'resolve',}"
+                                v-bind:id='"select_warehouse_"+k'/>
+                        </div>
+                        <small class="form-text text-danger"
+                               v-if="validate('products.'+k+'.warehouse_id')">{{errors['products.'+k+'.warehouse_id'][0]}}</small>
+                    </td>
+                    <td>
+                        <input type="number" class="form-control form-control-sm" min="1" v-model="product.quantity">
+                        <small class="form-text text-danger"
+                               v-if="validate('products.'+k+'.quantity')">{{errors['products.'+k+'.quantity'][0]}}</small>
+                    </td>
+                    <td>
+                        <input type="text" class="form-control form-control-sm" v-model="product.vat">
+                        <small class="form-text text-danger"
+                               v-if="validate('products.'+k+'.vat')">{{errors['products.'+k+'.vat'][0]}}</small>
+                    </td>
+                    <td>
+                        <select class="form-control form-control-sm" style="width: auto"
+                                v-model="product.withholding_tax_percentage">
+                            <option v-for="withholding_tax_percentage in withholding_tax_percentages"
+                                    :value="withholding_tax_percentage.percentage">
+                                {{withholding_tax_percentage.name}}
+                            </option>
+                        </select>
+                        <small class="form-text text-danger"
+                               v-if="validate('products.'+k+'.withholding_tax_percentage')">{{errors['products.'+k+'.withholding_tax_percentage'][0]}}</small>
+                    </td>
+                    <td>
+                        <currency-input-component v-model="product.total"
+                                                  style="width: auto"></currency-input-component>
+                        <small class="form-text text-danger"
+                               v-if="validate('products.'+k+'.total')">{{errors['products.'+k+'.total'][0]}}</small>
+                    </td>
+                    <td>
                     <span>
                         <i class="fas fa-minus-circle" @click="removeProductRow(k)"
                            v-show="k || ( !k && request.products.length > 1)"></i>
@@ -130,36 +133,36 @@
                         <i class="fas fa-plus-circle" @click="addProductRow(k)"
                            v-show="k == request.products.length-1"></i>
                     </span>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="4"></td>
-                <td colspan="2">Total bruto</td>
-                <td colspan="3">$ {{formatPrice(calculateGrossTotal)}}</td>
-            </tr>
-            <tr>
-                <td colspan="4"></td>
-                <td colspan="2">Subtotal</td>
-                <td colspan="3">$ {{formatPrice(calculateSubTotal)}}</td>
-            </tr>
-            <tr>
-                <td colspan="4"></td>
-                <td colspan="2">Retención en la fuente</td>
-                <td colspan="3">$ {{formatPrice(calculateTaxesTotal)}}</td>
-            </tr>
-            <tr>
-                <td colspan="4"></td>
-                <td colspan="2">IVA</td>
-                <td colspan="3">$ {{formatPrice(calculateTotalVat)}}</td>
-            </tr>
-            <tr>
-                <td colspan="4"></td>
-                <td colspan="2"><b>Total neto $</b></td>
-                <td colspan="3">$ {{formatPrice(calculateTotal)}}</td>
-            </tr>
-            </tbody>
-        </table>
-
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4"></td>
+                    <td colspan="2">Total bruto</td>
+                    <td colspan="3">$ {{formatPrice(calculateGrossTotal)}}</td>
+                </tr>
+                <tr>
+                    <td colspan="4"></td>
+                    <td colspan="2">Subtotal</td>
+                    <td colspan="3">$ {{formatPrice(calculateSubTotal)}}</td>
+                </tr>
+                <tr>
+                    <td colspan="4"></td>
+                    <td colspan="2">Retención en la fuente</td>
+                    <td colspan="3">$ {{formatPrice(calculateTaxesTotal)}}</td>
+                </tr>
+                <tr>
+                    <td colspan="4"></td>
+                    <td colspan="2">IVA</td>
+                    <td colspan="3">$ {{formatPrice(calculateTotalVat)}}</td>
+                </tr>
+                <tr>
+                    <td colspan="4"></td>
+                    <td colspan="2"><b>Total neto $</b></td>
+                    <td colspan="3">$ {{formatPrice(calculateTotal)}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
         <section v-if="calculateTotal > 0">
             <h6>Forma de pago</h6>
             <table class="text-center">
@@ -333,11 +336,11 @@
             calculateSubTotal() {
                 return this.getSubTotal()
             },
-            calculateTaxesTotal(){
-              return this.getTotalTaxes();
+            calculateTaxesTotal() {
+                return this.getTotalTaxes();
             },
-            calculateTotalVat(){
-              return this.getTotalVat();
+            calculateTotalVat() {
+                return this.getTotalVat();
             },
             calculateTotal() {
                 return this.getTotal();
@@ -354,7 +357,7 @@
                     if (this.request.products[i].warehouse_id === 0 || this.request.products[i].warehouse_id === '') {
                         return false;
                     }
-                    if (this.request.products[i].withholding_tax_percentage < 0 || this.request.products[i].withholding_tax_percentage==null) {
+                    if (this.request.products[i].withholding_tax_percentage < 0 || this.request.products[i].withholding_tax_percentage == null) {
                         return false;
                     }
                 }
@@ -377,7 +380,7 @@
                 return this.request.provider_id > 0
                     && this.request.date.length > 0
                     && this.request.provider_invoice_number.length > 0
-                    && (this.request.include_taxes == 0 ||  this.request.include_taxes == 1)
+                    && (this.request.include_taxes == 0 || this.request.include_taxes == 1)
                     && this.getTotal() > 0
                     && this.getTotalPayments() === this.getTotal();
             }
@@ -436,7 +439,7 @@
                 subTotal -= this.getTotalVat();
                 return Math.round(subTotal * 100) / 100;
             },
-            getTotalTaxes(){
+            getTotalTaxes() {
                 let totalTaxes = 0;
                 for (let i in this.request.products) {
                     totalTaxes += this.request.products[i].total * this.request.products[i].withholding_tax_percentage / 100;

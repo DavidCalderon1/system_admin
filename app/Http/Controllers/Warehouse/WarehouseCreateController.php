@@ -50,17 +50,6 @@ class WarehouseCreateController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function create()
-    {
-        if (!$this->hasPermission(PermissionsConstants::WAREHOUSE_CREATE)) {
-            abort(404);
-        }
-        return view('warehouses.create');
-    }
-
-    /**
      * @param WarehoseRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
@@ -80,12 +69,10 @@ class WarehouseCreateController extends Controller
             $saved = $this->warehousesRepository->store($request);
 
             if (!$saved) {
-                throw new \Exception('Ah ocurrido un error almacenando la bodega.', 500);
+                throw new \Exception('Ha ocurrido un error almacenando la bodega.', 500);
             }
 
-            $this->session->flash('message', 'Bodega creada correctamente.');
-
-            return $this->response(201);
+            return $this->response(201, 'Bodega creada correctamente.');
 
         } catch (\Exception $exception) {
             return $this->response($exception->getCode(), $exception->getMessage());

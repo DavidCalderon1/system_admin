@@ -26,6 +26,9 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
     <script src="{{ mix('/js/app.js') }}" defer></script>
+
+    <script src="https://unpkg.com/vue-scroll-table"></script>
+
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -223,24 +226,17 @@
     @endguest
     <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-
             <!-- Main content -->
-            <section class="content mt-3">
-                <div class="container-fluid">
-                    <div class="card">
-                        <div class="card-header">
-                            <i class="fa fa-align-justify"></i> @yield('title')
-                        </div>
-                        <!-- /.card-header -->
-                        <div class="card-body">
-                            @yield('content')
-                        </div>
-                        <!-- /.card-body -->
-                    </div>
-                    <!-- /.card -->
+            <div class="card">
+                <div class="card-header">
+                    <h4>@yield('title')</h4>
                 </div>
-
-            </section>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    @yield('content')
+                </div>
+                <!-- /.card-body -->
+            </div>
         </div><!-- /.container-fluid -->
         <!-- /.content -->
     </div>

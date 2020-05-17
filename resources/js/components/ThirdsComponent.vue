@@ -318,10 +318,6 @@
         display: flex;
     }
 
-    #search {
-        width: 50%;
-    }
-
     .modal-body table {
         max-width: 100%;
     }
