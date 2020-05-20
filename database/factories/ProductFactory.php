@@ -7,7 +7,7 @@ use App\Models\InventoryCategory;
 use Faker\Generator as Faker;
 
 $factory->define(Product::class, function (Faker $faker) {
-    $base_price = round($faker->randomFloat(), 2);
+    $base_price = round($faker->randomFloat(2,10000), 2);
     return [
         'category_id' => function () {
             return factory(InventoryCategory::class)->create();

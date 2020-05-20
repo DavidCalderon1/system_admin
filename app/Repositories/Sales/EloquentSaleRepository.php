@@ -43,7 +43,7 @@ class EloquentSaleRepository implements SaleRepositoryInterface
         }
 
         $sales = $this->sale->with(['saleProducts'])
-            ->where(DB::raw("CONCAT(`prefix`, '-', `consecutive`)"), 'LIKE', "%{$searchValue}%")
+            ->where(DB::raw("CONCAT(prefix, '-', consecutive)"), 'LIKE', "%{$searchValue}%")
             ->orWhere('client_name', "LIKE", "%{$searchValue}%")
             ->orWhere('status', "LIKE", "%{$searchValue}%")
             ->orderBy($orderBy, $orderByDir);

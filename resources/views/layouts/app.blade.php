@@ -26,9 +26,6 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
     <script src="{{ mix('/js/app.js') }}" defer></script>
-
-    <script src="https://unpkg.com/vue-scroll-table"></script>
-
 </head>
 
 <body class="hold-transition sidebar-mini">

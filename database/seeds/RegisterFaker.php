@@ -21,6 +21,7 @@ class RegisterFaker extends Seeder
         $client = factory(\App\Models\ThirdParties::class)->create([
             'type' => 'client'
         ]);
+
         $sale = factory(\App\Models\Sale::class)->create([
             'client_id' => $client->id,
             'client_identity_type' => $client->identity_type,
@@ -29,11 +30,12 @@ class RegisterFaker extends Seeder
             'client_last_name' => $client->last_name,
             'client_contact' => $client->email,
         ]);
-        factory(\App\Models\SaleProduct::class, 100)->create([
+
+        factory(\App\Models\SaleProduct::class, 10)->create([
             'sale_id' => $sale->id
         ]);
 
-        factory(\App\Models\SalePayment::class, 5)->create([
+        factory(\App\Models\SalePayment::class, 10)->create([
             'sale_id' => $sale->id
         ]);
     }
