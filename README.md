@@ -8,10 +8,10 @@ Este proyecto esta hecho el laravel 7 y fue desarrollado en linux ubuntu 18.04
 - node
 - npm
 
-Proceso de instación:
-* instalar los requerimientos 
+**Instación:**
+* Instalar los requerimientos 
 (Dependiendo del sistema puede que en algun momento pida extensiones de php)
-* Crear una base de datos mysql con el nombre faro_system _admin
+* Crear una base de datos mysql con el nombre faro_system_admin
 * Clonar el repositorio
 * Una vez clonado el repositorio se debe copiar el fichero .env.example y
 crear uno nuevo con el nombre .env, dentro de el debe modificar 
@@ -30,28 +30,29 @@ DB_USERNAME=USUARIO_MYSQL
 DB_PASSWORD=PASSWORD_MYSQL
 
 Una vez configurada la base de datos y las variables de entorno
-Se deben ejecutar los siguientes comandos:
+se deben ejecutar los siguientes comandos:
 
-* composer install
-* php artisan migrate
-* php artisan bd:seed
-* npm install
-* npm run dev
+* **composer install**
+* **php artisan migrate**
+* **php artisan bd:seed**
+* **npm install**
+* **npm run dev**
 
-Nota en caso de que npm p genere error por algun pquete faltante ejecutar:
-* npm install vue bootstrap-vue bootstrap 
-* npm install vue-alertify 
-* npm install v-select2-component –save  
+**Nota** en caso de que npm genere error por algun paquete faltante ejecutar:
+* **npm install vue bootstrap-vue bootstrap** 
+* **npm install vue-alertify** 
+* **npm install v-select2-component –save**  
 
 Para ejecutar el serve del proyecto para iniciar la aplicacion ejecutar:
-* php artisan serve
+* *php artisan serve**
+
 Como resultado le retornará la url con el puerto que utilizó el proyecto para ser ejecutado.
 
 La URL lo enviará al login, se debe ingresar con las credenciales:
- * Usuario: admin@admin.com
- * Password: admin
+ * Usuario: **admin@admin.com**
+ * Password: **admin**
  
-Nota: Los modulos dessarrollados fueron:
+**Nota:** Los modulos dessarrollados fueron:
 * Terceros (Terminado)
 * Inventario-> Productos (Terinado)
 * Inventario-> Categorias de productos (Terminado)
