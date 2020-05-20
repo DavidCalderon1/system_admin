@@ -19,6 +19,8 @@ class SaleProduct extends Model
         'description',
     ];
 
+    public $timestamps=false;
+
     /**
      * @return BelongsTo
      */

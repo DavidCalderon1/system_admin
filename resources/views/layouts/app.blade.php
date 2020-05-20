@@ -203,32 +203,15 @@
                                     <p>Reportes</p>
                                 </a>
                             </li>
-                            @if(auth()->user()->can(\App\Constants\PermissionsConstants::USER_LIST) || auth()->user()->can(\App\Constants\PermissionsConstants::ROLE_LIST))
-                                <li class="nav-item has-treeview">
-                                    <a href="#" class="nav-link">
+                            @if(auth()->user()->can(\App\Constants\PermissionsConstants::USER_LIST)
+                                || auth()->user()->can(\App\Constants\PermissionsConstants::ROLE_LIST)
+                                || auth()->user()->can(\App\Constants\PermissionsConstants::CONFIG_TAXES_LIST)
+                                || auth()->user()->can(\App\Constants\PermissionsConstants::COST_CENTER_LIST))
+                                <li class="nav-item">
+                                    <a href="{{route('configuration.index')}}" class="nav-link">
                                         <i class="nav-icon fa fa-plus-square-o"></i>
-                                        <p>Configuracion<i class="right fa fa-angle-left"></i></p>
+                                        <p>Configuración</p>
                                     </a>
-                                    @if(auth()->user()->can(\App\Constants\PermissionsConstants::USER_LIST))
-                                        <ul class="nav nav-treeview">
-                                            <li class="nav-item">
-                                                <a href="{{route('users.index')}}" class="nav-link">
-                                                    <i class="fas fa-users"></i>
-                                                    <p>Usuarios</p>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    @endif
-                                    @if(auth()->user()->can(\App\Constants\PermissionsConstants::ROLE_LIST))
-                                        <ul class="nav nav-treeview">
-                                            <li class="nav-item">
-                                                <a href="{{route('roles.index')}}" class="nav-link">
-                                                    <i class="fas fa-user-tag"></i>
-                                                    <p>Roles</p>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    @endif
                                 </li>
                             @endif
                         </ul>
@@ -240,24 +223,17 @@
     @endguest
     <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-
             <!-- Main content -->
-            <section class="content mt-3">
-                <div class="container-fluid">
-                    <div class="card">
-                        <div class="card-header">
-                            <i class="fa fa-align-justify"></i> @yield('title')
-                        </div>
-                        <!-- /.card-header -->
-                        <div class="card-body">
-                            @yield('content')
-                        </div>
-                        <!-- /.card-body -->
-                    </div>
-                    <!-- /.card -->
+            <div class="card">
+                <div class="card-header">
+                    <h4>@yield('title')</h4>
                 </div>
-
-            </section>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    @yield('content')
+                </div>
+                <!-- /.card-body -->
+            </div>
         </div><!-- /.container-fluid -->
         <!-- /.content -->
     </div>

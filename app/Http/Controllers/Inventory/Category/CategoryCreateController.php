@@ -29,30 +29,20 @@ class CategoryCreateController extends Controller
         $this->inventoryCategory = $inventoryCategory;
     }
 
-    public function create()
-    {
-        if (!$this->hasPermission(PermissionsConstants::INVENTORY_CATEGORY_CREATE)) {
-            abort(404);
-        }
-
-        return view('inventory.categories.create');
-
-    }
-
     /**
      * @param CategoryRequest $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(CategoryRequest $request)
     {
         $data = $request->validated();
-        $data['description'] = (!empty($data['description'])) ? $data['description'] : '';
-        $response = $this->inventoryCategory->store($data);
 
-        if (empty($response)) {
-            return redirect()->back()->withInput()->withErrors(["Ah ocurrido un error almacenadno la categoria"]);
+        $created = $this->inventoryCategory->store($data);
+
+        if (!$created) {
+            return $this->response(500, 'Ha ocurrido un error creando la categoría.');
         }
 
-        return redirect(route('inventory.category.index'))->with('message', 'Categoría creada correctamente');
+        return $this->response(201, 'Categoría creada correctamente');
     }
 }

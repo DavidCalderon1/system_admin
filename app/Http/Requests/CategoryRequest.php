@@ -27,7 +27,7 @@ class CategoryRequest extends FormRequest
 
         return [
             'name' => ['required', 'string', $unique],
-            'description' => ['string', 'nullable'],
+            'description' => ['string', 'required'],
         ];
     }
 

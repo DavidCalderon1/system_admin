@@ -10,15 +10,19 @@ require('../../node_modules/bootstrap-select/dist/js/bootstrap-select');
 import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
 import VueAlertify from 'vue-alertify';
 import DataTable from 'laravel-vue-datatable';
+import VueVirtualScroller from "vue-virtual-scroller";
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import "bootstrap-select/sass/bootstrap-select.scss";
+import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 
 
 window.Vue = require('vue');
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
+Vue.use(VueVirtualScroller);
+
 Vue.use(VueAlertify,{
     notifier: {
         // auto-dismiss wait time (in seconds)
@@ -26,7 +30,7 @@ Vue.use(VueAlertify,{
         // default position
         position: 'top-right',
         // adds a close button to notifier messages
-        closeButton: false,
+        closeButton: true,
     },
     glossary: {
         // dialogs default title
@@ -59,7 +63,6 @@ Vue.component('form-create-third-component', require('./components/FormCreateThi
 Vue.component('form-edit-third-component', require('./components/FormEditThirdComponent').default);
 Vue.component('inventory-categories-component', require('./components/InventoryCategoriesComponent').default);
 Vue.component('warehouses-component', require('./components/WarehousesComponent').default);
-Vue.component('form-create-warehouse-component', require('./components/FormCreateWarehouseComponent').default);
 Vue.component('form-create-product-component', require('./components/FormCreateProductComponent').default);
 Vue.component('products-component', require('./components/ProductsComponent').default);
 Vue.component('create-invoices-component', require('./components/CreateInvoicesComponent').default);
@@ -70,6 +73,10 @@ Vue.component('select2-ajax', require('./components/Select2Ajax').default);
 Vue.component('purchases-component', require('./components/PurchasesComponent').default);
 Vue.component('edit-purchase-component', require('./components/EditPurchaseComponent').default);
 Vue.component('edit-sale-component', require('./components/EditSaleComponent').default);
+Vue.component('taxes-component', require('./components/TaxesComponent').default);
+Vue.component('cost-center-component', require('./components/CostCenterComponent').default);
+Vue.component('concepts-component', require('./components/ConceptsComponent').default);
+Vue.component('RecycleScroller', VueVirtualScroller.RecycleScroller)
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

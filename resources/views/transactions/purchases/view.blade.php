@@ -14,12 +14,13 @@
     <div class="container" id="view-sale">
         <div class="row  text-right">
             <div class="col-lg-12">
-                @if($purchase['status'] !=='Anulada')
+                @if($purchase['status'] !=='Anulada' && $userCanCancel)
                     <button class="btn btn-danger btn-sm pull-right ml-2" id="cancel">Anular</button>
+                @endif
+                @if($purchase['status'] !=='Anulada'  && $userCanEdit)
                     <a href="{{route('transactions.purchases.edit', $purchase['id'])}}"
                        class="btn btn-info btn-sm pull-right ml-2">Editar</a>
                 @endif
-
                 <a href="{{route('transactions.purchases.print', $purchase['id'])}}" target="_blank"
                    class="btn btn-primary btn-sm pull-right ml-2">Imprimir</a>
 

@@ -217,7 +217,7 @@
                     type: [
                         {value: 'client', text: 'Cliente'},
                         {value: 'provider', text: 'Proveedor'},
-                        {value: 'other', text: 'Otros'}
+                        {value: 'other', text: 'Otro'}
                     ],
                     identity_type: [
                         {value: 'CC', text: 'CC'},

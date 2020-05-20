@@ -45,6 +45,7 @@ class SaleEditController extends Controller
         MainSaleRepositoryInterface $mainSaleRepository
     )
     {
+        $this->middleware('auth');
         $this->salesUseCase = $salesUseCase;
         $this->methodRepository = $methodRepository;
         $this->mainSaleRepository = $mainSaleRepository;

@@ -52,36 +52,19 @@ class WarehouseListController extends Controller
             abort(404);
         }
 
-        $filer = $request->validate([
-            'name' => 'string|nullable',
-            'country' => 'string|nullable',
-            'address' => 'string|nullable',
-            'phone_number' => 'string|nullable',
-        ]);
+        $length = $request->input('length', '');
+        $orderBy = $request->input('column', ''); //Index
+        $orderByDir = $request->input('dir', 'asc');
+        $searchValue = (!empty($request->input('search', ''))) ? $request->input('search') : '';
+        $draw = $request->input('draw', 0);
 
-        $warehouses = $this->warehousesRepository->getPagination(10, $filer);
+        $warehouses = $this->warehousesRepository->getPagination($length, $orderBy, $orderByDir, $searchValue);
 
         if (empty($warehouses)) {
             return $this->response(404, 'Bodegas no encontradas');
         }
 
-        $response = [
-            'data' => $warehouses['data'],
-            'pagination' => [
-                'current_page' => $warehouses['current_page'],
-                'first_page_url' => $warehouses['first_page_url'],
-                'from' => $warehouses['from'],
-                'last_page' => $warehouses['last_page'],
-                'last_page_url' => $warehouses['last_page_url'],
-                'next_page_url' => $warehouses['next_page_url'],
-                'per_page' => $warehouses['per_page'],
-                'prev_page_url' => $warehouses['prev_page_url'],
-                'to' => $warehouses['to'],
-                'total' => $warehouses['total']
-            ],
-        ];
-
-        return response()->json($response, 200);
+        return responseDataTable($warehouses, $length, $orderBy, $orderByDir, $draw, $searchValue);
     }
 
     /**

@@ -10,11 +10,11 @@
         @endif
         <inventory-categories-component
             list-route="{{route('inventory.category.list')}}"
-            create-route="{{route('inventory.category.create')}}"
-            edit-route="{{route('inventory.category.edit','__ID__')}}"
-            destroy-route="{{route('inventory.category.destroy','__ID__')}}"
+            create-route="{{route('inventory.category.store')}}"
+            update-route="{{route('inventory.category.update')}}"
+            delete-route="{{route('inventory.category.destroy','__ID__')}}"
             user-can-create="{{ $userSessionCanCreate }}"
-            user-can-update="{{ $userSessionCanUpdate }}"
+            user-can-edit="{{ $userSessionCanUpdate }}"
             user-can-delete="{{ $userSessionCanDelete }}"
         ></inventory-categories-component>
     </div>

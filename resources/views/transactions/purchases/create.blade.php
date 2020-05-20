@@ -10,5 +10,6 @@
         route-sale-view="{{route('transactions.purchases.view',['purchase_id' => '__ID__'])}}"
         route-sale-download="{{route('transactions.purchases.download',['purchase_id' => '__ID__'])}}"
         payment-methods="{{json_encode($paymentsMethods)}}"
+        taxes="{{json_encode($taxes)}}"
     ></create-purchase-component>
 @endsection

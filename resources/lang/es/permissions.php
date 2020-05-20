@@ -40,6 +40,19 @@ return [
         PermissionsConstants::PURCHASE_VIEW => 'Ver Detalles de Compras',
         PermissionsConstants::PURCHASE_EDIT => 'Editar Compras',
         PermissionsConstants::PURCHASE_CREATE => 'Crear Compras',
-        PermissionsConstants::PURCHASE_CANCEL => 'Cancelar Compras',
+        PermissionsConstants::PURCHASE_CANCEL => 'Anular Compras',
+        PermissionsConstants::CONFIG_TAXES_LIST => 'Listar Impuestos',
+        PermissionsConstants::CONFIG_TAXES_CREATE => 'Crear Impuestos',
+        PermissionsConstants::CONFIG_TAXES_UPDATE => 'Editar Impuestos',
+        PermissionsConstants::CONFIG_TAXES_DELETE => 'Eliminar Impuestos',
+        PermissionsConstants::COST_CENTER_LIST => 'Listar Centros de Costo',
+        PermissionsConstants::COST_CENTER_CREATE => 'Crear Centros de Costo',
+        PermissionsConstants::COST_CENTER_UPDATE => 'Editar Centros de Costo',
+        PermissionsConstants::COST_CENTER_DELETE => 'Eliminar Centros de Costo',
+
+        PermissionsConstants::CONCEPT_LIST => 'Listar Conceptos de Gastos',
+        PermissionsConstants::CONCEPT_CREATE => 'Crear Conceptos de Gastos',
+        PermissionsConstants::CONCEPT_UPDATE => 'Editar Conceptos de Gastos',
+        PermissionsConstants::CONCEPT_DELETE => 'Eliminar Conceptos de Gastos',
     ]
 ];

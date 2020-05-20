@@ -17,13 +17,16 @@ Route::get('/', function () {
     return redirect('/login');
 });
 
-Auth::routes();
+Auth::routes(['register' => false, 'reset' => false, 'confirm' => false]);
 
 Route::get('/dashboard', 'HomeController@index')->name('dashboard');
 
 Route::group(['prefix' => 'config'], function () {
 
-//Users CRUD
+    Route::get('/', 'Config\ConfigurationController@index')
+        ->name('configuration.index');
+
+    //Users CRUD
     Route::group(['prefix' => 'users'], function () {
         Route::get('/', 'User\UserListController@index')
             ->name('users.index');
@@ -71,6 +74,60 @@ Route::group(['prefix' => 'config'], function () {
         Route::delete('/destroy/{role}', 'Role\RoleDeleteController')
             ->name('roles.destroy');
 
+    });
+
+    //Taxes CRUD
+    Route::group(['prefix' => 'taxes'], function () {
+        Route::get('/', 'Tax\TaxesController@index')
+            ->name('taxes.index');
+
+        Route::get('/list', 'Tax\TaxesController@list')
+            ->name('taxes.list');
+
+        Route::post('/create', 'Tax\TaxesController@create')
+            ->name('taxes.create');
+
+        Route::post('/update', 'Tax\TaxesController@update')
+            ->name('taxes.update');
+
+        Route::delete('/delete/{id}', 'Tax\TaxesController@delete')
+            ->name('taxes.delete');
+    });
+
+    //Cost Center CRUD
+    Route::group(['prefix' => 'costCenter'], function () {
+        Route::get('/', 'CostCenter\CostCenterController@index')
+            ->name('costCenter.index');
+
+        Route::get('/list', 'CostCenter\CostCenterController@list')
+            ->name('costCenter.list');
+
+        Route::post('/create', 'CostCenter\CostCenterController@create')
+            ->name('costCenter.create');
+
+        Route::post('/update', 'CostCenter\CostCenterController@update')
+            ->name('costCenter.update');
+
+        Route::delete('/delete/{id}', 'CostCenter\CostCenterController@delete')
+            ->name('costCenter.delete');
+    });
+
+    //Concepts CRUD
+    Route::group(['prefix' => 'concepts'], function () {
+        Route::get('/', 'Concept\ConceptController@index')
+            ->name('concepts.index');
+
+        Route::get('/list', 'Concept\ConceptController@list')
+            ->name('concepts.list');
+
+        Route::post('/create', 'Concept\ConceptController@create')
+            ->name('concepts.create');
+
+        Route::post('/update', 'Concept\ConceptController@update')
+            ->name('concepts.update');
+
+        Route::delete('/delete/{id}', 'Concept\ConceptController@delete')
+            ->name('concepts.delete');
     });
 });
 
@@ -128,16 +185,10 @@ Route::group(['prefix' => 'inventory'], function () {
         Route::get('/all', 'Inventory\Category\CategoryListController@getAllCategories')
             ->name('inventory.category.all');
 
-        Route::get('/create', 'Inventory\Category\CategoryCreateController@create')
-            ->name('inventory.category.create');
-
         Route::post('/store', 'Inventory\Category\CategoryCreateController@store')
             ->name('inventory.category.store');
 
-        Route::get('/edit/{id}', 'Inventory\Category\CategoryEditController@edit')
-            ->name('inventory.category.edit');
-
-        Route::post('/update/{category}', 'Inventory\Category\CategoryEditController@update')
+        Route::post('/update', 'Inventory\Category\CategoryEditController@update')
             ->name('inventory.category.update');
 
         Route::delete('/destroy/{id}', 'Inventory\Category\CategoryDeleteController')
@@ -170,7 +221,26 @@ Route::group(['prefix' => 'inventory'], function () {
 
         Route::delete('/destroy/{id}', 'Inventory\Product\ProductDeleteController')
             ->name('inventory.products.destroy');
+    });
 
+    Route::group(['prefix' => 'warehouses'], function () {
+        Route::get('/', 'Warehouse\WarehouseListController@index')
+            ->name('warehouses.index');
+
+        Route::get('/list', 'Warehouse\WarehouseListController@list')
+            ->name('warehouses.list');
+
+        Route::get('/all', 'Warehouse\WarehouseListController@getAllWarehouses')
+            ->name('warehouses.all');
+
+        Route::post('/store', 'Warehouse\WarehouseCreateController@store')
+            ->name('warehouses.store');
+
+        Route::post('/update', 'Warehouse\WarehouseEditController@update')
+            ->name('warehouses.update');
+
+        Route::delete('/destroy/{id}', 'Warehouse\WarehouseDeleteController')
+            ->name('warehouses.destroy');
     });
 });
 
@@ -253,31 +323,4 @@ Route::group(['prefix' => 'transactions'], function () {
         Route::delete('/cancel/{purchase_id}', 'Transaction\Purchase\PurchaseCancelController')
             ->name('transactions.purchases.cancel');
     });
-});
-
-Route::group(['prefix' => 'warehouses'], function () {
-    Route::get('/', 'Warehouse\WarehouseListController@index')
-        ->name('warehouses.index');
-
-    Route::get('/list', 'Warehouse\WarehouseListController@list')
-        ->name('warehouses.list');
-
-    Route::get('/all', 'Warehouse\WarehouseListController@getAllWarehouses')
-        ->name('warehouses.all');
-
-    Route::get('/create', 'Warehouse\WarehouseCreateController@create')
-        ->name('warehouses.create');
-
-    Route::post('/store', 'Warehouse\WarehouseCreateController@store')
-        ->name('warehouses.store');
-
-    Route::get('/edit/{id}', 'Warehouse\WarehouseEditController@edit')
-        ->name('warehouses.edit');
-
-    Route::post('/update/{category}', 'Warehouse\WarehouseEditController@update')
-        ->name('warehouses.update');
-
-    Route::delete('/destroy/{id}', 'Warehouse\WarehouseDeleteController')
-        ->name('warehouses.destroy');
-
 });

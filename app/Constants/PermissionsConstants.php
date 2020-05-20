@@ -16,7 +16,7 @@ class PermissionsConstants
     public const ROLE_ADMIN_ID = 1;
 
     /**
-     * Permisos crud modulo de usuarios
+     * Permisos crud modulo de usuarios en la configuracion
      */
     public const USER_LIST = 'user-list';
     public const USER_CREATE = 'user-create';
@@ -24,12 +24,36 @@ class PermissionsConstants
     public const USER_DELETE = 'user-delete';
 
     /**
-     * Permisos crud modulo de roles
+     * Permisos crud modulo de roles en la configuracion
      */
     public const ROLE_LIST = 'role-list';
     public const ROLE_CREATE = 'role-create';
     public const ROLE_UPDATE = 'role-update';
     public const ROLE_DELETE = 'role-delete';
+
+    /**
+     * Permisos crud modulo de taxes en la configuracion
+     */
+    public const CONFIG_TAXES_LIST = 'config-taxes-list';
+    public const CONFIG_TAXES_CREATE = 'config-taxes-create';
+    public const CONFIG_TAXES_UPDATE = 'config-taxes-update';
+    public const CONFIG_TAXES_DELETE = 'config-taxes-delete';
+
+    /**
+     * Permisos crud modulo de centros de costo en la configuracion
+     */
+    public const COST_CENTER_LIST = 'cost-center-list';
+    public const COST_CENTER_CREATE = 'cost-center-create';
+    public const COST_CENTER_UPDATE = 'cost-center-update';
+    public const COST_CENTER_DELETE = 'cost-center-delete';
+
+    /**
+     * Permisos crud modulo de conceptos de gastos en la configuracion
+     */
+    public const CONCEPT_LIST = 'concept-list';
+    public const CONCEPT_CREATE = 'concept-create';
+    public const CONCEPT_UPDATE = 'concept-update';
+    public const CONCEPT_DELETE = 'concept-delete';
 
     /**
      * Permisos crud modulo de Terceros

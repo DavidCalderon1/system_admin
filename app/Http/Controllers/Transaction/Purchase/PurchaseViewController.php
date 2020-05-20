@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Transaction\Purchase;
 
+use App\Constants\PermissionsConstants;
 use App\Http\Controllers\Controller;
 use App\UsesCases\Interfaces\PurchasesUseCaseInterface;
 use App\UsesCases\Interfaces\SalesUseCaseInterface;
@@ -35,8 +36,10 @@ class PurchaseViewController extends Controller
     public function __invoke(int $purchaseId): View
     {
         $purchase = $this->purchasesUseCase->getById($purchaseId);
+        $userCanEdit = $this->hasPermission(PermissionsConstants::PURCHASE_EDIT);
+        $userCanCancel = $this->hasPermission(PermissionsConstants::PURCHASE_CANCEL);
 
-        return view('transactions.purchases.view', compact('purchase'));
+        return view('transactions.purchases.view', compact('purchase', 'userCanEdit', 'userCanCancel'));
     }
 
 }

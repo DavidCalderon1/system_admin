@@ -26,46 +26,35 @@ class EloquentWarehousesRepository implements WarehousesRepositoryInterface
     }
 
     /**
-     * @param int $perPage
-     * @param array $filters
+     * @param int $length
+     * @param string $orderBy
+     * @param string $orderByDir
+     * @param string $searchValues
      * @return array
      */
-    public function getPagination(int $perPage, array $filters = []): array
+    public function getPagination(
+        int $length,
+        string $orderBy,
+        string $orderByDir,
+        string $searchValues
+    ): array
     {
-        $warehouses = $this->warehouse->with(['country', 'state', 'city']);
-
-        if (!empty($filters['name'])) {
-            $warehouses->where('name', 'like', "%{$filters['name']}%");
-        }
-
-        if (!empty($filters['country'])) {
-            $warehouses->whereHas('country', function ($query) use ($filters) {
-                $query->where('name', 'LIKE', "%{$filters['country']}%");
-            });
-        }
-
-        if (!empty($filters['state'])) {
-            $warehouses->whereHas('state', function ($query) use ($filters) {
-                $query->where('name', 'LIKE', "%{$filters['state']}%");
-            });
-        }
-
-        if (!empty($filters['city'])) {
-            $warehouses->whereHas('state', function ($query) use ($filters) {
-                $query->where('name', 'LIKE', "%{$filters['city']}%");
-            });
-        }
-
-        if (!empty($filters['address'])) {
-            $warehouses->where('address', 'like', "%{$filters['address']}%");
-
-        }
-
-        if (!empty($filters['phone_number'])) {
-            $warehouses->where('phone_number', 'like', "%{$filters['phone_number']}%");
-        }
-
-        return $warehouses->paginate($perPage)->toArray();
+        return $this->warehouse->with(['country', 'state', 'city'])
+            ->where('name', 'like', "%{$searchValues}%")
+            ->orWhere('address', 'like', "%{$searchValues}%")
+            ->orWhere('phone_number', 'like', "%{$searchValues}%")
+            ->orWhereHas('country', function ($query) use ($searchValues) {
+                $query->where('name', 'LIKE', "%{$searchValues}%");
+            })
+            ->orWhereHas('state', function ($query) use ($searchValues) {
+                $query->where('name', 'LIKE', "%{$searchValues}%");
+            })
+            ->orWhereHas('city', function ($query) use ($searchValues) {
+                $query->where('name', 'LIKE', "%{$searchValues}%");
+            })
+            ->orderBy($orderBy, $orderByDir)
+            ->paginate($length)
+            ->toArray();
     }
 
     /**
@@ -128,11 +117,5 @@ class EloquentWarehousesRepository implements WarehousesRepositoryInterface
     public function delete(int $id): bool
     {
         return $this->warehouse->where('id', $id)->delete();
-    }
-
-    public function hasProducts()
-    {
-        dd($this->warehouse->with('products')->count());
-        return $this->warehouse->with('products')->count();
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Repositories\EloquentCityRepository;
+use App\Repositories\EloquentConceptRepository;
+use App\Repositories\EloquentCostCenterRepository;
 use App\Repositories\EloquentCountryRepository;
 use App\Repositories\EloquentInventoryCategoryRepository;
 use App\Repositories\EloquentPaymentMethodRepository;
@@ -11,10 +13,13 @@ use App\Repositories\EloquentProductRepository;
 use App\Repositories\EloquentProductWarehouseRepository;
 use App\Repositories\EloquentRoleRepository;
 use App\Repositories\EloquentStateRepository;
+use App\Repositories\EloquentTaxesRepository;
 use App\Repositories\EloquentThirdPartiesRepository;
 use App\Repositories\EloquentUserRepository;
 use App\Repositories\EloquentWarehousesRepository;
 use App\Repositories\Interfaces\CityRepositoryInterface;
+use App\Repositories\Interfaces\ConceptRepositoryInterface;
+use App\Repositories\Interfaces\CostCenterRepositoryInterface;
 use App\Repositories\Interfaces\CountryRepositoryInterface;
 use App\Repositories\Interfaces\InventoryCategoryRepositoryInterface;
 use App\Repositories\Interfaces\PaymentMethodRepositoryInterface;
@@ -23,6 +28,7 @@ use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Repositories\Interfaces\ProductWarehouseRepositoryInterface;
 use App\Repositories\Interfaces\RoleRepositoryInterface;
 use App\Repositories\Interfaces\StateRepositoryInterface;
+use App\Repositories\Interfaces\TaxesRepositoryInterface;
 use App\Repositories\Interfaces\ThirdPartiesRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\WarehousesRepositoryInterface;
@@ -83,6 +89,10 @@ class AppServiceProvider extends ServiceProvider
         MainPurchaseRepositoryInterface::class => EloquentMainPurchaseRepository::class,
         PurchasesUseCaseInterface::class => PurchasesUseCase::class,
 
+        //config repositories
+        TaxesRepositoryInterface::class => EloquentTaxesRepository::class,
+        CostCenterRepositoryInterface::class => EloquentCostCenterRepository::class,
+        ConceptRepositoryInterface::class => EloquentConceptRepository::class,
 
         //UsesCases
 

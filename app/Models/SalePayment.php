@@ -22,4 +22,6 @@ class SalePayment extends Model
         'credit_expiration_date',
         'date',
     ];
+
+    public $timestamps=false;
 }

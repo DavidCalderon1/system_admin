@@ -1,72 +1,70 @@
-<link rel="stylesheet" href="{{ asset('css/adminlte.css') }}">
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Iniciar sesión</title>
 
-<style>
-    body {
-        margin: 0;
-        padding: 0;
-        background: rgba(0, 0, 0, 0.76);
-        height: 100vh;
-    }
+    <link rel="stylesheet" href="{{ asset('css/adminlte.css') }}">
 
-    #login .container #login-row #login-column #login-box {
-        margin-top: 120px;
-        max-width: 600px;
-        height: 320px;
-        border: 1px solid #9C9C9C;
-        background-color: #EAEAEA;
-    }
-
-    #login .container #login-row #login-column #login-box #login-form {
-        padding: 20px;
-    }
-
-    #login .container #login-row #login-column #login-box #login-form #register-link {
-        margin-top: -85px;
-    }
-</style>
+    <meta name="theme-color" content="#563d7c">
+    <style>
+        body{
+            background-color: #a2a2a2;
+        }
+    </style>
+</head>
 <body>
 <div id="login">
-    <div class="container">
-        <div id="login-row" class="row justify-content-center align-items-center">
-            <div id="login-column" class="col-md-6">
-                <div id="login-box" class="col-md-12">
-                    <form id="login-form" class="form" action="{{ route('login') }}" method="post">
-                        @csrf
+ <div class="content">
+     <div class="row">
+         <div class="col-md-4"></div>
+         <div class="col-md-4">
+             <div class="card mt-5">
+                 <div class="card-body">
+                     <form class="form-signin" action="{{ route('login') }}" method="post">
+                         @csrf
+                         <div class="text-center mb-4 mt-5">
+                             <img class="mb-4" src="{{asset('img/logo.jpeg')}}" alt="" width="100%" height="100px">
+                         </div>
 
-                        <h3 class="text-center text-info">Iniciar sesión</h3>
-                        <div class="form-group">
-                            <label for="username" class="text-info">Usuario:</label><br>
-                            <input id="email" type="email"
-                                   class="form-control @error('email') is-invalid @enderror" name="email"
-                                   value="{{ old('email') }}" required autocomplete="email" autofocus>
-                            @error('email')
-                            <span class="invalid-feedback" role="alert">
+                         <div class="form-label-group">
+                             <label for="inputEmail">Correo</label>
+
+                             <input type="email" id="inputEmail" class="form-control form-control-sm @error('email') is-invalid @enderror"
+                                    name="email"
+                                    value="{{ old('email') }}"
+                                    autocomplete="email"
+                                    placeholder="Email address" required autofocus>
+                             @error('email')
+                             <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="password" class="text-info">Contraseña:</label><br>
-                            <input id="password" type="password"
-                                   class="form-control @error('password') is-invalid @enderror" name="password"
-                                   required autocomplete="current-password">
+                             @enderror
+                         </div>
 
-                            @error('password')
-                            <span class="invalid-feedback" role="alert">
+                         <div class="form-label-group mt-3">
+                             <label for="inputPassword">Contraseña</label>
+
+                             <input type="password" id="inputPassword" class="form-control form-control-sm @error('password') is-invalid @enderror"
+                                    name="password"
+                                    placeholder="Password" required>
+                             @error('password')
+                             <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">
-                                {{ __('Login') }}
-                            </button>
-                        </div>
+                             @enderror
+                         </div>
+                         <div class="form-group">
+                             <button type="submit" class="btn btn-sm btn-primary btn-block mt-3">
+                                 Iniciar
+                             </button>
+                         </div>
+                     </form></div>
+                 </div>
+             </div>
 
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
+         <div class="col-md-4"></div>
+     </div>
+ </div>
 </div>
 </body>

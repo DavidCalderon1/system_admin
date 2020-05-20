@@ -11,5 +11,6 @@
         route-sale-download="{{route('transactions.purchases.download',['purchase_id' => '__ID__'])}}"
         payment-methods="{{json_encode($paymentsMethods)}}"
         purchase-data="{{json_encode($purchase)}}"
+        taxes="{{json_encode($taxes)}}"
     ></edit-purchase-component>
 @endsection
