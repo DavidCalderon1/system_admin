@@ -30,7 +30,7 @@ DB_USERNAME=USUARIO_MYSQL
 DB_PASSWORD=PASSWORD_MYSQL
 
 Una vez configurada la base de datos y las variables de entorno
-se deben ejecutar los siguientes comandos:
+se deben ejecutar los siguientes comandos ubicado en la raíz del proyecto:
 
 * **composer install**
 * **php artisan migrate**
@@ -44,9 +44,9 @@ se deben ejecutar los siguientes comandos:
 * **npm install v-select2-component –save**  
 
 Para ejecutar el serve del proyecto para iniciar la aplicacion ejecutar:
-* *php artisan serve**
+* **php artisan serve**
 
-Como resultado le retornará la url con el puerto que utilizó el proyecto para ser ejecutado.
+Como resultado le retornará la url (http://localhost:puerto) con el puerto que utilizó el proyecto para ser ejecutado.
 
 La URL lo enviará al login, se debe ingresar con las credenciales:
  * Usuario: **admin@admin.com**
