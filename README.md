@@ -64,3 +64,6 @@ La URL lo enviará al login, se debe ingresar con las credenciales:
 * Configuracion->Transacciones-> Centros de costo (Terminado)
 * Configuracion->Transacciones-> Concepto de gasto (Terminado)
 * Configuracion->Transacciones-> Impuestos (Terminado)
+
+Este proyecto utiliza clean clean architecture en su estructura de 
+codigo para que sea mas facil de implementar pruebas.
