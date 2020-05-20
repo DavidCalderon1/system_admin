@@ -6,7 +6,7 @@ Este proyecto esta hecho el laravel 7 y fue desarrollado en linux ubuntu 18.04
 - Composer https://getcomposer.org/
 - Mysql 5.7 
 - node
-- mpn
+- npm
 
 Proceso de instación:
 * instalar los requerimientos 
