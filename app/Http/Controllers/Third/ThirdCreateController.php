@@ -93,7 +93,7 @@ class ThirdCreateController extends Controller
 
             return $this->response(201);
         } catch (\Exception $exception) {
-            return $this->response($exception->getCode(), $exception->getMessage());
+            return $this->response(500, $exception->getMessage());
         }
     }
 }
