@@ -16,7 +16,7 @@ class CreatePurchasePaymentsTable extends Migration
         Schema::create('purchase_payments', function (Blueprint $table) {
             $table->increments('id')->index();
             $table->integer('purchase_id')->unsigned();
-            $table->enum('way_to_pay', ['credit', 'cash']);
+            $table->string('way_to_pay');
             $table->double('amount');
             $table->string('method')->default('');
             $table->integer('days_to_pay')->default(0);

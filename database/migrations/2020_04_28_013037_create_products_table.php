@@ -23,7 +23,7 @@ class CreateProductsTable extends Migration
             $table->string('reference', 150);
             $table->mediumText('description');
             $table->double('base_price');
-            $table->enum('vat', [0, 5, 19]);
+            $table->tinyInteger('vat');
             $table->double('price');
             $table->string('image')->default('');
             $table->timestamps();

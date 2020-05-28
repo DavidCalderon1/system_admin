@@ -26,7 +26,7 @@ class CreateSalesTable extends Migration
             $table->string('seller_code');
             $table->dateTime('date');
             $table->text('description');
-            $table->enum('status', ['Activa', 'Anulada', 'Eliminada']);
+            $table->string('status');
             $table->string('file');
             $table->timestamps();
 

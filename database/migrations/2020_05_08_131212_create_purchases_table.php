@@ -26,7 +26,7 @@ class CreatePurchasesTable extends Migration
             $table->string('provider_phone_number');
             $table->string('provider_location');
             $table->text('description');
-            $table->enum('status', ['Activa', 'Anulada', 'Eliminada']);
+            $table->string('status');
             $table->tinyInteger('include_taxes')->default(0);
             $table->string('file');
             $table->dateTime('date');

@@ -18,10 +18,10 @@ class CreateThirdPartiesTable extends Migration
             $table->unsignedInteger('country_id');
             $table->unsignedInteger('state_id');
             $table->unsignedInteger('city_id');
-            $table->enum('type', ['client', 'provider', 'other']);
+            $table->string('type');
             $table->string('identity_number', 50);
-            $table->enum('identity_type', ['CC', 'NIT']);
-            $table->enum('type_person', ['natural', 'juridical']);
+            $table->string('identity_type');
+            $table->string('type_person');
             $table->string('name', 50);
             $table->string('last_name', 50)->default('');
             $table->string('address', 150);
