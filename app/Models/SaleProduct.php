@@ -19,6 +19,17 @@ class SaleProduct extends Model
         'description',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'price' => 'double',
+        'discount_percentage' => 'double',
+        'vat' => 'double',
+    ];
+
     public $timestamps=false;
 
     /**

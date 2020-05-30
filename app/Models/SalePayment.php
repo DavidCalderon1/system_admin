@@ -23,5 +23,14 @@ class SalePayment extends Model
         'date',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'amount' => 'double',
+    ];
+
     public $timestamps=false;
 }

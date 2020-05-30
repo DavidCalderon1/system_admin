@@ -48,8 +48,8 @@ class EloquentThirdPartiesRepository implements ThirdPartiesRepositoryInterface
         return $this->thirdParties->where('id', $id)->update([
             'identity_type' => strtoupper($data['identity_type']),
             'identity_number' => strtoupper($data['identity_number']),
-            'type_person' => strtoupper($data['type_person']),
-            'type' => strtoupper($data['type']),
+            'type_person' => $data['type_person'],
+            'type' => $data['type'],
             'name' => strtoupper($data['name']),
             'last_name' => strtoupper($data['last_name']),
             'address' => strtoupper($data['address']),
@@ -112,8 +112,8 @@ class EloquentThirdPartiesRepository implements ThirdPartiesRepositoryInterface
         return $this->thirdParties->create([
             'identity_type' => strtoupper($data['identity_type']),
             'identity_number' => strtoupper($data['identity_number']),
-            'type_person' => strtoupper($data['type_person']),
-            'type' => strtoupper($data['type']),
+            'type_person' => $data['type_person'],
+            'type' => $data['type'],
             'name' => strtoupper($data['name']),
             'last_name' => strtoupper($data['last_name']),
             'address' => strtoupper($data['address']),

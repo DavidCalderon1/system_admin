@@ -27,6 +27,16 @@ class Product extends Model
     ];
 
     /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'base_price' => 'double',
+        'price' => 'double',
+    ];
+
+    /**
      * @return BelongsTo
      */
     public function category(): BelongsTo
