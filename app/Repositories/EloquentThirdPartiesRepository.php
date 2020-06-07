@@ -86,6 +86,7 @@ class EloquentThirdPartiesRepository implements ThirdPartiesRepositoryInterface
         if($orderBy === 'type_trans'){
             $orderBy = 'type';
         }
+        $searchValue = strtoupper($searchValue);
 
         $thirds = $this->thirdParties->select('id', 'name', 'type', 'last_name', 'identity_number', 'email', 'phone_number', 'identity_type', 'status')
             ->where('status', 1)
@@ -135,6 +136,7 @@ class EloquentThirdPartiesRepository implements ThirdPartiesRepositoryInterface
     {
         $persons = $this->thirdParties->where('type', 'client')
             ->where('identity_number', 'LIKE', "%{$filter}%")
+            ->orWhere('name', 'LIKE', "%{$filter}%")
             ->get();
 
         if (empty($persons)) {

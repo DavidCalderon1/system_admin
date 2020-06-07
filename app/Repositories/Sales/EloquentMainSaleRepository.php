@@ -153,11 +153,16 @@ class EloquentMainSaleRepository implements MainSaleRepositoryInterface
             foreach ($saleProducts as $key => $saleProduct) {
                 $purchaseProducts[$key]['sale_id'] = $saleId;
 
-                $this->productRepository->updatePivotSubtractQuantity(
+                $saved = $this->productRepository->updatePivotSubtractQuantity(
                     $saleProduct['product_id'],
                     $saleProduct['warehouse_id'],
                     $saleProduct['quantity']
                 );
+
+                if (empty($saved)) {
+                    throw new \Exception('Ha ocurrido un error actualizando la venta.', 500);
+                    DB::rollBack();
+                }
             }
 
             DB::commit();

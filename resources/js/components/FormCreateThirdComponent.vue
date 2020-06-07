@@ -55,7 +55,6 @@
                     <b-form-input type="text"
                                   class="form-control "
                                   v-bind:class="{'is-invalid': validate('name') }"
-                                  onkeyup="javascript:this.value=this.value.toUpperCase();"
                                   size="sm"
                                   v-model="request.name"
                                   placeholder="Nombre...">
@@ -68,7 +67,6 @@
                     <b-form-input type="text"
                                   class="form-control "
                                   v-bind:class="{'is-invalid': validate('last_name') }"
-                                  onkeyup="javascript:this.value=this.value.toUpperCase();"
                                   size="sm"
                                   v-model="request.last_name"
                                   placeholder="Apelldio...">

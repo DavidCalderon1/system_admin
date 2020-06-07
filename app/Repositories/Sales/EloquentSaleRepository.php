@@ -41,11 +41,11 @@ class EloquentSaleRepository implements SaleRepositoryInterface
         if ($orderBy == 'invoice_number') {
             $orderBy = 'consecutive';
         }
-
+        $searchValue = strtoupper($searchValue);
         $sales = $this->sale->with(['saleProducts'])
-            ->where(DB::raw("CONCAT(prefix, '-', consecutive)"), 'LIKE', "%{$searchValue}%")
+            ->where(DB::raw("CONCAT('prefix', '-', 'consecutive')"), 'LIKE', "%{$searchValue}%")
             ->orWhere('client_name', "LIKE", "%{$searchValue}%")
-            ->orWhere('status', "LIKE", "%{$searchValue}%")
+            ->orWhere(DB::raw('UPPER(status)'), "LIKE", "%{$searchValue}%")
             ->orderBy($orderBy, $orderByDir);
 
         return $sales->paginate($length)->toArray();

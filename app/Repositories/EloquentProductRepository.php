@@ -37,6 +37,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
      */
     public function getPagination(int $length, string $orderBy, string $orderByDir, string $searchValue): array
     {
+        $searchValue = strtoupper($searchValue);
         $products = $this->product->with('category')
             ->where('code', 'LIKE', "%{$searchValue}%")
             ->orWhere('reference', "LIKE", "%{$searchValue}%")
@@ -200,8 +201,10 @@ class EloquentProductRepository implements ProductRepositoryInterface
                 continue;
             }
 
+            if ($warehouse->pivot->quantity <= 0){
+                return false;
+            }
             $warehouse->pivot->quantity = $warehouse->pivot->quantity - $quantityToDiscount;
-
             return $warehouse->pivot->save();
         }
 

@@ -18,7 +18,8 @@
                 <div class="form-group col-md-3">
                     <label>Código*</label>
                     <input type="number" min="1" minlength="6" maxlength="6" class="form-control form-control-sm"
-                           onkeyup="javascript:this.value=this.value.toUpperCase();"
+                           v-on:keyup="limitCodeChars(6)"
+                           v-on:keydown="limitCodeChars(6)"
                            v-model="request.code"
                            v-bind:class="{'is-invalid': validate('code')}"
                            placeholder="Codigo de 6 digitos...">
@@ -29,7 +30,6 @@
                     <label>Referencia*</label>
                     <input type="text" class="form-control form-control-sm"
                            v-bind:class="{'is-invalid': validate('reference') }"
-                           onkeyup="javascript:this.value=this.value.toUpperCase();"
                            v-model="request.reference"
                            placeholder="Referencia...">
                     <small class="form-text text-danger"
@@ -231,6 +231,11 @@
             },
         },
         methods: {
+            limitCodeChars(max_chars) {
+                if(this.request.code.length > max_chars) {
+                    this.request.code = this.request.code.substr(0, max_chars);
+                }
+            },
             formatPrice(value) {
                 let val = (value / 1).toFixed(2).replace('.', ',')
                 return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")

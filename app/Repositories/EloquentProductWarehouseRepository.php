@@ -72,7 +72,10 @@ class EloquentProductWarehouseRepository implements ProductWarehouseRepositoryIn
     {
         return array_map(function ($warehouse) {
             $quantity = (empty($warehouse['pivot'])) ? 0 : $warehouse['pivot']['quantity'];
-
+//            if ($quantity == 0){
+//                unset($warehouse);
+//                return;
+//            }
             return [
                 'id' => $warehouse['id'],
                 'text' => $warehouse['name'] . " = {$quantity}und",

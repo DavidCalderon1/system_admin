@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Transaction\Sale;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Interfaces\PaymentMethodRepositoryInterface;
-use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Repositories\Interfaces\ProductWarehouseRepositoryInterface;
 use App\Repositories\Interfaces\ThirdPartiesRepositoryInterface;
 use App\Repositories\Sales\Interfaces\MainSaleRepositoryInterface;
@@ -78,7 +77,7 @@ class SaleCreateController extends Controller
     {
         $filter = $request->get('term', '');
 
-        return $this->thirdPartiesRepository->filterClientByIdentityNumber($filter);
+        return $this->thirdPartiesRepository->filterClientByIdentityNumber(strtoupper($filter));
     }
 
     /**

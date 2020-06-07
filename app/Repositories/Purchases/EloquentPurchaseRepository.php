@@ -43,7 +43,7 @@ class EloquentPurchaseRepository implements PurchaseRepositoryInterface
         }
 
         $purchases = $this->purchase->with(['purchaseProducts'])
-            ->where(DB::raw("CONCAT(`prefix`, '-', `consecutive`)"), 'LIKE', "%{$searchValue}%")
+            ->where(DB::raw("CONCAT('prefix', '-', 'consecutive')"), 'LIKE', "%{$searchValue}%")
             ->orWhere('provider_name', "LIKE", "%{$searchValue}%")
             ->orWhere('provider_invoice_number', "LIKE", "%{$searchValue}%")
             ->orWhere('status', "LIKE", "%{$searchValue}%")

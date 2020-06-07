@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Warehouse;
 use App\Repositories\Interfaces\WarehousesRepositoryInterface;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class EloquentWarehousesRepository
@@ -39,18 +40,19 @@ class EloquentWarehousesRepository implements WarehousesRepositoryInterface
         string $searchValues
     ): array
     {
+        $searchValues = strtoupper($searchValues);
         return $this->warehouse->with(['country', 'state', 'city'])
             ->where('name', 'like', "%{$searchValues}%")
             ->orWhere('address', 'like', "%{$searchValues}%")
             ->orWhere('phone_number', 'like', "%{$searchValues}%")
             ->orWhereHas('country', function ($query) use ($searchValues) {
-                $query->where('name', 'LIKE', "%{$searchValues}%");
+                $query->where(DB::raw('UPPER(name)'), 'LIKE', "%{$searchValues}%");
             })
             ->orWhereHas('state', function ($query) use ($searchValues) {
-                $query->where('name', 'LIKE', "%{$searchValues}%");
+                $query->where(DB::raw('UPPER(name)'), 'LIKE', "%{$searchValues}%");
             })
             ->orWhereHas('city', function ($query) use ($searchValues) {
-                $query->where('name', 'LIKE', "%{$searchValues}%");
+                $query->where(DB::raw('UPPER(name)'), 'LIKE', "%{$searchValues}%");
             })
             ->orderBy($orderBy, $orderByDir)
             ->paginate($length)

@@ -44,6 +44,7 @@ class EloquentInventoryCategoryRepository implements InventoryCategoryRepository
         string $searchValues
     ): array
     {
+        $searchValues = strtoupper($searchValues);
         return $this->inventoryCategory->where('name', 'like', "%{$searchValues}%")
             ->orWhere('description', 'LIKE', "%{$searchValues}%")
             ->orderBy($orderBy, $orderByDir)
